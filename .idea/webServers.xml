@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="19eac365-d2f8-4884-b3e6-dbb50af77910" name="Server-4" url="http://211.67.31.242">
+        <fileTransfer host="211.67.31.242" port="3000" rootFolder="/home/liucj/web/tRic_portal" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="3000" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
