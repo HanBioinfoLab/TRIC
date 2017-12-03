@@ -4,7 +4,7 @@ from django.shortcuts import render
 
 # main home page
 def index(request):
-    title = "tRic"
+    title = "tric"
     context = {"title": title}
 
-    return render(request=request, template_name="tric/index.html" , context= context, status=200)
+    return render(request, "tric/index.html", context, status=200)

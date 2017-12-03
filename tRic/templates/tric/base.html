@@ -1,0 +1,72 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang = "en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1,user-scalable=no">
+
+        {# load bootstrape 3.3.7 #}
+        <link rel="stylesheet" type = "text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+        <link rel="stylesheet" type = "text/css" href="{% static 'css/docs.min.css' %}">
+
+        {# load awesome font #}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}">
+
+        {#  load jquery and bootstrap js #}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+        {#  jquery ui#}
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.min.css">
+        {#icon  #}
+        <link rel="icon" href="{% static 'image/snoric_logo.svg' %}">
+
+        {# load datatable #}
+        <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css" />
+        {#    load bootstrape-select#}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+        {# load custome js and css #}
+        <script src="{% static 'js/tric.js' %}"></script>
+        <link rel="stylesheet" type = "text/css" href="{% static 'css/snoric.css' %}">
+
+        <style>
+            td.details-control {
+                background: url("{% static 'image/details_open.png' %}") no-repeat center center;
+                cursor: pointer;
+            }
+            tr.shown td.details-control {
+                background: url("{% static 'image/details_close.png' %}") no-repeat center center;
+            }
+        </style>
+        <title>
+            {% block title %}{% endblock %}
+        </title>
+        {% block extra_head %}
+        {% endblock %}
+    </head>
+
+    <body>
+        <div class="container">
+            {# this is logo #}
+        </div>
+
+        {# load header #}
+        {% include "tric/header.html" %}
+
+        <div class="container bs-docs-container" >
+            {% block content %}{% endblock %}
+        </div>
+
+        {# load footer #}
+        {% include "tric/footer.html" %}
+    </body>
+</html>
