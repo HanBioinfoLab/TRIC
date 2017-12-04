@@ -1100,13 +1100,13 @@ $(function(){
     tric.init();
     switch (window.location.pathname){
         case "/tRic/statistics/":
-            snoric.onReadyDatasets();
+            tric.onReadyDatasets();
             break;
         case "/tRic/basic/":
-            snoric.onReadyBasic();
+            tric.onReadyBasic();
             break;
         case "/tRic/analysis/":
-            snoric.onReadyAnalysis();
+            tric.onReadyAnalysis();
             break;
     }
 });

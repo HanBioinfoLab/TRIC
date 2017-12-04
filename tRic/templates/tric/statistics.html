@@ -1,1 +1,25 @@
-hello
+{% extends "tric/base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% load staticfiles %}
+{% block content %}
+    <div class="bs-docs-section">
+        <h2 class="page-header">
+            <i class="fa fa-bar-chart"></i>&nbsp;Summary
+        </h2>
+    </div>
+    <div class="bs-docs-section">
+        <table id="dataset_summary" class="table table-condensed table-hover table-bordered ">
+            <thead>
+                <tr>
+                    <th>Cancer type</th>
+                    <th>&num;Normal</th>
+                    <th>&num;Tumor</th>
+                    <th>Ave. reads</th>
+                    <th>&num;snoRNA(RPKM>0)</th>
+                    <th>&num;snoRNA(RPKM>1)</th>
+                </tr>
+            </thead>
+
+        </table>
+    </div>
+{% endblock %}
