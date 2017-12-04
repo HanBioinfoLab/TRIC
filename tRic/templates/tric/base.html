@@ -1,0 +1,70 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang = "en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1,user-scalable=no">
+
+        {# load bootstrape 3.3.7 #}
+        <link rel="stylesheet" type = "text/css" href="{% static 'css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}">
+        <link rel="stylesheet" type = "text/css" href="{% static 'css/docs.min.css' %}">
+
+        {# load awesome font #}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}">
+
+        {#  load jquery and bootstrap js #}
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+        {#  jquery ui#}
+        <link rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}">
+        <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+        {#icon  #}
+        <link rel="icon" href="{% static 'image/snoric_logo.svg' %}">
+
+        {# load datatable #}
+        <script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static 'js/dataTables.bootstrap.min.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap.min.css' %}" />
+
+        {# load bootstrape-select#}
+        <link rel="stylesheet" href="{% static 'css/bootstrap-select.min.css' %}">
+        <script src="{% static 'js/bootstrap-select.min.js' %}"></script>
+
+        {# load custome js and css #}
+        <script src="{% static 'js/tric.js' %}"></script>
+        <link rel="stylesheet" type = "text/css" href="{% static 'css/tric.css' %}">
+
+        <style>
+            td.details-control {
+                background: url("{% static 'image/details_open.png' %}") no-repeat center center;
+                cursor: pointer;
+            }
+            tr.shown td.details-control {
+                background: url("{% static 'image/details_close.png' %}") no-repeat center center;
+            }
+        </style>
+        <title>
+            {% block title %}{% endblock %}
+        </title>
+        {% block extra_head %}{% endblock %}
+    </head>
+
+    <body>
+        <div class="container">
+            {# this is logo #}
+        </div>
+
+        {# load header #}
+        {% include "tric/header.html" %}
+
+        <div class="container bs-docs-container" >
+            {% block content %}{% endblock %}
+        </div>
+
+        {# load footer #}
+        {% include "tric/footer.html" %}
+    </body>
+</html>
