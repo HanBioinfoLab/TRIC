@@ -1,0 +1,43 @@
+{% extends "tric/base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% load staticfiles %}
+{% block content %}
+    <div class="bs-docs-section">
+        <h2 class="page-header"><i class="glyphicon glyphicon-envelope"></i>&nbsp;About Us</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <address>
+                    <strong>An-Yuan Guo, Ph.D. Professor of Bioinformatics</strong><br />
+                    <strong>Email:</strong>&nbsp;<img alt="An-Yuan Guo" src="{% static 'emails/guoanyuan.png' %}" style="height: 22px">
+                </address>
+                <address>
+                    <strong>C.J. Liu, Ph.D. Candidate</strong><br />
+                    <strong>Email:</strong>&nbsp;<img alt="Chun-Jie Liu" src="{% static 'emails/liuchunjie.png' %}" style="height: 22px">
+                </address>
+                <div class="address">
+                    <a href="http://bioinfo.life.hust.edu.cn/" target=_blank>Hubei Bioinformatics & Molecular Imaging Key Laboratory</a> <br />
+                    Department of Bioinformatics and Systems Biology<br />
+                    <a href="http://life.hust.edu.cn/" target=_blank>College of Life Science and Technology</a><br />
+                    <a href="http://www.hust.edu.cn/" target=_blank>Huazhong University of Science and Technology, Wuhan 430074 P.R. China</a><br />
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <address>
+                <strong>Leng Han, Ph.D. Assistant Professor</strong><br />
+                <strong>CPRIT SCHOLAR Cancer Prevention Research Institute of Texas</strong><br/>
+                <strong>Email:</strong>&nbsp;<img alt="Leng Han" src="{% static 'emails/hanleng.png' %}" style="height: 22px">
+            </address>
+                <address>
+                    <strong>Jing Gong, Ph.D.</strong><br />
+                    <strong>Email:</strong>&nbsp;<img alt="Zhao Zhang" src="{% static 'emails/zhangzhao.png' %}" style="height: 22px">
+                </address>
+                <div class="address">
+                    <a href="https://med.uth.edu/bmb/labs/han-3/" target=_blank>Han Lab</a> <br />
+                    Department of Biochemistry & Molecular Biology<br />
+                    <a href="https://med.uth.edu/" target=_blank>The University of Texas Health Science Center at Houston, Houston, 77030 USA</a><br />
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

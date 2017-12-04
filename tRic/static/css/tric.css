@@ -196,8 +196,8 @@ div.slider img{
 }
 
 .panel-info>.panel-heading{
-    background-image: linear-gradient(to bottom,#7B9FCA 0,#98BCE8 100%);
-    border-color: #9ED3EF;
+    background-image: linear-gradient(to bottom,#008c81 0,#008c81 100%);
+    border-color: #008c81;
     color: #ffffff;
 }
 .panel-info>.panel-heading>h3.panel-title{

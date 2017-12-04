@@ -6,11 +6,25 @@
 {% endblock %}
 
 {% block content %}
+
 <div class="jumbotron">
     <div class="container">
         <h2>Welcome to tRic</h2>
         <p class="text-justify">The <span class="text-danger">tRic</span> refers to "tRNA in cancer". Transfer RNAs (tRNAs) are a class of regulatory non-coding RNAs, which play a conserved role in ribosome biogenesis. However, in recent years, increasing evidence has demonstrated snoRNAs play important roles in tumorigenesis. Here, we systematically analyzed snoRNA expression profiles in > 10,000 samples across 31 cancer types from The Cancer Genome Atlas, and analyzed their correlation with other TCGA genomic,proteomic, epigenomic and clinical data (e.g. patient tumor stage, subtype, and survival).
         </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="penal panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Summary of samples</h3>
+            </div>
+            <div class="panel-body">
+                <a href="{% url 'tric:statistics' %}" class="thumbnail"><img src="{% static 'image/dataset_summary.svg' %}" style="height: 240px"></a>
+            </div>
+        </div>
     </div>
 </div>
 
