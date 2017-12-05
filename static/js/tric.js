@@ -14,273 +14,6 @@ var tric=(function(){
     VIEW_STALE = 'ok',
     UNDEFINED;
 
-    /*
-     * Module Variables
-     */
-    var DEBUG = false,
-        OTABLES = {},
-        TABLEDATA = {},
-        JOBID = '',
-        ARGUMENTS = {},
-        ALLOW_STALE = true;
-
-    // reserved variable
-    var TIMEOUT_DIALOG = null;
-    var IS_JOB_RUNNING = false;
-    var TIMEOUT_STOP = false;
-    var IS_ANALYSIS_TIMEOUT = false;
-    var analysisTimeout = {};
-    var JOB_RUNNING_DIALOG = null;
-    var gNCompletedAnalyses = {};
-    var JOB = {};
-    var gAnalysisLabel = {
-        corr_geneexpr: 'Corr. mRNA',
-        diff_subtype: 'Diff. subtype',
-        snorna_expr: 'snoRNA expr.',
-        tm_comparison: 'Tumor vs. Normal',
-        survival: 'Survival',
-        corr_rppa: 'Corr. protein',
-        corr_cnv: 'Corr. SCNA',
-        methylation: 'Corr. Methylation',
-        corr_splicing: 'Corr. Splicing'
-    };
-    var gAnalysisTabsOrder = {
-        snorna_expr: 0,
-        tm_comparison: 1,
-        diff_subtype: 2,
-        survival: 3,
-        corr_geneexpr: 4,
-        corr_rppa: 5,
-        corr_cnv: 6,
-        methylation: 7,
-        corr_splicing: 8
-    };
-    var gAnalysisTabsClass = {
-        snorna_expr: 'rnaexpr',
-        tm_comparison: 'rnaexpr',
-        diff_subtype:  'clinical',
-        survival:      'clinical',
-        corr_geneexpr: 'genomic',
-        corr_rppa: 'genomic',
-        corr_cnv: 'genomic',
-        methylation: 'genomic',
-        corr_splicing: 'genomic',
-    };
-    var default_datatable_settings = {
-            processing: true,
-            stateSave: true,
-            language: {
-                decimal: ",",
-                emptyTable: "No significant entries in analysis or in this cancer type!"
-            }
-        },
-        survival_datatable_settings = {
-            columns: [
-                {data: "dataset_id"},
-                {data: "snorna"},
-                {data: "p\\.value"},
-                {
-                    class: 'details-control',
-                    orderable: false,
-                    data: null,
-                    defaultContent: ''
-                }
-            ]
-        },
-        corr_geneexpr_datatable_settings = {
-            columns: [
-                {data: "dataset_id"},
-                {data: "snorna"},
-                {data: "gene_symbol"},
-                {data: "spearman_corr"},
-                {data: "p_value"},
-                {
-                    class: 'details-control',
-                    orderable: false,
-                    data: null,
-                    defaultContent: ''
-                }
-            ]
-        },
-        corr_splicing_data_settings = {
-            columns: [
-                {data: "dataset_id"},
-                {data: "snorna"},
-                {data: "gene_symbol"},
-                {data: "as_id"},
-                {data: "splice_type"},
-                {data: "from_exon"},
-                {data: "to_exon"},
-                {data: "std_psi"},
-                {data: "r"},
-                {data: "fdr"},
-                {
-                    class: 'details-control',
-                    orderable: false,
-                    data: null,
-                    defaultContent: ''
-                }
-            ]
-        },
-        diff_subtype_datatable_settings = {
-            columns: [
-                {data: "dataset_id"},
-                {data: "snorna"},
-                {data: "subtype"},
-                {data: "p\\.value"},
-                {
-                    class: 'details-control',
-                    orderable: false,
-                    data: null,
-                    defaultContent: ''
-                }
-            ]
-        },
-        rnaexpr_datatable_settings = {
-            order: [[3, 'desc']],
-            columns: [
-                {data: "dataset_id", width: "10%"},
-                {data: "snorna", width: "40%"},
-                {data: "sample_id", width: "30%"},
-                {data: "snorna_expression",
-                    width: "10%",
-                    reder: function(data){ return Math.log2(data + 1)}
-                }
-            ]
-        },
-        corr_rppa_datatable_settings = {
-            columns: [
-                {data: "dataset_id"},
-                {data: "snorna"},
-                {data: "protein"},
-                {data: "spearman_corr"},
-                {data: "p_value"},
-                {
-                    class: 'details-control',
-                    orderable: false,
-                    data: null,
-                    defaultContent: ''
-                }
-            ]
-        },
-        corr_cnv_datatable_settings = {
-            columns: [
-                {data: "dataset_id"},
-                {data: "snorna"},
-                {data: "estimate"},
-                {data: "p\\.value"},
-                {
-                    class: 'details-control',
-                    orderable: false,
-                    data: null,
-                    defaultContent: ''
-                }
-            ]
-        },
-        methylation_datatable_settings = {
-            order: [[3, "desc"]],
-            columns: [
-                {data: "dataset_id"},
-                {data: "snorna"},
-                {data: "meth_id"},
-                {data: "estimate"},
-                {data: "p\\.value"},
-                {
-                    class: 'details-control',
-                    orderable: false,
-                    data: null,
-                    defaultContent: ''
-                    }
-            ]
-        },
-        snorna_expr_bygene_datatable_settings = {
-        order: [[2, 'desc']],
-            columns: [
-                {data: "dataset_id"},
-                {data: "snorna"},
-                {data: "mean_expression"}
-            ]
-        };
-    var analysis_datatable_settings = {
-            'snorna_expr': rnaexpr_datatable_settings,
-            'survival': survival_datatable_settings,
-            'diff_subtype': diff_subtype_datatable_settings,
-            'corr_geneexpr': corr_geneexpr_datatable_settings,
-            'corr_splicing': corr_splicing_data_settings,
-            'corr_rppa': corr_rppa_datatable_settings,
-            'corr_cnv': corr_cnv_datatable_settings,
-            'methylation':methylation_datatable_settings,
-            'snorna_expr_bygene': snorna_expr_bygene_datatable_settings
-        };
-
-    // process the submit
-    function proceedSubmit() {
-        gNCompletedAnalyses = {};
-        if ($("#snorna-div").hasClass('has-success')) {
-            var snorna = $("#snorna").val();
-            // query
-            query({
-                snorna:snorna,
-                is_predefined: true
-            });
-        }
-        else {
-            alert("Invalid snorna input");
-        }
-    }
-    // --------------------------------------------------------------
-
-    // query database
-    function query(queryObj){
-        var dataset_id = $('#select_dataset').val(),
-            subtype_id = $("#select_subtype").val() || "all",
-            is_preprocessed = (queryObj.is_predefined === true);
-        ARGUMENTS = {
-            dataset_ids: [dataset_id],
-            snorna: [queryObj.snorna],
-            analyses: {
-                snorna_expr: true,
-                tm_comparison: true,
-                survival: false,
-                diff_subtype: false,
-                corr_geneexpr: false,
-                corr_splicing: false,
-                corr_rppa: false,
-                corr_cnv: false,
-                methylation: false
-            },
-            subtype_id: subtype_id,
-            sample_indices: []
-        };
-        $("input[name='selected_analysis']:checked").each(function(){
-            ARGUMENTS.analyses[$(this).val()] = true;
-        });
-        JOB = {
-            type: 'job',
-            status: 'queued',
-            arguments: ARGUMENTS,
-            is_predefined: queryObj.is_predefined,
-            is_preprocessed: is_preprocessed,
-            results: {}
-        };
-        if(is_preprocessed === true){
-            $("#progressbar").show();
-            hideAnalysesTabs();
-            showAllAnalysesTabs();
-            setTimeout(function(){
-                updateLoadingProgress();
-            },1000);
-            IS_JOB_RUNNING = true;
-            for (var analysis in ARGUMENTS.analyses) {
-                if (ARGUMENTS.analyses.hasOwnProperty(analysis)) {
-                    if (ARGUMENTS.analyses[analysis] === true) {
-                        getAnalysisData(analysis);
-                    }
-                }
-            }
-        }
-    }
-
     // --------------------------------------------------------------
 
     function getAnalysisData(analysis) {
@@ -699,6 +432,202 @@ var tric=(function(){
     // --------------------------------------------------------------
     // for tRic program
     // --------------------------------------------------------------
+    //   Module Variables
+    var DEBUG = false,
+        OTABLES = {},
+        TABLEDATA = {},
+        JOBID = '',
+        ARGUMENTS = {},
+        ALLOW_STALE = true;
+
+    // reserved variable
+    var TIMEOUT_DIALOG = null;
+    var IS_JOB_RUNNING = false;
+    var TIMEOUT_STOP = false;
+    var IS_ANALYSIS_TIMEOUT = false;
+    var analysisTimeout = {};
+    var JOB_RUNNING_DIALOG = null;
+    var gNCompletedAnalyses = {};
+    var JOB = {};
+    var gAnalysisLabel = {
+        corr_geneexpr: 'Corr. mRNA',
+        diff_subtype: 'Diff. subtype',
+        snorna_expr: 'snoRNA expr.',
+        tm_comparison: 'Tumor vs. Normal',
+        survival: 'Survival',
+        corr_rppa: 'Corr. protein',
+        corr_cnv: 'Corr. SCNA',
+        methylation: 'Corr. Methylation',
+        corr_splicing: 'Corr. Splicing'
+    };
+    var gAnalysisTabsOrder = {
+        snorna_expr: 0,
+        tm_comparison: 1,
+        diff_subtype: 2,
+        survival: 3,
+        corr_geneexpr: 4,
+        corr_rppa: 5,
+        corr_cnv: 6,
+        methylation: 7,
+        corr_splicing: 8
+    };
+    var gAnalysisTabsClass = {
+        snorna_expr: 'rnaexpr',
+        tm_comparison: 'rnaexpr',
+        diff_subtype:  'clinical',
+        survival:      'clinical',
+        corr_geneexpr: 'genomic',
+        corr_rppa: 'genomic',
+        corr_cnv: 'genomic',
+        methylation: 'genomic',
+        corr_splicing: 'genomic',
+    };
+    var default_datatable_settings = {
+            processing: true,
+            stateSave: true,
+            language: {
+                decimal: ",",
+                emptyTable: "No significant entries in analysis or in this cancer type!"
+            }
+        },
+        survival_datatable_settings = {
+            columns: [
+                {data: "dataset_id"},
+                {data: "snorna"},
+                {data: "p\\.value"},
+                {
+                    class: 'details-control',
+                    orderable: false,
+                    data: null,
+                    defaultContent: ''
+                }
+            ]
+        },
+        corr_geneexpr_datatable_settings = {
+            columns: [
+                {data: "dataset_id"},
+                {data: "snorna"},
+                {data: "gene_symbol"},
+                {data: "spearman_corr"},
+                {data: "p_value"},
+                {
+                    class: 'details-control',
+                    orderable: false,
+                    data: null,
+                    defaultContent: ''
+                }
+            ]
+        },
+        corr_splicing_data_settings = {
+            columns: [
+                {data: "dataset_id"},
+                {data: "snorna"},
+                {data: "gene_symbol"},
+                {data: "as_id"},
+                {data: "splice_type"},
+                {data: "from_exon"},
+                {data: "to_exon"},
+                {data: "std_psi"},
+                {data: "r"},
+                {data: "fdr"},
+                {
+                    class: 'details-control',
+                    orderable: false,
+                    data: null,
+                    defaultContent: ''
+                }
+            ]
+        },
+        diff_subtype_datatable_settings = {
+            columns: [
+                {data: "dataset_id"},
+                {data: "snorna"},
+                {data: "subtype"},
+                {data: "p\\.value"},
+                {
+                    class: 'details-control',
+                    orderable: false,
+                    data: null,
+                    defaultContent: ''
+                }
+            ]
+        },
+        rnaexpr_datatable_settings = {
+            order: [[3, 'desc']],
+            columns: [
+                {data: "dataset_id", width: "10%"},
+                {data: "snorna", width: "40%"},
+                {data: "sample_id", width: "30%"},
+                {data: "snorna_expression",
+                    width: "10%",
+                    reder: function(data){ return Math.log2(data + 1)}
+                }
+            ]
+        },
+        corr_rppa_datatable_settings = {
+            columns: [
+                {data: "dataset_id"},
+                {data: "snorna"},
+                {data: "protein"},
+                {data: "spearman_corr"},
+                {data: "p_value"},
+                {
+                    class: 'details-control',
+                    orderable: false,
+                    data: null,
+                    defaultContent: ''
+                }
+            ]
+        },
+        corr_cnv_datatable_settings = {
+            columns: [
+                {data: "dataset_id"},
+                {data: "snorna"},
+                {data: "estimate"},
+                {data: "p\\.value"},
+                {
+                    class: 'details-control',
+                    orderable: false,
+                    data: null,
+                    defaultContent: ''
+                }
+            ]
+        },
+        methylation_datatable_settings = {
+            order: [[3, "desc"]],
+            columns: [
+                {data: "dataset_id"},
+                {data: "snorna"},
+                {data: "meth_id"},
+                {data: "estimate"},
+                {data: "p\\.value"},
+                {
+                    class: 'details-control',
+                    orderable: false,
+                    data: null,
+                    defaultContent: ''
+                    }
+            ]
+        },
+        snorna_expr_bygene_datatable_settings = {
+        order: [[2, 'desc']],
+            columns: [
+                {data: "dataset_id"},
+                {data: "snorna"},
+                {data: "mean_expression"}
+            ]
+        };
+    var analysis_datatable_settings = {
+            'snorna_expr': rnaexpr_datatable_settings,
+            'survival': survival_datatable_settings,
+            'diff_subtype': diff_subtype_datatable_settings,
+            'corr_geneexpr': corr_geneexpr_datatable_settings,
+            'corr_splicing': corr_splicing_data_settings,
+            'corr_rppa': corr_rppa_datatable_settings,
+            'corr_cnv': corr_cnv_datatable_settings,
+            'methylation':methylation_datatable_settings,
+            'snorna_expr_bygene': snorna_expr_bygene_datatable_settings
+        };
 
     // Basic init
     // data set summary
@@ -797,6 +726,58 @@ var tric=(function(){
     }
 
     // --------------------------------------------------------------
+    // query database
+    function query(queryObj){
+        var dataset_id = $('#select_dataset').val(),
+            subtype_id = $("#select_subtype").val() || "all",
+            is_preprocessed = (queryObj.is_predefined === true);
+        ARGUMENTS = {
+            dataset_ids: [dataset_id],
+            snorna: [queryObj.snorna],
+            analyses: {
+                snorna_expr: true,
+                tm_comparison: true,
+                survival: false,
+                diff_subtype: false,
+                corr_geneexpr: false,
+                corr_splicing: false,
+                corr_rppa: false,
+                corr_cnv: false,
+                methylation: false
+            },
+            subtype_id: subtype_id,
+            sample_indices: []
+        };
+        $("input[name='selected_analysis']:checked").each(function(){
+            ARGUMENTS.analyses[$(this).val()] = true;
+        });
+        JOB = {
+            type: 'job',
+            status: 'queued',
+            arguments: ARGUMENTS,
+            is_predefined: queryObj.is_predefined,
+            is_preprocessed: is_preprocessed,
+            results: {}
+        };
+        if(is_preprocessed === true){
+            $("#progressbar").show();
+            hideAnalysesTabs();
+            showAllAnalysesTabs();
+            setTimeout(function(){
+                updateLoadingProgress();
+            },1000);
+            IS_JOB_RUNNING = true;
+            for (var analysis in ARGUMENTS.analyses) {
+                if (ARGUMENTS.analyses.hasOwnProperty(analysis)) {
+                    if (ARGUMENTS.analyses[analysis] === true) {
+                        getAnalysisData(analysis);
+                    }
+                }
+            }
+        }
+    }
+
+    // --------------------------------------------------------------
     // Progress
     // init time out and dialog timeout alert
     function initTimeoutDialog() {
@@ -830,6 +811,22 @@ var tric=(function(){
                 }
             }
         });
+    }
+
+     // process the submit
+    function proceedSubmit() {
+        gNCompletedAnalyses = {};
+        if ($("#snorna-div").hasClass('has-success')) {
+            var snorna = $("#snorna").val();
+            // query
+            query({
+                snorna:snorna,
+                is_predefined: true
+            });
+        }
+        else {
+            alert("Invalid tRNA input");
+        }
     }
 
     // init job check and dialog job running alert
@@ -978,7 +975,7 @@ var tric=(function(){
     // toggle data datatable
     function toggleDataTableRow() {
         function format(table_id, data) {
-            var img = "/SNORic/basic/" + table_id + "/png/" + data.encode;
+            var img = "/tRic/trna/" + table_id + "/png/" + data.encode;
             switch(table_id){
                 case "diff_subtype_table":
                     img = [img, data.subtype].join(".");
@@ -1048,6 +1045,8 @@ var tric=(function(){
             initTimeoutDialog();
             initJobCheckDialog();
             proc_progress();
+
+            // submit
             clickSubmit();
         },
         onReadyBasic: function(){
