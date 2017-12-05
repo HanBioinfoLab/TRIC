@@ -818,7 +818,6 @@ var tric=(function(){
         gNCompletedAnalyses = {};
         if ($("#snorna-div").hasClass('has-success')) {
             var snorna = $("#snorna").val();
-            // query
             query({
                 snorna:snorna,
                 is_predefined: true
