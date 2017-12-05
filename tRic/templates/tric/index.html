@@ -15,7 +15,9 @@
     </div>
 </div>
 
+
 <div class="row">
+    <!--data summary-->
     <div class="col-md-3">
         <div class="penal panel-info">
             <div class="panel-heading">
@@ -26,6 +28,19 @@
             </div>
         </div>
     </div>
+
+    <!--tRNA-->
+    <div class="col-md-3">
+        <div class="penal panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">tRNA</h3>
+            </div>
+            <div class="panel-body">
+                <a href="{% url 'tric:trna' %}" class="thumbnail"><img src="{% static 'image/dataset_summary.svg' %}" style="height: 240px"></a>
+            </div>
+        </div>
+    </div>
 </div>
+
 
 {% endblock %}

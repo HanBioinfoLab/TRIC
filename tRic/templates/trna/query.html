@@ -1,0 +1,199 @@
+{% load staticfiles %}
+<div class="bs-docs-section">
+    <h2 class="page-header">tRNA analysis</h2>
+    <div class="panel panel-danger">
+        <div class="panel-body">
+            <p>The section is focused on the tRNA analysis. Searching tRNA in the query box by different cancers and subtypes.</p>
+        </div>
+    </div>
+    <div class="form-horizontal" role="form">
+        {% csrf_token %}
+        <div class="bs-callout bs-callout-danger">
+            <!--select cancer types-->
+            <div class="form-group">
+                <label for="cancer type" class="col-sm-3 control-label">
+                    Select a cancer type:
+                </label>
+                <div class="col-sm-7">
+                    <select id="select_dataset" name="select_dataset" class="form-control selectpicker show-menu-arrow" data-live-search="true" data-size="7">
+                        <option value="TCGA-ACC" data-tokens="Adrenocortical carcinoma (ACC)">
+                            TCGA Adrenocortical carcinoma (ACC)
+                        </option>
+                        <option value="TCGA-BLCA" data-tokens="Bladder Urothelial Carcinoma (BLCA)">
+                            TCGA Bladder Urothelial Carcinoma (BLCA)
+                        </option>
+                        <option value="TCGA-BRCA" data-tokens="Breast invasive carcinoma (BRCA)">
+                            TCGA Breast invasive carcinoma (BRCA)
+                        </option>
+                        <option value="TCGA-CESC" data-tokens="Cervical squamous cell carcinoma and endocervical adenocarcinoma (CESC)">
+                            TCGA Cervical squamous cell carcinoma and endocervical adenocarcinoma (CESC)
+                        </option>
+                        <option value="TCGA-CHOL" data-tokens="Cholangiocarcinoma (CHOL)">
+                            TCGA Cholangiocarcinoma (CHOL)
+                        </option>
+                        <option value="TCGA-COAD" data-tokens="Colon adenocarcinoma (COAD)">
+                            TCGA Colon adenocarcinoma (COAD)
+                        </option>
+                        <option value="TCGA-DLBC" data-tokens="Lymphoid Neoplasm Diffuse Large B-cell Lymphoma (DLBC)">
+                            TCGA Lymphoid Neoplasm Diffuse Large B-cell Lymphoma (DLBC)
+                        </option>
+                        <option value="TCGA-ESCA" data-tokens="Esophageal carcinoma (ESCA)">
+                            TCGA Esophageal carcinoma (ESCA)
+                        </option>
+                        <option value="TCGA-HNSC" data-tokens="Head and Neck squamous cell carcinoma (HNSC)">
+                            TCGA Head and Neck squamous cell carcinoma (HNSC)
+                        </option>
+                        <option value="TCGA-KICH" data-tokens="Kidney Chromophobe (KICH)">
+                            TCGA Kidney Chromophobe (KICH)
+                        </option>
+                        <option value="TCGA-KIRC" data-tokens="Kidney renal clear cell carcinoma (KIRC)">
+                            TCGA Kidney renal clear cell carcinoma (KIRC)
+                        </option>
+                        <option value="TCGA-KIRP" data-tokens="Kidney renal papillary cell carcinoma (KIRP)">
+                            TCGA Kidney renal papillary cell carcinoma (KIRP)
+                        </option>
+                        <option value="TCGA-LIHC" data-tokens="Liver hepatocellular carcinoma (LIHC)">
+                            TCGA Liver hepatocellular carcinoma (LIHC)
+                        </option>
+                        <option value="TCGA-LUAD" data-tokens="Lung adenocarcinoma (LUAD)">
+                            TCGA Lung adenocarcinoma (LUAD)
+                        </option>
+                        <option value="TCGA-LUSC" data-tokens="Lung squamous cell carcinoma (LUSC)">
+                            TCGA Lung squamous cell carcinoma (LUSC)
+                        </option>
+                        <option value="TCGA-MESO" data-tokens="Mesothelioma (MESO)">
+                            TCGA Mesothelioma (MESO)
+                        </option>
+                        <option value="TCGA-OV" data-tokens="Ovarian serous cystadenocarcinoma (OV)">
+                            TCGA Ovarian serous cystadenocarcinoma (OV)
+                        </option>
+                        <option value="TCGA-PAAD" data-tokens="Pancreatic adenocarcinoma (PAAD)">
+                            TCGA Pancreatic adenocarcinoma (PAAD)
+                        </option>
+                        <option value="TCGA-PCPG" data-tokens="Pheochromocytoma and Paraganglioma (PCPG)">
+                            TCGA Pheochromocytoma and Paraganglioma (PCPG)
+                        </option>
+                        <option value="TCGA-PRAD" data-tokens="Prostate adenocarcinoma (PRAD)">
+                            TCGA Prostate adenocarcinoma (PRAD)
+                        </option>
+                        <option value="TCGA-READ" data-tokens="Rectum adenocarcinoma (READ)">
+                            TCGA Rectum adenocarcinoma (READ)
+                        </option>
+                        <option value="TCGA-SARC" data-tokens="Sarcoma (SARC)">
+                            TCGA Sarcoma (SARC)
+                        </option>
+                        <option value="TCGA-SKCM" data-tokens="Skin Cutaneous Melanoma (SKCM)">
+                            TCGA Skin Cutaneous Melanoma (SKCM)
+                        </option>
+                        <option value="TCGA-STAD" data-tokens="Stomach adenocarcinoma (STAD)">
+                            TCGA Stomach adenocarcinoma (STAD)
+                        </option>
+                        <option value="TCGA-TGCT" data-tokens="Testicular Germ Cell Tumors (TGCT)">
+                            TCGA Testicular Germ Cell Tumors (TGCT)
+                        </option>
+                        <option value="TCGA-THCA" data-tokens="Thyroid carcinoma (THCA)">
+                            TCGA Thyroid carcinoma (THCA)
+                        </option>
+                        <option value="TCGA-THYM" data-tokens="Thymoma (THYM)">
+                            TCGA Thymoma (THYM)
+                        </option>
+                        <option value="TCGA-UCEC" data-tokens="Uterine Corpus Endometrial Carcinoma (UCEC)">
+                            TCGA Uterine Corpus Endometrial Carcinoma (UCEC)
+                        </option>
+                        <option value="TCGA-UCS" data-tokens="Uterine Carcinosarcoma (UCS)">
+                            TCGA Uterine Carcinosarcoma (UCS)
+                        </option>
+                        <option value="TCGA-UVM" data-tokens="Uveal Melanoma (UVM)">
+                            TCGA Uveal Melanoma (UVM)
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <!--select subtype and stage-->
+            <div class="form-group">
+                <label for="select a subtype" class="col-sm-3 control-label">
+                    Select a subtype:
+                </label>
+                <div class="col-sm-7">
+                    <select name="select_subtype" id="select_subtype" class="form-control" >
+                        <option value="all">All</option>
+                        <optgroup label="pathologic_stage">
+                            <option value="Stage I">Stage I</option>
+                            <option value="Stage II">Stage II</option>
+                            <option value="Stage III">Stage III</option>
+                            <option value="Stage IV">Stage IV</option>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
+
+            <!--queries-->
+            <div class="form-group">
+                <label for="query by annotation" class="col-sm-3 control-label">
+                    Query by annotation:
+                </label>
+                <div id="snorna-div" class="col-sm-7 ui-widget has-feedback inner-addon right-addon has-success">
+                    <input name="snorna" type="text" id="snorna" class="form-control" placeholder="tRNA-Ala-AGC-1-1" value="tRNA-Ala-AGC-1-1"/>
+                    <span class="glyphicon form-control-feedback"></span>
+                    <label class="control-label" for="annotations"></label>
+                </div>
+            </div>
+        </div>
+
+        <!--clinical analysis-->
+        <div class="bs-callout bs-callout-warning">
+            <div class="form-group">
+                <!--clinical analysis-->
+                <label for="clinical" class="col-sm-3 control-label">
+                    Clinical analysis:
+                </label>
+                <div class="col-sm-6">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="selected_analysis" value="diff_subtype" id="select_analysis_diff_subtype" >
+                            Differential Analysis (grade, stage and subtype)
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input  type="checkbox" name="selected_analysis" value="survival"  checked>
+                            Survival Analysis (5-year survival)
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Analysis and Reset-->
+        <div class="bs-callout bs-callout-info">
+            <div class="col-sm-offset-8">
+                <button type="reset" class="btn btn-primary btn-lg" value = "reset" id="reset_basic">
+                    Reset
+                </button>&nbsp;
+                <button id="submit-button" tpye="submit-button" class="btn btn-primary btn-lg">
+                    Analysis
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!--progress-->
+    <div class="row">
+        <div id="progressbar" class="progress">
+            <div class="progress-label progress-bar " role="progressbar"></div>
+        </div>
+        <div id="timeout-alert" title="Alert">
+            <p>
+              <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+              Cannot contact job analysis server. Continue waiting or stop?
+           </p>
+          </div>
+        <div id="job-running-alert" title="Alert">
+            <p>
+              <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+              Current job is running. Submit a new one or continue?
+           </p>
+          </div>
+    </div>
+</div>

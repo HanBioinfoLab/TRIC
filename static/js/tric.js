@@ -213,60 +213,6 @@ var tric=(function(){
             'snorna_expr_bygene': snorna_expr_bygene_datatable_settings
         };
 
-    // init time out and dialog timeout alert
-    function initTimeoutDialog() {
-        var progressbar = $("#progressbar"),
-            progressLabel = $(".progress-label"),
-            initProgressLabel = 'Processing...';
-            TIMEOUT_DIALOG = $('#timeout-alert').dialog({
-            resizable: false,
-            autoOpen: false,
-            modal: true,
-            buttons: {
-                "Continue": function () {
-                    $(this).dialog('close');
-                    TIMEOUT_STOP = false;
-                    IS_ANALYSIS_TIMEOUT = false;
-                    for (var key in analysisTimeout) {
-                        if (analysisTimeout.hasOwnProperty(key)) {
-                            // console.log(key);
-                            analysisTimeout[key] = 0;
-                        }
-                    }
-                },
-                "Stop": function () {
-                    $(this).dialog('close');
-                    progressbar.hide();
-                    gNCompletedAnalyses = {};
-                    progressbar.progressbar("value", false);
-                    progressLabel.text(initProgressLabel);
-                    IS_JOB_RUNNING = false;
-                    TIMEOUT_STOP = true;
-                }
-            }
-        });
-    }
-    // --------------------------------------------------------------
-
-    // init job check and dialog job running alert
-    function initJobCheckDialog() {
-        JOB_RUNNING_DIALOG = $("#job-running-alert").dialog({
-            resizable: false,
-            autoOpen: false,
-            modal: true,
-            buttons: {
-                "Continue": function () {
-                    $(this).dialog('close');
-                },
-                "Submit": function () {
-                    $(this).dialog('close');
-                    proceedSubmit();
-                }
-            }
-        });
-    }
-    // --------------------------------------------------------------
-
     // process the submit
     function proceedSubmit() {
         gNCompletedAnalyses = {};
@@ -453,38 +399,6 @@ var tric=(function(){
     }
     // --------------------------------------------------------------
 
-    // progress bar
-    function proc_progress() {
-        var progressbar = $("#progressbar"),
-            progressLabel = $(".progress-label"),
-            initProgressLabel = 'Processing...';
-        progressbar.progressbar({
-            value: false,
-            create: function (event, ui) {
-                progressLabel.text(initProgressLabel);
-            },
-            change: function () {
-                var progressbarValue = progressbar.progressbar("value");
-                if (progressbarValue !== false) {
-                    progressLabel.text(progressbarValue.toFixed() + "%");
-                }
-            },
-            complete: function () {
-                progressLabel.text("Complete!");
-                setTimeout(function () {
-                               progressbar.hide();
-                               progressLabel.text(initProgressLabel);
-                               gNCompletedAnalyses = {};
-                               progressbar.progressbar("value", false);
-                               progressLabel.text(initProgressLabel);
-                               IS_JOB_RUNNING = false;
-                           },
-                           1000);
-            }
-        });
-        progressbar.height(40);
-    }
-
     // registered analysis number
     function getNumAnalyses(){
         var num = 0;
@@ -611,26 +525,6 @@ var tric=(function(){
     }
     // --------------------------------------------------------------
 
-    // submit form
-    function clickSubmit() {
-        // /* for analysis
-        $("#analysis-submit-button").click(function () {
-            if (validateQuery()) {
-                queryAnalysis();
-            }
-        });
-
-        $("#submit-button").click(function () {
-            if (IS_JOB_RUNNING) {
-                JOB_RUNNING_DIALOG.dialog("open");
-            } else {
-                proceedSubmit();
-            }
-        });
-    }
-    // --------------------------------------------------------------
-
-
     // keyup to check input
     function addAnnotationInputKeyupHandler(){
         var $snorna = $("#snorna");
@@ -709,89 +603,6 @@ var tric=(function(){
         });
     }
     // --------------------------------------------------------------
-
-    // dataset summary
-    function load_dataset(){
-        $('#dataset_summary').DataTable({
-            "pageLength": 50,
-            'processing': true,
-            'ajax': '/tRic/api/summary',
-            'order': [[5, 'desc']],
-            stateSave: true,
-            "language": {
-                "decimal": ","
-            },
-            'columns': [
-                {"data": "fields.dataset_description"},
-                {"data": "fields.normal_n"},
-                {"data": "fields.tumor_n"},
-                {"data": "fields.average_mappable_reads"},
-                {"data": "fields.snorna_n"},
-                {"data": "fields.snorna_rpkm_n"}
-            ]
-        });
-    }
-    // --------------------------------------------------------------
-
-    // select dataset and subtype
-    function load_subtype() {
-        $("#select_dataset").on('change', function () {
-            var dataset_id = $(this).val();
-            var url = '/SNORic/api/subtype/' + dataset_id;
-            $('#select_subtype').empty();
-            // select subtype
-            $.getJSON(
-                url,
-                function (data) {
-                    var optgroup = {};
-                    if (data.length < 1) {
-                        $('#select_subtype').append("<option value=0>No subtype data</option>");
-                        $("#select_analysis_diff_subtype")
-                            .prop('checked', false)
-                            .prop("disabled", true)
-                            .closest("div")
-                            .removeClass("disabled")
-                            .addClass("disabled");
-                    }
-                    else {
-                        $("#select_analysis_diff_subtype")
-                            .prop('checked', true)
-                            .prop("disabled", false)
-                            .closest("div")
-                            .removeClass("disabled");
-
-                        $('#select_subtype').append("<option value='all'>All</option>");
-                        data.forEach(function (ele) {
-                            (optgroup[ele.fields.subtype] = optgroup[ele.fields.subtype] || []).push(ele.fields.state)
-                        });
-                        for (var subtype in optgroup) {
-                            var te = $('<optgroup label="' + subtype + '"></optgroup>')
-                                .appendTo($('#select_subtype'));
-                            optgroup[subtype].forEach(function (stage) {
-                                te.append("<option value='" + stage + "'>" + stage + "</option>");
-                            });
-                        }
-                    }
-                }
-            );
-        });
-    }
-    // --------------------------------------------------------------
-
-    // general javascript effect
-    function general_effect(){
-        $('input[type=text]').on(
-            'click',
-            function(){
-                return $(this).select()
-            }
-        );
-        $('.selectpicker').selectpicker({
-            size: 4
-        });
-    }
-    // --------------------------------------------------------------
-
 
     // for analysis
     function inputQueryAutoComplete(elem){
@@ -1025,11 +836,40 @@ var tric=(function(){
         }
     }
 
+
+    // --------------------------------------------------------------
+    // for tRic program
+    // --------------------------------------------------------------
+
+    // Basic init
+    // data set summary
+    function load_dataset(){
+        $('#dataset_summary').DataTable({
+            "pageLength": 50,
+            'processing': true,
+            'ajax': '/tRic/api/summary',
+            'order': [[5, 'desc']],
+            stateSave: true,
+            "language": {
+                "decimal": ","
+            },
+            'columns': [
+                {"data": "fields.dataset_description"},
+                {"data": "fields.normal_n"},
+                {"data": "fields.tumor_n"},
+                {"data": "fields.average_mappable_reads"},
+                {"data": "fields.snorna_n"},
+                {"data": "fields.snorna_rpkm_n"}
+            ]
+        });
+    }
+
+    // reset query
     function reset(){
         $("#reset_basic").on("click", function(event){
             $("#select_dataset").val("TCGA-ACC").change();
             $("#select_subtype").val("all");
-            $("#snorna").val("U8;ENSG00000200463;SNORD118");
+            $("#snorna").val("tRNA-Ala-AGC-1-1");
             $("input[name='selected_analysis']").prop("checked", true);
         });
         $("#reset_analysis").on("click", function(event){
@@ -1038,6 +878,169 @@ var tric=(function(){
             $("input[name='selected_analysis']").prop("checked", true);
         });
     }
+
+    // general javascript effect
+    function general_effect(){
+        $('input[type=text]').on(
+            'click',
+            function(){
+                return $(this).select()
+            }
+        );
+        $('.selectpicker').selectpicker({
+            size: 4
+        });
+    }
+
+    // select dataset and subtype
+    function load_subtype() {
+        $("#select_dataset").on('change', function () {
+            var dataset_id = $(this).val();
+            var url = '/tRic/api/subtype/' + dataset_id;
+            $('#select_subtype').empty();
+            // select subtype
+            $.getJSON(
+                url,
+                function (data) {
+                    console.log(data);
+                    var optgroup = {};
+                    if (data.length < 1) {
+                        $('#select_subtype').append("<option value=0>No subtype data</option>");
+                        $("#select_analysis_diff_subtype")
+                            .prop('checked', false)
+                            .prop("disabled", true)
+                            .closest("div")
+                            .removeClass("disabled")
+                            .addClass("disabled");
+                    }
+                    else {
+                        $("#select_analysis_diff_subtype")
+                            .prop('checked', true)
+                            .prop("disabled", false)
+                            .closest("div")
+                            .removeClass("disabled");
+
+                        $('#select_subtype').append("<option value='all'>All</option>");
+                        data.forEach(function (ele) {
+                            (optgroup[ele.fields.subtype] = optgroup[ele.fields.subtype] || []).push(ele.fields.state)
+                        });
+                        for (var subtype in optgroup) {
+                            var te = $('<optgroup label="' + subtype + '"></optgroup>')
+                                .appendTo($('#select_subtype'));
+                            optgroup[subtype].forEach(function (stage) {
+                                te.append("<option value='" + stage + "'>" + stage + "</option>");
+                            });
+                        }
+                    }
+                }
+            );
+        });
+    }
+
+    // --------------------------------------------------------------
+    // Progress
+    // init time out and dialog timeout alert
+    function initTimeoutDialog() {
+        var progressbar = $("#progressbar"),
+            progressLabel = $(".progress-label"),
+            initProgressLabel = 'Processing...';
+            TIMEOUT_DIALOG = $('#timeout-alert').dialog({
+            resizable: false,
+            autoOpen: false,
+            modal: true,
+            buttons: {
+                "Continue": function () {
+                    $(this).dialog('close');
+                    TIMEOUT_STOP = false;
+                    IS_ANALYSIS_TIMEOUT = false;
+                    for (var key in analysisTimeout) {
+                        if (analysisTimeout.hasOwnProperty(key)) {
+                            // console.log(key);
+                            analysisTimeout[key] = 0;
+                        }
+                    }
+                },
+                "Stop": function () {
+                    $(this).dialog('close');
+                    progressbar.hide();
+                    gNCompletedAnalyses = {};
+                    progressbar.progressbar("value", false);
+                    progressLabel.text(initProgressLabel);
+                    IS_JOB_RUNNING = false;
+                    TIMEOUT_STOP = true;
+                }
+            }
+        });
+    }
+
+    // init job check and dialog job running alert
+    function initJobCheckDialog() {
+        JOB_RUNNING_DIALOG = $("#job-running-alert").dialog({
+            resizable: false,
+            autoOpen: false,
+            modal: true,
+            buttons: {
+                "Continue": function () {
+                    $(this).dialog('close');
+                },
+                "Submit": function () {
+                    $(this).dialog('close');
+                    proceedSubmit();
+                }
+            }
+        });
+    }
+
+    // progress bar
+    function proc_progress() {
+        var progressbar = $("#progressbar"),
+            progressLabel = $(".progress-label"),
+            initProgressLabel = 'Processing...';
+        progressbar.progressbar({
+            value: false,
+            create: function (event, ui) {
+                progressLabel.text(initProgressLabel);
+            },
+            change: function () {
+                var progressbarValue = progressbar.progressbar("value");
+                if (progressbarValue !== false) {
+                    progressLabel.text(progressbarValue.toFixed() + "%");
+                }
+            },
+            complete: function () {
+                progressLabel.text("Complete!");
+                setTimeout(function () {
+                               progressbar.hide();
+                               progressLabel.text(initProgressLabel);
+                               gNCompletedAnalyses = {};
+                               progressbar.progressbar("value", false);
+                               progressLabel.text(initProgressLabel);
+                               IS_JOB_RUNNING = false;
+                           },
+                           1000);
+            }
+        });
+        progressbar.height(40);
+    }
+
+    // submit form
+    function clickSubmit() {
+        // /* for analysis
+        $("#analysis-submit-button").click(function () {
+            if (validateQuery()) {
+                queryAnalysis();
+            }
+        });
+
+        $("#submit-button").click(function () {
+            if (IS_JOB_RUNNING) {
+                JOB_RUNNING_DIALOG.dialog("open");
+            } else {
+                proceedSubmit();
+            }
+        });
+    }
+
 
     return {
         init: function(){
@@ -1052,7 +1055,6 @@ var tric=(function(){
             initJobCheckDialog();
             proc_progress();
             clickSubmit();
-
         },
         onReadyBasic: function(){
 
@@ -1102,10 +1104,10 @@ $(function(){
         case "/tRic/statistics/":
             tric.onReadyDatasets();
             break;
-        case "/tRic/basic/":
+        case "/tRic/trna/":
             tric.onReadyBasic();
             break;
-        case "/tRic/analysis/":
+        case "/tRic/freq/":
             tric.onReadyAnalysis();
             break;
     }

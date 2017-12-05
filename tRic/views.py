@@ -5,6 +5,7 @@ from django.http import JsonResponse
 import os
 import json
 import commands
+import subprocess
 
 
 # reosurces and rscritps
@@ -43,15 +44,31 @@ def statistics(request):
 
     return render(request=request, template_name="tric/statistics.html", context=context, status=200)
 
+def trna(request):
+    title = "tRNA"
+    context = {"title": title}
 
-
+    return render(request=request, template_name="trna/trna.html", context=context, status=200)
 
 
 # apis
 def api_summary(request):
-    title = "API | summary"
+    title = "API | Summary"
     context = {"title": title}
 
     json_file = os.path.join(resource_data, "summary.json")
+    data = json.load(open(json_file, "r"))
+    return JsonResponse(data, safe=False)
+
+def api_subtype(request, dataset_id):
+    title = "API | Subtype"
+    context = {"title": title}
+
+    rscript = os.path.join(rscript_dir, "api_subtype.R")
+    cmd = [rcommand, rscript, root_path, dataset_id]
+    json_file = os.path.join(resource_jons, "api_subtype." + dataset_id + ".json")
+    if not os.path.exists(json_file):
+        subprocess.check_output(cmd, universal_newlines=True)
+
     data = json.load(open(json_file, "r"))
     return JsonResponse(data, safe=False)
