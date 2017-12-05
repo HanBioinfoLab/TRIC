@@ -6,6 +6,8 @@ import os
 import json
 import commands
 import subprocess
+import pickle
+import re
 
 
 # reosurces and rscritps
@@ -71,4 +73,22 @@ def api_subtype(request, dataset_id):
         subprocess.check_output(cmd, universal_newlines=True)
 
     data = json.load(open(json_file, "r"))
+    return JsonResponse(data, safe=False)
+
+def api_trna_list(request, search):
+    title = "API | tRNA list"
+    context = {"title": title}
+    snorna_file = os.path.join(resource_data, "snorna_list.pickle")
+    snorna_list = pickle.load(open(snorna_file, "rb"))
+    regex = re.compile(search, re.IGNORECASE)
+    data = filter(regex.search, snorna_list)[0:10]
+    return JsonResponse(data, safe=False)
+
+def api_trna(request, search):
+    title = "API | tRNA"
+    context = {"title": title}
+    snorna_file = os.path.join(resource_data, "snorna_list.pickle")
+    snorna_list = pickle.load(open(snorna_file, "rb"))
+    regex = re.compile(search)
+    data = filter(regex.match, snorna_list)[0:10]
     return JsonResponse(data, safe=False)

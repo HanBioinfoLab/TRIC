@@ -463,147 +463,6 @@ var tric=(function(){
     }
     // --------------------------------------------------------------
 
-    // toggle data datatable
-    function toggleDataTableRow() {
-        function format(table_id, data) {
-            var img = "/SNORic/basic/" + table_id + "/png/" + data.encode;
-            switch(table_id){
-                case "diff_subtype_table":
-                    img = [img, data.subtype].join(".");
-                    break;
-                case "corr_geneexpr_table":
-                    img = [img, data.gene_symbol].join(".");
-                    break;
-                case "corr_rppa_table":
-                    img = [img, data.protein].join(".");
-                    break;
-                case "methylation_table":
-                    img = [img, data.meth_id].join(".");
-                    break;
-                case "diff_subtype_bygene_table":
-                    img = [img, data.snorna, data.subtype].join(".");
-                    break;
-                case "survival_bygene_table":
-                    img = [img, data.snorna].join(".");
-                    break;
-                case "corr_geneexpr_bygene_table":
-                    img = [img, data.snorna].join(".");
-                    break;
-                case "corr_rppa_bygene_table":
-                    img = [img, data.snorna].join(".");
-                    break;
-                case "corr_cnv_bygene_table":
-                    img = [img, data.snorna].join(".");
-                    break;
-                case "methylation_bygene_table":
-                    img = [img, data.snorna, data.meth_id].join(".");
-                    break;
-            }
-
-            return '<div class="slider row">'+
-                    '<div class="thumbnail">' +
-                    '<img src="'+ img +'" style="width:80%;height:80%">'+
-                    '</div>' +
-                    '</div>'
-        }
-        $('#analyses').on('click', 'td.details-control', function () {
-            var table_id = $(this).closest('table').attr('id');
-            var tr  = $(this).closest('tr');
-            var row = OTABLES[table_id].row(tr);
-            if (row.child.isShown()) {
-                $('div.slider', row.child()).slideUp( function () {
-                    row.child.hide();
-                    tr.removeClass('shown');
-                } );
-            }
-            else {
-                row.child( format(table_id, row.data()), 'no-padding' ).show();
-                tr.addClass('shown');
-                $('div.slider', row.child()).slideDown();
-            }
-        });
-    }
-    // --------------------------------------------------------------
-
-    // keyup to check input
-    function addAnnotationInputKeyupHandler(){
-        var $snorna = $("#snorna");
-        $snorna.keyup(function () {
-            clearValidationStyles(this);
-            var snorna = this.value.trim();
-            if (snorna !== '') {
-                checkAnnotationInput(snorna.toLowerCase(), this);
-            }
-        });
-    }
-    //---------------------------------------------------------------
-
-    //----------------------------------------------------------------
-    // query input check
-    // clear validation styles
-    function clearValidationStyles(obj) {
-        var $parent = $(obj).parent();
-        $parent.children('label').text('');
-        $parent.removeClass('has-error').removeClass('has-success');
-        $parent.children('span')
-            .removeClass('glyphicon-remove-sign')
-            .removeClass('glyphicon-ok-sign');
-    }
-    // --------------------------------------------------------------
-
-    // check input in backend
-    function checkAnnotationInput(annotation, obj, url) {
-        url=  url || '/SNORic/api/snorna/';
-        $.getJSON(url+annotation, function(data){
-            if(data.length > 0){
-                showSuccess(obj,'');
-            }else{
-                showError(obj, 'No match for ['+ annotation +']')
-            }
-        });
-    }
-    //---------------------------------------------------------------
-
-    // show success to query
-    function showSuccess(obj, msg) {
-        clearValidationStyles(obj);
-        var $parent = $(obj).parent();
-        $parent.addClass('has-success');
-        $parent.children('span').addClass('glyphicon-ok-sign');
-        $parent.children('label').text(msg);
-    }
-    // --------------------------------------------------------------
-
-    // show errors
-    function showError(obj, msg) {
-        clearValidationStyles(obj);
-        var $parent = $(obj).parent();
-        $parent.addClass('has-error');
-        $parent.children('span').addClass('glyphicon-remove-sign');
-        $parent.children('label').text('Error: ' + msg);
-    }
-    // --------------------------------------------------------------
-
-    // search autocomplete
-    function check_input_autocomplete(){
-        $("#snorna").autocomplete({
-            autoFocus: true,
-            source: function(request, response){
-                var url = '/SNORic/api/snorna_list/' + request.term.trim();
-                $.getJSON(
-                    url,
-                    function(data){
-                        response($.map(data, function(item){ return item.snorna}))
-                    }
-                );
-            },
-            select: function(event, ui){
-                showSuccess(this);
-            }
-        });
-    }
-    // --------------------------------------------------------------
-
     // for analysis
     function inputQueryAutoComplete(elem){
         $(elem).autocomplete({
@@ -902,7 +761,6 @@ var tric=(function(){
             $.getJSON(
                 url,
                 function (data) {
-                    console.log(data);
                     var optgroup = {};
                     if (data.length < 1) {
                         $('#select_subtype').append("<option value=0>No subtype data</option>");
@@ -921,8 +779,9 @@ var tric=(function(){
                             .removeClass("disabled");
 
                         $('#select_subtype').append("<option value='all'>All</option>");
+
                         data.forEach(function (ele) {
-                            (optgroup[ele.fields.subtype] = optgroup[ele.fields.subtype] || []).push(ele.fields.state)
+                            (optgroup[ele.subtype] = optgroup[ele.subtype] || []).push(ele.stage)
                         });
                         for (var subtype in optgroup) {
                             var te = $('<optgroup label="' + subtype + '"></optgroup>')
@@ -1041,6 +900,141 @@ var tric=(function(){
         });
     }
 
+    // --------------------------------------------------------------
+    // on ready basic
+
+    // clear validation styles
+    function clearValidationStyles(obj) {
+        var $parent = $(obj).parent();
+        $parent.children('label').text('');
+        $parent.removeClass('has-error').removeClass('has-success');
+        $parent.children('span')
+            .removeClass('glyphicon-remove-sign')
+            .removeClass('glyphicon-ok-sign');
+    }
+
+    // show success to query
+    function showSuccess(obj, msg) {
+        clearValidationStyles(obj);
+        var $parent = $(obj).parent();
+        $parent.addClass('has-success');
+        $parent.children('span').addClass('glyphicon-ok-sign');
+        $parent.children('label').text(msg);
+    }
+
+    // show errors
+    function showError(obj, msg) {
+        clearValidationStyles(obj);
+        var $parent = $(obj).parent();
+        $parent.addClass('has-error');
+        $parent.children('span').addClass('glyphicon-remove-sign');
+        $parent.children('label').text('Error: ' + msg);
+    }
+
+    // search autocomplete
+    function check_input_autocomplete(){
+        $("#snorna").autocomplete({
+            autoFocus: true,
+            source: function(request, response){
+                var url = '/tRic/api/trna_list/' + request.term.trim();
+                $.getJSON(
+                    url,
+                    function(data){
+                        response(data);
+                    }
+                );
+            },
+            select: function(event, ui){
+                showSuccess(this);
+            }
+        });
+    }
+
+
+    // check input in backend
+    function checkAnnotationInput(annotation, obj, url) {
+        url=  url || '/tRic/api/trna/';
+        $.getJSON(url+annotation, function(data){
+            if(data.length > 0){
+                showSuccess(obj,'');
+            }else{
+                showError(obj, 'No match for ['+ annotation +']')
+            }
+        });
+    }
+
+    // keyup to check input
+    function addAnnotationInputKeyupHandler(){
+        var $snorna = $("#snorna");
+        $snorna.keyup(function () {
+            clearValidationStyles(this);
+            var snorna = this.value.trim();
+            if (snorna !== '') {
+                checkAnnotationInput(snorna.toLowerCase(), this);
+            }
+        });
+    }
+
+    // toggle data datatable
+    function toggleDataTableRow() {
+        function format(table_id, data) {
+            var img = "/SNORic/basic/" + table_id + "/png/" + data.encode;
+            switch(table_id){
+                case "diff_subtype_table":
+                    img = [img, data.subtype].join(".");
+                    break;
+                case "corr_geneexpr_table":
+                    img = [img, data.gene_symbol].join(".");
+                    break;
+                case "corr_rppa_table":
+                    img = [img, data.protein].join(".");
+                    break;
+                case "methylation_table":
+                    img = [img, data.meth_id].join(".");
+                    break;
+                case "diff_subtype_bygene_table":
+                    img = [img, data.snorna, data.subtype].join(".");
+                    break;
+                case "survival_bygene_table":
+                    img = [img, data.snorna].join(".");
+                    break;
+                case "corr_geneexpr_bygene_table":
+                    img = [img, data.snorna].join(".");
+                    break;
+                case "corr_rppa_bygene_table":
+                    img = [img, data.snorna].join(".");
+                    break;
+                case "corr_cnv_bygene_table":
+                    img = [img, data.snorna].join(".");
+                    break;
+                case "methylation_bygene_table":
+                    img = [img, data.snorna, data.meth_id].join(".");
+                    break;
+            }
+
+            return '<div class="slider row">'+
+                    '<div class="thumbnail">' +
+                    '<img src="'+ img +'" style="width:80%;height:80%">'+
+                    '</div>' +
+                    '</div>'
+        }
+        $('#analyses').on('click', 'td.details-control', function () {
+            var table_id = $(this).closest('table').attr('id');
+            var tr  = $(this).closest('tr');
+            var row = OTABLES[table_id].row(tr);
+            if (row.child.isShown()) {
+                $('div.slider', row.child()).slideUp( function () {
+                    row.child.hide();
+                    tr.removeClass('shown');
+                } );
+            }
+            else {
+                row.child( format(table_id, row.data()), 'no-padding' ).show();
+                tr.addClass('shown');
+                $('div.slider', row.child()).slideDown();
+            }
+        });
+    }
 
     return {
         init: function(){
@@ -1058,13 +1052,7 @@ var tric=(function(){
         },
         onReadyBasic: function(){
 
-            toggleDataTableRow();
-            addAnnotationInputKeyupHandler();
-            check_input_autocomplete();
-
-            $("#select_analysis_diff_subtype").on(
-                "click",
-                function(event){
+            $("#select_analysis_diff_subtype").on("click",function(event){
                     if($("#select_analysis_diff_subtype").is(":checked")){
                         $("#select_subtype option:selected").prop(
                             "selected", false
@@ -1074,17 +1062,16 @@ var tric=(function(){
                             true
                         );
                     }
-                }
-            );
-
-            $("#select_subtype").on(
-                "change",
-                function(event){
+                });
+            $("#select_subtype").on("change",function(event){
                     if(this.value !== "all"){
                         $("#select_analysis_diff_subtype").prop('checked', false);
                     }
-                }
-            );
+                });
+
+            check_input_autocomplete();
+            addAnnotationInputKeyupHandler();
+            toggleDataTableRow();
 
         },
         onReadyAnalysis: function(){
