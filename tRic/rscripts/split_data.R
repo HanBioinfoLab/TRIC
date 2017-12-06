@@ -78,4 +78,8 @@ clinical_all %>%
       })
     ) -> .foo
 .foo %>% 
-  dplyr::filter(purrr::map_lgl(.x = clinical, .f = function(.x) {}))
+  dplyr::filter(!purrr::map_lgl(.x = clinical, .f = function(.x) {is.null(.x)})) %>% 
+  tidyr::unnest() %>% 
+  dplyr::mutate(cancer_types = glue::glue("TCGA-{cancer_types}")) -> cst
+
+cst %>% readr::write_rds(path = file.path(data_path, "clinical_subtype.rds.gz"), compress = "gz")
