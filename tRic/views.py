@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 
 # Load modules
 import os
@@ -58,6 +58,21 @@ def trna_expr_table(request):
     context = {"title": title}
 
     return render(request=request, template_name='trna/datatable/trna_expr_table.html', context=context)
+
+# tumor vs. normal
+def tm_comparison_table(request):
+    title = "tRNA | tm comparison"
+    context = {"title": title}
+
+    return render(request=request, template_name='trna/datatable/tm_comparison_table.html', context=context)
+
+def tm_comparison_table_png(request, png_name):
+    png_file = os.path.join(resource_pngs, png_name)
+    if os.path.exists(png_file):
+        with open(png_file) as f:
+            return HttpResponse(f.read(), content_type="image/png")
+    else:
+        return HttpResponse("Not engough samples!", content_type="text/plain")
 
 
 
@@ -118,4 +133,18 @@ def api_trna_expr(request):
         subprocess.check_output(cmd, universal_newlines=True)
 
     data = json.load(open(json_file, "r"))
+    return JsonResponse(data, safe=False)
+
+def api_tm_comparison(request):
+    title = "API | Tumor vs. Normal"
+    context = {"title": title}
+
+    # request get
+    dsid = request.GET["dataset_ids"]
+    stid = request.GET["subtype_id"]
+    q = request.GET["genes"]
+
+    png_name = ".".join(["tm_comparison", dsid, stid, q, "png"])
+
+    data = {"png_name": png_name}
     return JsonResponse(data, safe=False)

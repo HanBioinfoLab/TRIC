@@ -15,6 +15,9 @@ urlpatterns = [
     # trna expression
     url(r'^trna/trna_expr_table/$', views.trna_expr_table, name='trna_expr_table'),
 
+    # tumor vs. normal
+    url(r'^trna/tm_comparison_table/$', views.tm_comparison_table, name='tm_comparison_table'),
+    url(r'^trna/tm_comparison_table/png/(?P<png_name>.*)$', views.tm_comparison_table_png, name="tm_comparison_table_png"),
 
 
     # apis
@@ -30,4 +33,6 @@ urlpatterns = [
     # trna expression
     url(r'^api/trna_expr/$', views.api_trna_expr, name='api_trna_expr'),
 
+    # tumor normal comparison
+    url(r'^api/tm_comparison/$', views.api_tm_comparison, name='api_tm_comparison')
 ]

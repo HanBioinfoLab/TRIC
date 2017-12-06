@@ -344,60 +344,7 @@ var tric=(function(){
                 {data: "sample_id", width: "30%"},
                 {data: "expr", width: "10%"}
             ]
-        },
-        corr_rppa_datatable_settings = {
-            columns: [
-                {data: "dataset_id"},
-                {data: "snorna"},
-                {data: "protein"},
-                {data: "spearman_corr"},
-                {data: "p_value"},
-                {
-                    class: 'details-control',
-                    orderable: false,
-                    data: null,
-                    defaultContent: ''
-                }
-            ]
-        },
-        corr_cnv_datatable_settings = {
-            columns: [
-                {data: "dataset_id"},
-                {data: "snorna"},
-                {data: "estimate"},
-                {data: "p\\.value"},
-                {
-                    class: 'details-control',
-                    orderable: false,
-                    data: null,
-                    defaultContent: ''
-                }
-            ]
-        },
-        methylation_datatable_settings = {
-            order: [[3, "desc"]],
-            columns: [
-                {data: "dataset_id"},
-                {data: "snorna"},
-                {data: "meth_id"},
-                {data: "estimate"},
-                {data: "p\\.value"},
-                {
-                    class: 'details-control',
-                    orderable: false,
-                    data: null,
-                    defaultContent: ''
-                    }
-            ]
-        },
-        snorna_expr_bygene_datatable_settings = {
-        order: [[2, 'desc']],
-            columns: [
-                {data: "dataset_id"},
-                {data: "snorna"},
-                {data: "mean_expression"}
-            ]
-        };
+        }
     var analysis_datatable_settings = {
             'trna_expr': rnaexpr_datatable_settings,
             'survival': survival_datatable_settings,
@@ -613,10 +560,16 @@ var tric=(function(){
 
                 // jQuery is abso-fucking-lutely amazing!
                 // add dataset_id and query trna to the data.
-                jQuery.each(data, function(){
+                if(data instanceof Array){
+                   jQuery.each(data, function(){
                     this.dataset_id = obj['dataset_ids'];
                     this.trna = obj['genes'];
-                });
+                   });
+                } else{
+                    data.dataset_id = obj['dataset_ids'];
+                    data.trna = obj['genes']
+                }
+                console.log(data);
 
                 TABLEDATA[table_id] = data;
                 var analysis_datatable_setting = {};
@@ -625,14 +578,14 @@ var tric=(function(){
                     {'data': data},
                     default_datatable_settings,
                     analysis_datatable_setting);
+
+                // for tumor normal comparison
                 if(analysis == "tm_comparison"){
-                    var img_path = '/SNORic/basic/tm_comparison_table/png/' + data.png_name;
-                    var img = '<img src="' +
-                    img_path +
-                    '" style="width:80%;height:80%" onerror="this.src=\'/SNORic/static/image/error.svg\'">';
-                    // console.log(img);
+                    var img_path = '/tRic/trna/tm_comparison_table/png/' + data.png_name;
+                    var img = '<img src="' + img_path + '" style="width:80%;height:80%" onerror="this.src=\'/tRic/static/image/error.svg\'">';
                     $("#tm_comparison_table_png").empty().append(img);
                 }
+
                 else {OTABLES[table_id] = $('#'+table_id).DataTable(dataTableSettings);}
                 enableAnalysesTab(analysis);
                 gNCompletedAnalyses[analysis] = true;
@@ -671,7 +624,7 @@ var tric=(function(){
             trna: [queryObj.trna],
             analyses: {
                 trna_expr: true,
-                tm_comparison: false,
+                tm_comparison: true,
                 survival: false,
                 diff_subtype: false
             },
