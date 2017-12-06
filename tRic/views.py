@@ -52,6 +52,14 @@ def trna(request):
 
     return render(request=request, template_name="trna/trna.html", context=context, status=200)
 
+# trna expression
+def trna_expr_table(request):
+    title = "tRNA | tRNA expression"
+    context = {"title": title}
+
+    return render(request=request, template_name='trna/datatable/trna_expr_table.html', context=context)
+
+
 
 # apis
 def api_summary(request):

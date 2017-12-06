@@ -12,6 +12,9 @@ urlpatterns = [
     # tRNA
     url(r'^trna/$', view=views.trna, name='trna'),
 
+    # trna expression
+    url(r'^trna/trna_expr_table/$', views.trna_expr_table, name='trna_expr_table'),
+
 
 
     # apis

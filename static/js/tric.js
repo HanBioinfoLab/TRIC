@@ -15,11 +15,6 @@ var tric=(function(){
     UNDEFINED;
 
 
-    // tab check
-    function enableAnalysesTab(analysis) {
-        $("#tabs").tabs("enable", "#tab_" + analysis);
-    }
-    // --------------------------------------------------------------
 
     // registered analysis number
     function getNumAnalyses(){
@@ -327,41 +322,6 @@ var tric=(function(){
                 }
             ]
         },
-        corr_geneexpr_datatable_settings = {
-            columns: [
-                {data: "dataset_id"},
-                {data: "snorna"},
-                {data: "gene_symbol"},
-                {data: "spearman_corr"},
-                {data: "p_value"},
-                {
-                    class: 'details-control',
-                    orderable: false,
-                    data: null,
-                    defaultContent: ''
-                }
-            ]
-        },
-        corr_splicing_data_settings = {
-            columns: [
-                {data: "dataset_id"},
-                {data: "snorna"},
-                {data: "gene_symbol"},
-                {data: "as_id"},
-                {data: "splice_type"},
-                {data: "from_exon"},
-                {data: "to_exon"},
-                {data: "std_psi"},
-                {data: "r"},
-                {data: "fdr"},
-                {
-                    class: 'details-control',
-                    orderable: false,
-                    data: null,
-                    defaultContent: ''
-                }
-            ]
-        },
         diff_subtype_datatable_settings = {
             columns: [
                 {data: "dataset_id"},
@@ -379,13 +339,10 @@ var tric=(function(){
         rnaexpr_datatable_settings = {
             order: [[3, 'desc']],
             columns: [
-                {data: "dataset_id", width: "10%"},
-                {data: "snorna", width: "40%"},
+                {data: "dataset_id", width: "30%"},
+                {data: "trna", width: "30%"},
                 {data: "sample_id", width: "30%"},
-                {data: "snorna_expression",
-                    width: "10%",
-                    reder: function(data){ return Math.log2(data + 1)}
-                }
+                {data: "expr", width: "10%"}
             ]
         },
         corr_rppa_datatable_settings = {
@@ -442,15 +399,9 @@ var tric=(function(){
             ]
         };
     var analysis_datatable_settings = {
-            'snorna_expr': rnaexpr_datatable_settings,
+            'trna_expr': rnaexpr_datatable_settings,
             'survival': survival_datatable_settings,
-            'diff_subtype': diff_subtype_datatable_settings,
-            'corr_geneexpr': corr_geneexpr_datatable_settings,
-            'corr_splicing': corr_splicing_data_settings,
-            'corr_rppa': corr_rppa_datatable_settings,
-            'corr_cnv': corr_cnv_datatable_settings,
-            'methylation':methylation_datatable_settings,
-            'snorna_expr_bygene': snorna_expr_bygene_datatable_settings
+            'diff_subtype': diff_subtype_datatable_settings
         };
 
     // Basic init
@@ -640,14 +591,17 @@ var tric=(function(){
         return keys;
     }
 
+    // tab check
+    function enableAnalysesTab(analysis) {
+        $("#tabs").tabs("enable", "#tab_" + analysis);
+    }
+
     function buildLoadDataTableCallback(obj){
+        console.log(obj);
         return function(error, data){
             var analysis = obj['analysis'];
             var table_id = obj['table_tmpl_name'] || analysis + '_table';
-            var tmpl_id = 'tab_' + analysis,
-                table_tmpl = '/tRic/trna/' + table_id;
-            console.log(analysis);
-            console.log({data: data});
+            var tmpl_id = 'tab_' + analysis, table_tmpl = '/tRic/trna/' + table_id;
             console.log({table_tmpl:table_tmpl});
             console.log({tmpl_id:tmpl_id});
             console.log({table_id:table_id});
@@ -656,16 +610,21 @@ var tric=(function(){
                     alert("Error loading table:\n","\t", error);
                     return;
                 }
+
+                // jQuery is abso-fucking-lutely amazing!
+                // add dataset_id and query trna to the data.
+                jQuery.each(data, function(){
+                    this.dataset_id = obj['dataset_ids'];
+                    this.trna = obj['genes'];
+                });
+
                 TABLEDATA[table_id] = data;
                 var analysis_datatable_setting = {};
-                if (table_id === 'snorna_expr_bygene_table') {
-                    analysis_datatable_setting = analysis_datatable_settings['snorna_expr_bygene'];
-                } else {
-                    analysis_datatable_setting = analysis_datatable_settings[analysis];
-                }
-                var dataTableSettings = $.extend({'data': data},
-                                                  default_datatable_settings,
-                                                  analysis_datatable_setting);
+                analysis_datatable_setting = analysis_datatable_settings[analysis];
+                var dataTableSettings = $.extend(
+                    {'data': data},
+                    default_datatable_settings,
+                    analysis_datatable_setting);
                 if(analysis == "tm_comparison"){
                     var img_path = '/SNORic/basic/tm_comparison_table/png/' + data.png_name;
                     var img = '<img src="' +
@@ -674,9 +633,7 @@ var tric=(function(){
                     // console.log(img);
                     $("#tm_comparison_table_png").empty().append(img);
                 }
-                else {
-                    console.log(dataTableSettings);
-                    OTABLES[table_id] = $('#'+table_id).DataTable(dataTableSettings);}
+                else {OTABLES[table_id] = $('#'+table_id).DataTable(dataTableSettings);}
                 enableAnalysesTab(analysis);
                 gNCompletedAnalyses[analysis] = true;
             });
@@ -686,7 +643,6 @@ var tric=(function(){
      // get data from mysql
     function getList(analysis, view, options, callback){
         var url = '/tRic/api/'+ analysis;
-        console.log(url);
         $.getJSON(url, options)
             .done(function(data){
                 callback(null, data);
@@ -702,7 +658,7 @@ var tric=(function(){
         getList(analysis,
                 'preprocessed_analyses',
                 getKeys(analysis),
-                buildLoadDataTableCallback({'analysis': analysis}));
+                buildLoadDataTableCallback(getKeys(analysis)));
     }
 
     // query database
