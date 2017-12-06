@@ -14,121 +14,10 @@ var tric=(function(){
     VIEW_STALE = 'ok',
     UNDEFINED;
 
-    // --------------------------------------------------------------
-
-    function getAnalysisData(analysis) {
-        getList(analysis,
-                'preprocessed_analyses',
-                getKeys(analysis),
-                buildLoadDataTableCallback({'analysis': analysis}));
-    }
-    // --------------------------------------------------------------
-    function buildLoadDataTableCallback(obj){
-        return function(error, data){
-            var analysis = obj['analysis'];
-            var table_id = obj['table_tmpl_name'] || analysis + '_table';
-            var tmpl_id = 'tab_' + analysis,
-                table_tmpl = '/SNORic/basic/' + table_id;
-            // console.log(analysis);
-            console.log({data: data});
-            console.log({table_tmpl:table_tmpl});
-            console.log({tmpl_id:tmpl_id});
-            console.log({table_id:table_id});
-            $("#"+tmpl_id).load(table_tmpl, function(){
-                if(error){
-                    alert("Error loading table:\n","\t", error);
-                    return;
-                }
-                TABLEDATA[table_id] = data;
-                var analysis_datatable_setting = {};
-                if (table_id === 'snorna_expr_bygene_table') {
-                    analysis_datatable_setting = analysis_datatable_settings['snorna_expr_bygene'];
-                } else {
-                    analysis_datatable_setting = analysis_datatable_settings[analysis];
-                }
-                var dataTableSettings = $.extend({'data': data},
-                                                  default_datatable_settings,
-                                                  analysis_datatable_setting);
-                if(analysis == "tm_comparison"){
-                    var img_path = '/SNORic/basic/tm_comparison_table/png/' + data.png_name;
-                    var img = '<img src="' +
-                    img_path +
-                    '" style="width:80%;height:80%" onerror="this.src=\'/SNORic/static/image/error.svg\'">';
-                    // console.log(img);
-                    $("#tm_comparison_table_png").empty().append(img);
-                }
-                else {
-                    console.log(dataTableSettings);
-                    OTABLES[table_id] = $('#'+table_id).DataTable(dataTableSettings);}
-                enableAnalysesTab(analysis);
-                gNCompletedAnalyses[analysis] = true;
-            });
-        };
-    }
-    // --------------------------------------------------------------
 
     // tab check
     function enableAnalysesTab(analysis) {
         $("#tabs").tabs("enable", "#tab_" + analysis);
-    }
-    // --------------------------------------------------------------
-
-    // get data from mysql
-    function getList(analysis, view, options, callback){
-        var url = '/SNORic/api/'+ analysis;
-        console.log(url);
-        $.getJSON(url, options)
-            .done(function(data){
-                callback(null, data);
-            })
-            .fail(function(jqxhr, status, error){
-                callback(error,null);
-                var err = status + ", " + error;
-                console.log(err);
-        });
-    }
-    // --------------------------------------------------------------
-
-
-    // post data
-    function getKeys(analysis) {
-        var genes;
-        var dataset_ids = ARGUMENTS.dataset_ids;
-        var subtype_id = ARGUMENTS.subtype_id;
-        if (JOB.is_preprocessed) {
-            genes = ARGUMENTS.snorna;
-        }
-        var keys = {
-            analysis: analysis,
-            dataset_ids : dataset_ids[0],
-            genes: genes[0],
-            subtype_id:subtype_id
-        };
-        return keys;
-    }
-    // --------------------------------------------------------------
-
-    // progress percentage
-    function updateLoadingProgress(){
-        var numAnalyses = getNumAnalyses();
-        var numFinished = 0;
-        for (var analysis in gNCompletedAnalyses) {
-            if (gNCompletedAnalyses.hasOwnProperty(analysis)) {
-                numFinished++;
-            }
-        }
-        var percent_finished = 100 * numFinished / numAnalyses,
-            progressbar = $("#progressbar");
-        if (percent_finished > 0) {
-            progressbar.progressbar("value", percent_finished);
-        } else if (numFinished === 0) {
-            progressbar.progressbar("value", false);
-        }
-        if (numFinished !== numAnalyses) {
-            setTimeout(function(){
-                updateLoadingProgress();
-            }, 1000);
-        }
     }
     // --------------------------------------------------------------
 
@@ -143,56 +32,6 @@ var tric=(function(){
             }
         }
         return num;
-    }
-    // --------------------------------------------------------------
-
-    // tabs toggle
-    function hideAnalysesTabs(){
-        $("#analyses").hide();
-        $(".analysis_tab").hide();
-        $("#tabs ul").empty();
-        $(".analysis_div").empty();
-        $("#tabs").tabs();
-    }
-    // --------------------------------------------------------------
-    function showAllAnalysesTabs() {
-        $("#analyses").show();
-        for (var analysis in ARGUMENTS.analyses) {
-            if (ARGUMENTS.analyses.hasOwnProperty(analysis)) {
-                if (ARGUMENTS.analyses[analysis]) {
-                    var li_html = '<li class="analysis_tab analysis_'
-                        + gAnalysisTabsClass[analysis]
-                        + '" id="tab_'
-                        + analysis
-                        + '_li"><a href="#tab_'
-                        + analysis
-                        + '">'
-                        + gAnalysisLabel[analysis]
-                        + '</a></li>';
-                    var current_tab_order_idx = gAnalysisTabsOrder[analysis];
-                    var is_tab_added = false;
-                    $("#tabs .analysis_tab").each(function (idx) {
-                        var tab_analysis_tmp = $(this)
-                            .attr('id')
-                            .replace(/^tab_/, '')
-                            .replace('/_li$', '');
-                        var tab_order_idx = gAnalysisTabsOrder[tab_analysis_tmp];
-                        if (current_tab_order_idx < tab_order_idx) {
-                            $("#tabs ul li:qe(" + idx + ")").before($(li_html));
-                            $("#tabs").tabs("refresh").tabs("option", "active", 0);
-                            is_tab_added = true;
-                            return false;
-                        }
-                        return true;
-                    });
-                    if (!is_tab_added) {
-                        $("#tabs ul").append(li_html);
-                        $("#tabs").tabs("refresh").tabs("option", "active", 0);
-                    }
-                }
-            }
-        }
-        $("#tabs").tabs("disable");
     }
     // --------------------------------------------------------------
 
@@ -726,6 +565,163 @@ var tric=(function(){
     }
 
     // --------------------------------------------------------------
+
+    // tabs toggle
+    function hideAnalysesTabs(){
+        $("#analyses").hide();
+        $(".analysis_tab").hide();
+        $("#tabs ul").empty();
+        $(".analysis_div").empty();
+        $("#tabs").tabs();
+    }
+
+    function showAllAnalysesTabs() {
+        $("#analyses").show();
+        for (var analysis in ARGUMENTS.analyses) {
+            if (ARGUMENTS.analyses.hasOwnProperty(analysis)) {
+                if (ARGUMENTS.analyses[analysis]) {
+                    var li_html = '<li class="analysis_tab analysis_'
+                        + gAnalysisTabsClass[analysis]
+                        + '" id="tab_'
+                        + analysis
+                        + '_li"><a href="#tab_'
+                        + analysis
+                        + '">'
+                        + gAnalysisLabel[analysis]
+                        + '</a></li>';
+                    var current_tab_order_idx = gAnalysisTabsOrder[analysis];
+                    var is_tab_added = false;
+                    $("#tabs .analysis_tab").each(function (idx) {
+                        var tab_analysis_tmp = $(this)
+                            .attr('id')
+                            .replace(/^tab_/, '')
+                            .replace('/_li$', '');
+                        var tab_order_idx = gAnalysisTabsOrder[tab_analysis_tmp];
+                        if (current_tab_order_idx < tab_order_idx) {
+                            $("#tabs ul li:qe(" + idx + ")").before($(li_html));
+                            $("#tabs").tabs("refresh").tabs("option", "active", 0);
+                            is_tab_added = true;
+                            return false;
+                        }
+                        return true;
+                    });
+                    if (!is_tab_added) {
+                        $("#tabs ul").append(li_html);
+                        $("#tabs").tabs("refresh").tabs("option", "active", 0);
+                    }
+                }
+            }
+        }
+        $("#tabs").tabs("disable");
+    }
+
+    // progress percentage
+    function updateLoadingProgress(){
+        var numAnalyses = getNumAnalyses();
+        var numFinished = 0;
+        for (var analysis in gNCompletedAnalyses) {
+            if (gNCompletedAnalyses.hasOwnProperty(analysis)) {
+                numFinished++;
+            }
+        }
+        var percent_finished = 100 * numFinished / numAnalyses,
+            progressbar = $("#progressbar");
+        if (percent_finished > 0) {
+            progressbar.progressbar("value", percent_finished);
+        } else if (numFinished === 0) {
+            progressbar.progressbar("value", false);
+        }
+        if (numFinished !== numAnalyses) {
+            setTimeout(function(){
+                updateLoadingProgress();
+            }, 1000);
+        }
+    }
+
+    // post data
+    function getKeys(analysis) {
+        var genes;
+        var dataset_ids = ARGUMENTS.dataset_ids;
+        var subtype_id = ARGUMENTS.subtype_id;
+        if (JOB.is_preprocessed) {
+            genes = ARGUMENTS.snorna;
+        }
+        var keys = {
+            analysis: analysis,
+            dataset_ids : dataset_ids[0],
+            genes: genes[0],
+            subtype_id:subtype_id
+        };
+        return keys;
+    }
+
+    function buildLoadDataTableCallback(obj){
+        return function(error, data){
+            var analysis = obj['analysis'];
+            var table_id = obj['table_tmpl_name'] || analysis + '_table';
+            var tmpl_id = 'tab_' + analysis,
+                table_tmpl = '/tRic/trna/' + table_id;
+            console.log(analysis);
+            console.log({data: data});
+            console.log({table_tmpl:table_tmpl});
+            console.log({tmpl_id:tmpl_id});
+            console.log({table_id:table_id});
+            $("#"+tmpl_id).load(table_tmpl, function(){
+                if(error){
+                    alert("Error loading table:\n","\t", error);
+                    return;
+                }
+                TABLEDATA[table_id] = data;
+                var analysis_datatable_setting = {};
+                if (table_id === 'snorna_expr_bygene_table') {
+                    analysis_datatable_setting = analysis_datatable_settings['snorna_expr_bygene'];
+                } else {
+                    analysis_datatable_setting = analysis_datatable_settings[analysis];
+                }
+                var dataTableSettings = $.extend({'data': data},
+                                                  default_datatable_settings,
+                                                  analysis_datatable_setting);
+                if(analysis == "tm_comparison"){
+                    var img_path = '/SNORic/basic/tm_comparison_table/png/' + data.png_name;
+                    var img = '<img src="' +
+                    img_path +
+                    '" style="width:80%;height:80%" onerror="this.src=\'/SNORic/static/image/error.svg\'">';
+                    // console.log(img);
+                    $("#tm_comparison_table_png").empty().append(img);
+                }
+                else {
+                    console.log(dataTableSettings);
+                    OTABLES[table_id] = $('#'+table_id).DataTable(dataTableSettings);}
+                enableAnalysesTab(analysis);
+                gNCompletedAnalyses[analysis] = true;
+            });
+        };
+    }
+
+     // get data from mysql
+    function getList(analysis, view, options, callback){
+        var url = '/SNORic/api/'+ analysis;
+        console.log(url);
+        $.getJSON(url, options)
+            .done(function(data){
+                callback(null, data);
+            })
+            .fail(function(jqxhr, status, error){
+                callback(error,null);
+                var err = status + ", " + error;
+                console.log(err);
+        });
+    }
+
+    function getAnalysisData(analysis) {
+        console.log(analysis);
+
+        getList(analysis,
+                'preprocessed_analyses',
+                getKeys(analysis),
+                buildLoadDataTableCallback({'analysis': analysis}));
+    }
+
     // query database
     function query(queryObj){
         var dataset_id = $('#select_dataset').val(),
@@ -733,17 +729,12 @@ var tric=(function(){
             is_preprocessed = (queryObj.is_predefined === true);
         ARGUMENTS = {
             dataset_ids: [dataset_id],
-            snorna: [queryObj.snorna],
+            trna: [queryObj.trna],
             analyses: {
-                snorna_expr: true,
+                trna_expr: true,
                 tm_comparison: true,
                 survival: false,
-                diff_subtype: false,
-                corr_geneexpr: false,
-                corr_splicing: false,
-                corr_rppa: false,
-                corr_cnv: false,
-                methylation: false
+                diff_subtype: false
             },
             subtype_id: subtype_id,
             sample_indices: []
@@ -765,11 +756,12 @@ var tric=(function(){
             showAllAnalysesTabs();
             setTimeout(function(){
                 updateLoadingProgress();
-            },1000);
+            }, 1000);
             IS_JOB_RUNNING = true;
             for (var analysis in ARGUMENTS.analyses) {
                 if (ARGUMENTS.analyses.hasOwnProperty(analysis)) {
                     if (ARGUMENTS.analyses[analysis] === true) {
+                        console.log(analysis);
                         getAnalysisData(analysis);
                     }
                 }
@@ -817,11 +809,8 @@ var tric=(function(){
     function proceedSubmit() {
         gNCompletedAnalyses = {};
         if ($("#snorna-div").hasClass('has-success')) {
-            var snorna = $("#snorna").val();
-            query({
-                snorna:snorna,
-                is_predefined: true
-            });
+            var trna = $("#snorna").val();
+            query({trna: trna, is_predefined: true});
         }
         else {
             alert("Invalid tRNA input");
