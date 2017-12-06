@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fbd7ffd8-0f66-408a-bbf5-4429b369aed6" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/js/tric.js" afterPath="$PROJECT_DIR$/static/js/tric.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tRic/urls.py" afterPath="$PROJECT_DIR$/tRic/urls.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tRic/views.py" afterPath="$PROJECT_DIR$/tRic/views.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tRic/templates/tric/header.html" afterPath="$PROJECT_DIR$/tRic/templates/tric/header.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tRic/templates/tric/index.html" afterPath="$PROJECT_DIR$/tRic/templates/tric/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tRic/templates/tric/statistics.html" afterPath="$PROJECT_DIR$/tRic/templates/tric/statistics.html" />
     </list>
     <ignored path="$PROJECT_DIR$/.idea/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -155,11 +155,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tric.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="tric.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/js/tric.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="355">
-              <caret line="619" column="0" lean-forward="true" selection-start-line="619" selection-start-column="0" selection-end-line="619" selection-end-column="0" />
+            <state relative-caret-position="330">
+              <caret line="30" column="28" lean-forward="false" selection-start-line="30" selection-start-column="28" selection-end-line="30" selection-end-column="28" />
               <folding>
                 <element signature="e#400#695#0" expanded="false" />
                 <element signature="e#472#669#0" expanded="false" />
@@ -345,6 +345,7 @@
                 <element signature="e#31895#32001#0" expanded="false" />
                 <element signature="e#32190#32342#0" expanded="false" />
                 <element signature="e#32379#32418#0" expanded="false" />
+                <element signature="e#32444#32761#0" expanded="false" />
                 <element signature="e#32467#32759#0" expanded="false" />
                 <marker date="1512570995683" expanded="false" signature="20471:20491" ph="..." />
                 <marker date="1512570995683" expanded="false" signature="30121:30141" ph="..." />
@@ -359,6 +360,44 @@
             <state relative-caret-position="16">
               <caret line="1" column="41" lean-forward="false" selection-start-line="1" selection-start-column="33" selection-end-line="1" selection-end-column="41" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tRic/templates/tric/index.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="144">
+              <caret line="24" column="25" lean-forward="true" selection-start-line="24" selection-start-column="25" selection-end-line="24" selection-end-column="25" />
+              <folding>
+                <element signature="n#div#0;n#!!top" expanded="false" />
+                <marker date="1512572528436" expanded="false" signature="1297:1310" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="statistics.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/tRic/templates/tric/statistics.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="288">
+              <caret line="18" column="33" lean-forward="false" selection-start-line="18" selection-start-column="33" selection-end-line="18" selection-end-column="33" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="header.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tRic/templates/tric/header.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="272">
+              <caret line="16" column="52" lean-forward="true" selection-start-line="16" selection-start-column="52" selection-end-line="16" selection-end-column="52" />
+              <folding>
+                <element signature="e#961#967#0" expanded="true" />
+                <element signature="e#1070#1076#0" expanded="true" />
+                <element signature="e#1182#1188#0" expanded="true" />
+                <element signature="e#1291#1297#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -408,14 +447,11 @@
         <option value="$PROJECT_DIR$/tRic_portal/urls.py" />
         <option value="$PROJECT_DIR$/tRic_portal/settings.py" />
         <option value="$PROJECT_DIR$/tRic/templates/tric/methods.html" />
-        <option value="$PROJECT_DIR$/tRic/templates/tric/header.html" />
         <option value="$PROJECT_DIR$/tRic/static/css/tric.css" />
         <option value="$PROJECT_DIR$/tRic/templates/tric/base.html" />
         <option value="$PROJECT_DIR$/tRic/templates/tric/contact.html" />
-        <option value="$PROJECT_DIR$/tRic/templates/tric/statistics.html" />
         <option value="$PROJECT_DIR$/tRic/static/js/bootstrap-select.min.js" />
         <option value="$PROJECT_DIR$/tRic/static/js/tric.js" />
-        <option value="$PROJECT_DIR$/tRic/templates/tric/index.html" />
         <option value="$PROJECT_DIR$/tRic/templates/trna/trna.html" />
         <option value="$PROJECT_DIR$/tRic/templates/tric/footer.html" />
         <option value="$PROJECT_DIR$/tRic/rscripts/api_subtype.R" />
@@ -432,6 +468,9 @@
         <option value="$PROJECT_DIR$/tRic/views.py" />
         <option value="$PROJECT_DIR$/tRic/rscripts/api_survival.R" />
         <option value="$PROJECT_DIR$/static/js/tric.js" />
+        <option value="$PROJECT_DIR$/tRic/templates/tric/header.html" />
+        <option value="$PROJECT_DIR$/tRic/templates/tric/index.html" />
+        <option value="$PROJECT_DIR$/tRic/templates/tric/statistics.html" />
       </list>
     </option>
   </component>
@@ -443,7 +482,7 @@
   </component>
   <component name="ProjectFrameBounds">
     <option name="y" value="731" />
-    <option name="width" value="1280" />
+    <option name="width" value="1448" />
     <option name="height" value="709" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
@@ -524,10 +563,6 @@
               <option name="myItemId" value="templates" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="trna" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -547,47 +582,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="trna" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="datatable" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tRic" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tRic" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tRic" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="templates" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tRic" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tRic" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tRic" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rscripts" />
+              <option name="myItemId" value="tric" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -897,7 +892,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="731" width="1280" height="709" extended-state="0" />
+    <frame x="0" y="731" width="1448" height="709" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -910,7 +905,7 @@
       <window_info id="Execute Anonymous" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13593455" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18659128" sideWeight="0.4928717" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29089615" sideWeight="0.4928717" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32913783" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24963433" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24964234" sideWeight="0.5071283" order="2" side_tool="true" content_ui="tabs" />
@@ -1148,8 +1143,6 @@
     <entry file="file://$PROJECT_DIR$/tRic/templates/tric/contact.html" />
     <entry file="file://$PROJECT_DIR$/tRic/static/js/bootstrap-select.min.js" />
     <entry file="file://$PROJECT_DIR$/tRic/static/js/tric.js" />
-    <entry file="file://$PROJECT_DIR$/tRic/templates/tric/statistics.html" />
-    <entry file="file://$PROJECT_DIR$/tRic/templates/tric/header.html" />
     <entry file="file://$PROJECT_DIR$/tRic/static/css/tric.css" />
     <entry file="file://$PROJECT_DIR$/tRic/templates/tric/base.html" />
     <entry file="file://$PROJECT_DIR$/tRic/templates/tric/footer.html">
@@ -1197,17 +1190,6 @@
         <state relative-caret-position="160">
           <caret line="10" column="5" lean-forward="true" selection-start-line="10" selection-start-column="5" selection-end-line="10" selection-end-column="5" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tRic/templates/tric/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-19">
-          <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-          <folding>
-            <element signature="n#div#0;n#!!top" expanded="false" />
-            <element signature="n#style#0;n#img#0;n#a#0;n#div#1;n#div#0;n#div#1;n#div#1;n#!!top" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1394,8 +1376,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/static/js/tric.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="355">
-          <caret line="619" column="0" lean-forward="true" selection-start-line="619" selection-start-column="0" selection-end-line="619" selection-end-column="0" />
+        <state relative-caret-position="330">
+          <caret line="30" column="28" lean-forward="false" selection-start-line="30" selection-start-column="28" selection-end-line="30" selection-end-column="28" />
           <folding>
             <element signature="e#400#695#0" expanded="false" />
             <element signature="e#472#669#0" expanded="false" />
@@ -1581,10 +1563,43 @@
             <element signature="e#31895#32001#0" expanded="false" />
             <element signature="e#32190#32342#0" expanded="false" />
             <element signature="e#32379#32418#0" expanded="false" />
+            <element signature="e#32444#32761#0" expanded="false" />
             <element signature="e#32467#32759#0" expanded="false" />
             <marker date="1512570995683" expanded="false" signature="20471:20491" ph="..." />
             <marker date="1512570995683" expanded="false" signature="30121:30141" ph="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tRic/templates/tric/header.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="52" lean-forward="true" selection-start-line="16" selection-start-column="52" selection-end-line="16" selection-end-column="52" />
+          <folding>
+            <element signature="e#961#967#0" expanded="true" />
+            <element signature="e#1070#1076#0" expanded="true" />
+            <element signature="e#1182#1188#0" expanded="true" />
+            <element signature="e#1291#1297#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tRic/templates/tric/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="24" column="25" lean-forward="true" selection-start-line="24" selection-start-column="25" selection-end-line="24" selection-end-column="25" />
+          <folding>
+            <element signature="n#div#0;n#!!top" expanded="false" />
+            <marker date="1512572528436" expanded="false" signature="1297:1310" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tRic/templates/tric/statistics.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="18" column="33" lean-forward="false" selection-start-line="18" selection-start-column="33" selection-end-line="18" selection-end-column="33" />
+          <folding />
         </state>
       </provider>
     </entry>
