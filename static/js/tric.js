@@ -312,7 +312,7 @@ var tric=(function(){
         survival_datatable_settings = {
             columns: [
                 {data: "dataset_id"},
-                {data: "snorna"},
+                {data: "trna"},
                 {data: "p\\.value"},
                 {
                     class: 'details-control',
@@ -325,7 +325,7 @@ var tric=(function(){
         diff_subtype_datatable_settings = {
             columns: [
                 {data: "dataset_id"},
-                {data: "snorna"},
+                {data: "trna"},
                 {data: "subtype"},
                 {data: "p\\.value"},
                 {
@@ -552,6 +552,7 @@ var tric=(function(){
             console.log({table_tmpl:table_tmpl});
             console.log({tmpl_id:tmpl_id});
             console.log({table_id:table_id});
+            console.log(data);
             $("#"+tmpl_id).load(table_tmpl, function(){
                 if(error){
                     alert("Error loading table:\n","\t", error);
@@ -564,10 +565,13 @@ var tric=(function(){
                    jQuery.each(data, function(){
                     this.dataset_id = obj['dataset_ids'];
                     this.trna = obj['genes'];
+                    if(!this.hasOwnProperty('subtype')) this.subtype = obj['subtype_id'];
                    });
                 } else{
                     data.dataset_id = obj['dataset_ids'];
-                    data.trna = obj['genes']
+                    data.trna = obj['genes'];
+                    data.subtype = obj['subtype_id'];
+                    if(!this.hasOwnProperty('subtype')) this.subtype = obj['subtype_id'];
                 }
                 console.log(data);
 
@@ -585,8 +589,8 @@ var tric=(function(){
                     var img = '<img src="' + img_path + '" style="width:80%;height:80%" onerror="this.src=\'/tRic/static/image/error.svg\'">';
                     $("#tm_comparison_table_png").empty().append(img);
                 }
-
                 else {OTABLES[table_id] = $('#'+table_id).DataTable(dataTableSettings);}
+
                 enableAnalysesTab(analysis);
                 gNCompletedAnalyses[analysis] = true;
             });
@@ -854,39 +858,17 @@ var tric=(function(){
     // toggle data datatable
     function toggleDataTableRow() {
         function format(table_id, data) {
-            var img = "/tRic/trna/" + table_id + "/png/" + data.encode;
+            var img = "/tRic/trna/" + table_id + "/png/";
             switch(table_id){
                 case "diff_subtype_table":
-                    img = [img, data.subtype].join(".");
+                    var png_name = ["api_diff_subtype", data.dataset_id, "all", data.subtype, data.trna, "png"].join(".");
                     break;
-                case "corr_geneexpr_table":
-                    img = [img, data.gene_symbol].join(".");
-                    break;
-                case "corr_rppa_table":
-                    img = [img, data.protein].join(".");
-                    break;
-                case "methylation_table":
-                    img = [img, data.meth_id].join(".");
-                    break;
-                case "diff_subtype_bygene_table":
-                    img = [img, data.snorna, data.subtype].join(".");
-                    break;
-                case "survival_bygene_table":
-                    img = [img, data.snorna].join(".");
-                    break;
-                case "corr_geneexpr_bygene_table":
-                    img = [img, data.snorna].join(".");
-                    break;
-                case "corr_rppa_bygene_table":
-                    img = [img, data.snorna].join(".");
-                    break;
-                case "corr_cnv_bygene_table":
-                    img = [img, data.snorna].join(".");
-                    break;
-                case "methylation_bygene_table":
-                    img = [img, data.snorna, data.meth_id].join(".");
+                case "survival_table":
+                    var png_name = ["api_survival", data.dataset_id, data.subtype, data.trna, "png"].join(".");
                     break;
             }
+            img = img + png_name;
+            console.log({img:img});
 
             return '<div class="slider row">'+
                     '<div class="thumbnail">' +
