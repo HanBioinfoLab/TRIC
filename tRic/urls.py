@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^trna/$', view=views.trna, name='trna'),
 
 
+
     # apis
     url(r'^api/summary$', views.api_summary, name='api_summary'),
 
@@ -22,5 +23,8 @@ urlpatterns = [
     # input autocompletion
     url(r'^api/trna_list/(?P<search>.*)$', views.api_trna_list, name='api_trna_list'),
     url(r'^api/trna/(?P<search>.*)$', views.api_trna, name='api_trna'),
+
+    # trna expression
+    url(r'^api/trna_expr/$', views.api_trna_expr, name='api_trna_expr'),
 
 ]

@@ -92,3 +92,22 @@ def api_trna(request, search):
     regex = re.compile(search)
     data = filter(regex.match, snorna_list)[0:10]
     return JsonResponse(data, safe=False)
+
+def api_trna_expr(request):
+    title  = "API | tRNA expression"
+    context = {"title": title}
+
+    # request get
+    dsid = request.GET["dataset_ids"]
+    stid = request.GET["subtype_id"]
+    q = request.GET["genes"]
+
+    # for r running
+    rscript = os.path.join(rscript_dir, "api_trna_expr.R")
+    cmd = [rcommand, rscript, root_path, dsid, stid, q]
+    json_file = os.path.join(resource_jons, ".".join(["api_trna_expr", dsid, stid, q, "json"]))
+    if not os.path.exists(json_file):
+        subprocess.check_output(cmd, universal_newlines=True)
+
+    data = json.load(open(json_file, "r"))
+    return JsonResponse(data, safe=False)

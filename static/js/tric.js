@@ -289,37 +289,22 @@ var tric=(function(){
     var gNCompletedAnalyses = {};
     var JOB = {};
     var gAnalysisLabel = {
-        corr_geneexpr: 'Corr. mRNA',
         diff_subtype: 'Diff. subtype',
-        snorna_expr: 'snoRNA expr.',
+        trna_expr: 'tRNA expr.',
         tm_comparison: 'Tumor vs. Normal',
-        survival: 'Survival',
-        corr_rppa: 'Corr. protein',
-        corr_cnv: 'Corr. SCNA',
-        methylation: 'Corr. Methylation',
-        corr_splicing: 'Corr. Splicing'
+        survival: 'Survival'
     };
     var gAnalysisTabsOrder = {
-        snorna_expr: 0,
+        trna_expr: 0,
         tm_comparison: 1,
         diff_subtype: 2,
-        survival: 3,
-        corr_geneexpr: 4,
-        corr_rppa: 5,
-        corr_cnv: 6,
-        methylation: 7,
-        corr_splicing: 8
+        survival: 3
     };
     var gAnalysisTabsClass = {
-        snorna_expr: 'rnaexpr',
+        trna_expr: 'rnaexpr',
         tm_comparison: 'rnaexpr',
         diff_subtype:  'clinical',
-        survival:      'clinical',
-        corr_geneexpr: 'genomic',
-        corr_rppa: 'genomic',
-        corr_cnv: 'genomic',
-        methylation: 'genomic',
-        corr_splicing: 'genomic',
+        survival:      'clinical'
     };
     var default_datatable_settings = {
             processing: true,
@@ -644,7 +629,7 @@ var tric=(function(){
         var dataset_ids = ARGUMENTS.dataset_ids;
         var subtype_id = ARGUMENTS.subtype_id;
         if (JOB.is_preprocessed) {
-            genes = ARGUMENTS.snorna;
+            genes = ARGUMENTS.trna;
         }
         var keys = {
             analysis: analysis,
@@ -700,7 +685,7 @@ var tric=(function(){
 
      // get data from mysql
     function getList(analysis, view, options, callback){
-        var url = '/SNORic/api/'+ analysis;
+        var url = '/tRic/api/'+ analysis;
         console.log(url);
         $.getJSON(url, options)
             .done(function(data){
@@ -714,8 +699,6 @@ var tric=(function(){
     }
 
     function getAnalysisData(analysis) {
-        console.log(analysis);
-
         getList(analysis,
                 'preprocessed_analyses',
                 getKeys(analysis),
@@ -732,7 +715,7 @@ var tric=(function(){
             trna: [queryObj.trna],
             analyses: {
                 trna_expr: true,
-                tm_comparison: true,
+                tm_comparison: false,
                 survival: false,
                 diff_subtype: false
             },
@@ -761,7 +744,6 @@ var tric=(function(){
             for (var analysis in ARGUMENTS.analyses) {
                 if (ARGUMENTS.analyses.hasOwnProperty(analysis)) {
                     if (ARGUMENTS.analyses[analysis] === true) {
-                        console.log(analysis);
                         getAnalysisData(analysis);
                     }
                 }
