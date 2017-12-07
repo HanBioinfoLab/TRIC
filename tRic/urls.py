@@ -35,7 +35,7 @@ urlpatterns = [
     url(r'^api/subtype/(?P<dataset_id>TCGA-\w*)$', views.api_subtype, name='api_subtype'),
 
     # input autocompletion
-    url(r'^api/trna_list/(?P<search>.*)$', views.api_trna_list, name='api_trna_list'),
+    url(r'^api/list/(?P<module>trna|codon|aa)/(?P<search>.*)$', views.api_trna_list, name='api_trna_list'),
     url(r'^api/trna/(?P<search>.*)$', views.api_trna, name='api_trna'),
 
     # trna expression

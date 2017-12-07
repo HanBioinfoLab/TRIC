@@ -400,6 +400,22 @@ var tric=(function(){
         $('.selectpicker').selectpicker({
             size: 4
         });
+        $("#select_analysis_diff_subtype").on("click",function(event){
+                    if($("#select_analysis_diff_subtype").is(":checked")){
+                        $("#select_subtype option:selected").prop(
+                            "selected", false
+                        );
+                        $("#select_subtype option[name='all']").prop(
+                            "selected",
+                            true
+                        );
+                    }
+                });
+        $("#select_subtype").on("change",function(event){
+                    if(this.value !== "all"){
+                        $("#select_analysis_diff_subtype").prop('checked', false);
+                    }
+                });
     }
 
     // select dataset and subtype
@@ -812,11 +828,12 @@ var tric=(function(){
     }
 
     // search autocomplete
-    function check_input_autocomplete(){
+    function check_input_autocomplete(module){
         $("#snorna").autocomplete({
             autoFocus: true,
             source: function(request, response){
-                var url = '/tRic/api/trna_list/' + request.term.trim();
+                var url = '/tRic/api/list/' + module  + "/" + request.term.trim();
+                console.log(url);
                 $.getJSON(
                     url,
                     function(data){
@@ -912,48 +929,14 @@ var tric=(function(){
         },
         onReadyTrna: function(){
 
-            $("#select_analysis_diff_subtype").on("click",function(event){
-                    if($("#select_analysis_diff_subtype").is(":checked")){
-                        $("#select_subtype option:selected").prop(
-                            "selected", false
-                        );
-                        $("#select_subtype option[name='all']").prop(
-                            "selected",
-                            true
-                        );
-                    }
-                });
-            $("#select_subtype").on("change",function(event){
-                    if(this.value !== "all"){
-                        $("#select_analysis_diff_subtype").prop('checked', false);
-                    }
-                });
-
-            check_input_autocomplete();
+            check_input_autocomplete('trna');
             addAnnotationInputKeyupHandler();
             toggleDataTableRow();
 
         },
         onReadyCodon: function(){
 
-            $("#select_analysis_diff_subtype").on("click",function(event){
-                    if($("#select_analysis_diff_subtype").is(":checked")){
-                        $("#select_subtype option:selected").prop(
-                            "selected", false
-                        );
-                        $("#select_subtype option[name='all']").prop(
-                            "selected",
-                            true
-                        );
-                    }
-                });
-            $("#select_subtype").on("change",function(event){
-                    if(this.value !== "all"){
-                        $("#select_analysis_diff_subtype").prop('checked', false);
-                    }
-                });
-
-            check_input_autocomplete();
+            check_input_autocomplete('codon');
             addAnnotationInputKeyupHandler();
             toggleDataTableRow();
         },
