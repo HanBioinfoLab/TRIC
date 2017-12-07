@@ -46,6 +46,8 @@ def statistics(request):
 
     return render(request=request, template_name="tric/statistics.html", context=context, status=200)
 
+# trna -------------------------------------
+
 def trna(request):
     title = "tRNA"
     context = {"title": title}
@@ -103,6 +105,13 @@ def survival_table_png(request, png_name):
     else:
         return HttpResponse("Not engough samples!", content_type="text/plain")
 
+
+# codon -------------------------------------
+def codon(request):
+    title = "Codon"
+    context = {"title": title}
+
+    return render(request=request, template_name='codon/codon.html', context=context, status=200)
 
 
 # apis

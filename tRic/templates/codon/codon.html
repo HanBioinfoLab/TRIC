@@ -1,0 +1,9 @@
+{% extends "tric/base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% load staticfiles %}
+{% block content %}
+    {% include 'codon/query.html' %}
+
+    {% include 'codon/content.html' %}
+
+{% endblock %}

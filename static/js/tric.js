@@ -910,7 +910,7 @@ var tric=(function(){
             // submit
             clickSubmit();
         },
-        onReadyBasic: function(){
+        onReadyTrna: function(){
 
             $("#select_analysis_diff_subtype").on("click",function(event){
                     if($("#select_analysis_diff_subtype").is(":checked")){
@@ -934,6 +934,29 @@ var tric=(function(){
             toggleDataTableRow();
 
         },
+        onReadyCodon: function(){
+
+            $("#select_analysis_diff_subtype").on("click",function(event){
+                    if($("#select_analysis_diff_subtype").is(":checked")){
+                        $("#select_subtype option:selected").prop(
+                            "selected", false
+                        );
+                        $("#select_subtype option[name='all']").prop(
+                            "selected",
+                            true
+                        );
+                    }
+                });
+            $("#select_subtype").on("change",function(event){
+                    if(this.value !== "all"){
+                        $("#select_analysis_diff_subtype").prop('checked', false);
+                    }
+                });
+
+            check_input_autocomplete();
+            addAnnotationInputKeyupHandler();
+            toggleDataTableRow();
+        },
         onReadyAnalysis: function(){
             toggleDataTableRow();
             analysis_gene_symbol_input_keyup_handler();
@@ -952,10 +975,10 @@ $(function(){
             tric.onReadyDatasets();
             break;
         case "/tRic/trna/":
-            tric.onReadyBasic();
+            tric.onReadyTrna();
             break;
-        case "/tRic/freq/":
-            tric.onReadyAnalysis();
+        case "/tRic/codon/":
+            tric.onReadyCodon();
             break;
     }
 });

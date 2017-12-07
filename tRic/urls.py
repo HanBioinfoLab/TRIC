@@ -49,4 +49,7 @@ urlpatterns = [
 
     # survival
     url(r'^api/survival/$', views.api_survival, name="api_survival"),
+
+    # codon
+    url(r'^codon/$', view=views.codon, name='codon'),
 ]
