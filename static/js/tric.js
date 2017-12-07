@@ -312,7 +312,7 @@ var tric=(function(){
         survival_datatable_settings = {
             columns: [
                 {data: "dataset_id"},
-                {data: "trna"},
+                {data: "q"},
                 {data: "p\\.value"},
                 {
                     class: 'details-control',
@@ -663,8 +663,8 @@ var tric=(function(){
             dataset_ids: [dataset_id],
             q: [queryObj.q],
             analyses: {
-                trna_expr: false,
-                tm_comparison: false,
+                trna_expr: true,
+                tm_comparison: true,
                 survival: false,
                 diff_subtype: false
             },

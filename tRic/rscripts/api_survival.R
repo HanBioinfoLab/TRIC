@@ -8,14 +8,16 @@ library(ggplot2)
 # Arguments ---------------------------------------------------------------
 args <- commandArgs(TRUE)
 # The first arg is the root_path
-stopifnot(length(args) == 4)
+stopifnot(length(args) == 5)
 dsid <- args[2] 
 stid <- args[3]
 q <- args[4]
+module <- args[5]
 
-# dsid <- "TCGA-SARC"
-# stid <- "0"
-# q <- "tRNA-Ala-AGC-1-1"
+# dsid <- "TCGA-BRCA"
+# stid <- "all"
+# q <- "ala"
+# module <- "aa"
 
 # Path --------------------------------------------------------------------
 root_path <- args[1]
@@ -28,12 +30,12 @@ resource_data <- file.path(resource, "data")
 # Load data ---------------------------------------------------------------
 ct <- dsid %>% stringr::str_replace(pattern = "TCGA-", replacement = "")
 
-# expr --------------------------------------------------------------------
+filename <- file.path(resource_data, ct, glue::glue("{ct}.{module}_expr.rds.gz"))
 
-expr <- readr::read_rds(path = file.path(resource_data, ct, glue::glue("{ct}.trna_expr.rds.gz"))) %>% 
-  dplyr::filter(trna == q) %>% 
-  tidyr::gather(key = "barcode", value = "expr", -trna) %>% 
-  dplyr::select(-trna) %>% 
+expr <- readr::read_rds(path = filename) %>% 
+  dplyr::filter(rlang::UQ(rlang::sym(module)) == q) %>% 
+  tidyr::gather(key = "barcode", value = "expr", -rlang::UQ(rlang::sym(module))) %>% 
+  dplyr::select(-rlang::UQ(rlang::sym(module))) %>%
   tidyr::replace_na(replace = list(expr = 0)) %>% 
   dplyr::mutate(expr = log2(expr + 0.001)) %>% 
   dplyr::mutate(type = stringr::str_sub(string = barcode, start = 14, end = 14)) %>% 
@@ -72,7 +74,7 @@ expr %>%
 
 
 # Save to json ------------------------------------------------------------
-json_file <- file.path(resource_jsons, glue::glue("api_survival.{dsid}.{stid}.{q}.json"))
+json_file <- file.path(resource_jsons, glue::glue("api_survival.{dsid}.{stid}.{q}.{module}.json"))
 
 if(nrow(for_survival) < 20 || nlevels(for_survival$group) != 2 || mean(for_survival$expr) < 0){
   jsonlite::write_json(x = NULL, path = json_file)
@@ -97,7 +99,7 @@ survival_coxph_model %>% jsonlite::write_json(path = json_file)
 
 # Surival plot ------------------------------------------------------------
 
-png_file <- file.path(resource_pngs, glue::glue("api_survival.{dsid}.{stid}.{q}.png"))
+png_file <- file.path(resource_pngs, glue::glue("api_survival.{dsid}.{stid}.{q}.{module}.png"))
 
 surv_fit <- survival::survfit(
   survival::Surv(months, status) ~ group, 
