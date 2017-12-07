@@ -8,14 +8,16 @@ library(ggplot2)
 # Arguments ---------------------------------------------------------------
 args <- commandArgs(TRUE)
 # The first arg is the root_path
-stopifnot(length(args) == 4)
+stopifnot(length(args) == 5)
 dsid <- args[2] 
 stid <- args[3]
 q <- args[4]
+module <- args[5]
 
 # dsid <- "TCGA-BRCA"
 # stid <- "all"
-# q <- "tRNA-Ala-AGC-1-1"
+# q <- "ala"
+# module <- "aa"
 
 # Path --------------------------------------------------------------------
 root_path <- args[1]
@@ -28,10 +30,12 @@ resource_data <- file.path(resource, "data")
 # Load data ---------------------------------------------------------------
 ct <- dsid %>% stringr::str_replace(pattern = "TCGA-", replacement = "")
 
-expr <- readr::read_rds(path = file.path(resource_data, ct, glue::glue("{ct}.trna_expr.rds.gz"))) %>% 
-  dplyr::filter(trna == q) %>% 
-  tidyr::gather(key = "barcode", value = "expr", -trna) %>% 
-  dplyr::select(-trna) %>% 
+filename <- file.path(resource_data, ct, glue::glue("{ct}.{module}_expr.rds.gz"))
+
+expr <- readr::read_rds(path = filename) %>% 
+  dplyr::filter(rlang::UQ(rlang::sym(module)) == q) %>% 
+  tidyr::gather(key = "barcode", value = "expr", -rlang::UQ(rlang::sym(module))) %>% 
+  dplyr::select(-rlang::UQ(rlang::sym(module))) %>%
   tidyr::replace_na(replace = list(expr = 0)) %>% 
   dplyr::mutate(expr = log2(expr + 0.001)) %>% 
   dplyr::mutate(type = stringr::str_sub(string = barcode, start = 14, end = 14)) %>% 
@@ -63,7 +67,7 @@ diff_subtype %>%
   dplyr::select(subtype, p.value)-> diff_subtype_pval
 
 # Save to json ------------------------------------------------------------
-json_file <- file.path(resource_jsons, glue::glue("api_diff_subtype.{dsid}.{stid}.{q}.json"))
+json_file <- file.path(resource_jsons, glue::glue("api_diff_subtype.{dsid}.{stid}.{q}.{module}.json"))
 
 if (nrow(expr) < 1) {
   jsonlite::write_json(x = NULL, path = json_file)
@@ -74,6 +78,13 @@ if (nrow(expr) < 1) {
 
 
 # save to pngs ------------------------------------------------------------
+
+title <- dplyr::case_when(
+  module == "trna" ~ "tRNA",
+  module == "aa" ~ "Amino acid",
+  module == "codon" ~ "Codon"
+)
+
 diff_subtype_pval$subtype %>% 
   purrr::walk(
     .f = function(.x) {
@@ -91,11 +102,11 @@ diff_subtype_pval$subtype %>%
           axis.text.x = element_text(angle=45, hjust = 1)
         ) +
         labs(
-          y = latex2exp::TeX("tRNA expression ($log_2(RPKM)$)"),
+          y = latex2exp::TeX(glue::glue("{title} expression ($log_2(RPKM)$)")),
           x = stringr::str_replace_all(.x, "_"," ")
         ) -> p
       
-      png_file <- file.path(resource_pngs, glue::glue("api_diff_subtype.{dsid}.{stid}.{.x}.{q}.png"))
+      png_file <- file.path(resource_pngs, glue::glue("api_diff_subtype.{dsid}.{stid}.{.x}.{q}.{module}.png"))
       if (! file.exists(png_file)) ggsave(filename = png_file, plot = p, device = "png")
     }
   )

@@ -325,7 +325,7 @@ var tric=(function(){
         diff_subtype_datatable_settings = {
             columns: [
                 {data: "dataset_id"},
-                {data: "trna"},
+                {data: "q"},
                 {data: "subtype"},
                 {data: "p\\.value"},
                 {
@@ -340,7 +340,7 @@ var tric=(function(){
             order: [[3, 'desc']],
             columns: [
                 {data: "dataset_id", width: "30%"},
-                {data: "trna", width: "30%"},
+                {data: "q", width: "30%"},
                 {data: "sample_id", width: "30%"},
                 {data: "expr", width: "10%"}
             ]
@@ -584,14 +584,16 @@ var tric=(function(){
                 if(data instanceof Array){
                    jQuery.each(data, function(){
                     this.dataset_id = obj['dataset_ids'];
-                    this.trna = obj['genes'];
+                    this.q = obj['genes'];
                     if(!this.hasOwnProperty('subtype')) this.subtype = obj['subtype_id'];
+                    if(!this.hasOwnProperty('module')) this.module = obj['module'];
                    });
                 } else{
                     data.dataset_id = obj['dataset_ids'];
-                    data.trna = obj['genes'];
+                    data.q = obj['genes'];
                     data.subtype = obj['subtype_id'];
                     if(!this.hasOwnProperty('subtype')) this.subtype = obj['subtype_id'];
+                    if(!this.hasOwnProperty('module')) this.module = obj['module'];
                 }
 
                 TABLEDATA[table_id] = data;
@@ -605,8 +607,11 @@ var tric=(function(){
                 // for tumor normal comparison
                 if(analysis == "tm_comparison"){
                     var img_path = '/tRic/trna/tm_comparison_table/png/' + data.png_name;
+                    console.log(img_path);
                     var img = '<img src="' + img_path + '" style="width:80%;height:80%" onerror="this.src=\'/tRic/static/image/error.svg\'">';
-                    $("#tm_comparison_table_png").empty().append(img);
+                    setTimeout(function(){
+                        $("#tm_comparison_table_png").empty().append(img);
+                    }, 2000);
                 }
                 else {OTABLES[table_id] = $('#'+table_id).DataTable(dataTableSettings);}
 
@@ -658,7 +663,7 @@ var tric=(function(){
             dataset_ids: [dataset_id],
             q: [queryObj.q],
             analyses: {
-                trna_expr: true,
+                trna_expr: false,
                 tm_comparison: false,
                 survival: false,
                 diff_subtype: false
@@ -893,10 +898,10 @@ var tric=(function(){
             var img = "/tRic/trna/" + table_id + "/png/";
             switch(table_id){
                 case "diff_subtype_table":
-                    var png_name = ["api_diff_subtype", data.dataset_id, "all", data.subtype, data.trna, "png"].join(".");
+                    var png_name = ["api_diff_subtype", data.dataset_id, "all", data.subtype, data.q, data.module, "png"].join(".");
                     break;
                 case "survival_table":
-                    var png_name = ["api_survival", data.dataset_id, data.subtype, data.trna, "png"].join(".");
+                    var png_name = ["api_survival", data.dataset_id, data.subtype, data.q, data.module, "png"].join(".");
                     break;
             }
             img = img + png_name;

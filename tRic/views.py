@@ -202,8 +202,10 @@ def api_tm_comparison(request):
     dsid = request.GET["dataset_ids"]
     stid = request.GET["subtype_id"]
     q = request.GET["genes"]
+    module = request.GET["module"]
 
-    png_name = ".".join(["tm_comparison", dsid, stid, q, "png"])
+    png_name = ".".join(["tm_comparison", dsid, stid, q, module, "png"])
+    print png_name
 
     data = {"png_name": png_name}
     return JsonResponse(data, safe=False)
@@ -217,11 +219,12 @@ def api_diff_subtype(request):
     dsid = request.GET["dataset_ids"]
     stid = request.GET["subtype_id"]
     q = request.GET["genes"]
+    module = request.GET["module"]
 
     # for r running
     rscript = os.path.join(rscript_dir, "api_diff_subtype.R")
-    cmd = [rcommand, rscript, root_path, dsid, stid, q]
-    json_file = os.path.join(resource_jons, ".".join(["api_diff_subtype", dsid, stid, q, "json"]))
+    cmd = [rcommand, rscript, root_path, dsid, stid, q, module]
+    json_file = os.path.join(resource_jons, ".".join(["api_diff_subtype", dsid, stid, q, module, "json"]))
     if not os.path.exists(json_file):
         subprocess.check_output(cmd, universal_newlines=True)
 
