@@ -312,7 +312,7 @@ var tric=(function(){
         survival_datatable_settings = {
             columns: [
                 {data: "dataset_id"},
-                {data: "trna"},
+                {data: "q"},
                 {data: "p\\.value"},
                 {
                     class: 'details-control',
@@ -325,7 +325,7 @@ var tric=(function(){
         diff_subtype_datatable_settings = {
             columns: [
                 {data: "dataset_id"},
-                {data: "trna"},
+                {data: "q"},
                 {data: "subtype"},
                 {data: "p\\.value"},
                 {
@@ -340,7 +340,7 @@ var tric=(function(){
             order: [[3, 'desc']],
             columns: [
                 {data: "dataset_id", width: "30%"},
-                {data: "trna", width: "30%"},
+                {data: "q", width: "30%"},
                 {data: "sample_id", width: "30%"},
                 {data: "expr", width: "10%"}
             ]
@@ -400,6 +400,22 @@ var tric=(function(){
         $('.selectpicker').selectpicker({
             size: 4
         });
+        $("#select_analysis_diff_subtype").on("click",function(event){
+                    if($("#select_analysis_diff_subtype").is(":checked")){
+                        $("#select_subtype option:selected").prop(
+                            "selected", false
+                        );
+                        $("#select_subtype option[name='all']").prop(
+                            "selected",
+                            true
+                        );
+                    }
+                });
+        $("#select_subtype").on("change",function(event){
+                    if(this.value !== "all"){
+                        $("#select_analysis_diff_subtype").prop('checked', false);
+                    }
+                });
     }
 
     // select dataset and subtype
@@ -413,7 +429,7 @@ var tric=(function(){
                 url,
                 function (data) {
                     var optgroup = {};
-                    if (data.length < 1) {
+                    if (! (data instanceof Array)) {
                         $('#select_subtype').append("<option value=0>No subtype data</option>");
                         $("#select_analysis_diff_subtype")
                             .prop('checked', false)
@@ -527,13 +543,14 @@ var tric=(function(){
         var dataset_ids = ARGUMENTS.dataset_ids;
         var subtype_id = ARGUMENTS.subtype_id;
         if (JOB.is_preprocessed) {
-            genes = ARGUMENTS.trna;
+            genes = ARGUMENTS.q;
         }
         var keys = {
             analysis: analysis,
             dataset_ids : dataset_ids[0],
             genes: genes[0],
-            subtype_id:subtype_id
+            subtype_id:subtype_id,
+            module: ARGUMENTS.module
         };
         return keys;
     }
@@ -544,15 +561,18 @@ var tric=(function(){
     }
 
     function buildLoadDataTableCallback(obj){
-        console.log(obj);
+
         return function(error, data){
             var analysis = obj['analysis'];
             var table_id = obj['table_tmpl_name'] || analysis + '_table';
             var tmpl_id = 'tab_' + analysis, table_tmpl = '/tRic/trna/' + table_id;
+            var module = obj.module;
+
+            console.log({obj: obj});
             console.log({table_tmpl:table_tmpl});
             console.log({tmpl_id:tmpl_id});
             console.log({table_id:table_id});
-            console.log(data);
+
             $("#"+tmpl_id).load(table_tmpl, function(){
                 if(error){
                     alert("Error loading table:\n","\t", error);
@@ -564,16 +584,17 @@ var tric=(function(){
                 if(data instanceof Array){
                    jQuery.each(data, function(){
                     this.dataset_id = obj['dataset_ids'];
-                    this.trna = obj['genes'];
+                    this.q = obj['genes'];
                     if(!this.hasOwnProperty('subtype')) this.subtype = obj['subtype_id'];
+                    if(!this.hasOwnProperty('module')) this.module = obj['module'];
                    });
                 } else{
                     data.dataset_id = obj['dataset_ids'];
-                    data.trna = obj['genes'];
+                    data.q = obj['genes'];
                     data.subtype = obj['subtype_id'];
                     if(!this.hasOwnProperty('subtype')) this.subtype = obj['subtype_id'];
+                    if(!this.hasOwnProperty('module')) this.module = obj['module'];
                 }
-                console.log(data);
 
                 TABLEDATA[table_id] = data;
                 var analysis_datatable_setting = {};
@@ -586,14 +607,29 @@ var tric=(function(){
                 // for tumor normal comparison
                 if(analysis == "tm_comparison"){
                     var img_path = '/tRic/trna/tm_comparison_table/png/' + data.png_name;
+                    console.log(img_path);
                     var img = '<img src="' + img_path + '" style="width:80%;height:80%" onerror="this.src=\'/tRic/static/image/error.svg\'">';
-                    $("#tm_comparison_table_png").empty().append(img);
+                    setTimeout(function(){
+                        $("#tm_comparison_table_png").empty().append(img);
+                    }, 2000);
                 }
                 else {OTABLES[table_id] = $('#'+table_id).DataTable(dataTableSettings);}
 
                 enableAnalysesTab(analysis);
                 gNCompletedAnalyses[analysis] = true;
+
+                var mod = "tRNA";
+                switch (module) {
+                    case "codon":
+                        mod = "Codon";
+                        break;
+                    case "aa":
+                        mod = "Amino Acid";
+                        break;
+                }
+                $("table thead>tr>th").eq(1).text(mod);
             });
+
         };
     }
 
@@ -625,7 +661,7 @@ var tric=(function(){
             is_preprocessed = (queryObj.is_predefined === true);
         ARGUMENTS = {
             dataset_ids: [dataset_id],
-            trna: [queryObj.trna],
+            q: [queryObj.q],
             analyses: {
                 trna_expr: true,
                 tm_comparison: true,
@@ -633,7 +669,8 @@ var tric=(function(){
                 diff_subtype: false
             },
             subtype_id: subtype_id,
-            sample_indices: []
+            sample_indices: [],
+            module: queryObj.module
         };
         $("input[name='selected_analysis']:checked").each(function(){
             ARGUMENTS.analyses[$(this).val()] = true;
@@ -701,11 +738,11 @@ var tric=(function(){
     }
 
      // process the submit
-    function proceedSubmit() {
+    function proceedSubmit(module) {
         gNCompletedAnalyses = {};
         if ($("#snorna-div").hasClass('has-success')) {
-            var trna = $("#snorna").val();
-            query({trna: trna, is_predefined: true});
+            var q = $("#snorna").val();
+            query({q: q, is_predefined: true, module: module});
         }
         else {
             alert("Invalid tRNA input");
@@ -763,7 +800,7 @@ var tric=(function(){
     }
 
     // submit form
-    function clickSubmit() {
+    function clickSubmit(module) {
         // /* for analysis
         $("#analysis-submit-button").click(function () {
             if (validateQuery()) {
@@ -775,7 +812,7 @@ var tric=(function(){
             if (IS_JOB_RUNNING) {
                 JOB_RUNNING_DIALOG.dialog("open");
             } else {
-                proceedSubmit();
+                proceedSubmit(module);
             }
         });
     }
@@ -812,11 +849,11 @@ var tric=(function(){
     }
 
     // search autocomplete
-    function check_input_autocomplete(){
+    function check_input_autocomplete(module){
         $("#snorna").autocomplete({
             autoFocus: true,
             source: function(request, response){
-                var url = '/tRic/api/trna_list/' + request.term.trim();
+                var url = '/tRic/api/list/' + module  + "/" + request.term.trim();
                 $.getJSON(
                     url,
                     function(data){
@@ -830,10 +867,9 @@ var tric=(function(){
         });
     }
 
-
     // check input in backend
     function checkAnnotationInput(annotation, obj, url) {
-        url=  url || '/tRic/api/trna/';
+        console.log(url);
         $.getJSON(url+annotation, function(data){
             if(data.length > 0){
                 showSuccess(obj,'');
@@ -844,13 +880,14 @@ var tric=(function(){
     }
 
     // keyup to check input
-    function addAnnotationInputKeyupHandler(){
+    function addAnnotationInputKeyupHandler(module){
         var $snorna = $("#snorna");
         $snorna.keyup(function () {
             clearValidationStyles(this);
             var snorna = this.value.trim();
             if (snorna !== '') {
-                checkAnnotationInput(snorna.toLowerCase(), this);
+                var url = '/tRic/api/check/' + module + "/";
+                checkAnnotationInput(snorna.toLowerCase(), this, url);
             }
         });
     }
@@ -861,10 +898,10 @@ var tric=(function(){
             var img = "/tRic/trna/" + table_id + "/png/";
             switch(table_id){
                 case "diff_subtype_table":
-                    var png_name = ["api_diff_subtype", data.dataset_id, "all", data.subtype, data.trna, "png"].join(".");
+                    var png_name = ["api_diff_subtype", data.dataset_id, "all", data.subtype, data.q, data.module, "png"].join(".");
                     break;
                 case "survival_table":
-                    var png_name = ["api_survival", data.dataset_id, data.subtype, data.trna, "png"].join(".");
+                    var png_name = ["api_survival", data.dataset_id, data.subtype, data.q, data.module, "png"].join(".");
                     break;
             }
             img = img + png_name;
@@ -906,61 +943,32 @@ var tric=(function(){
             initTimeoutDialog();
             initJobCheckDialog();
             proc_progress();
-
-            // submit
-            clickSubmit();
         },
         onReadyTrna: function(){
 
-            $("#select_analysis_diff_subtype").on("click",function(event){
-                    if($("#select_analysis_diff_subtype").is(":checked")){
-                        $("#select_subtype option:selected").prop(
-                            "selected", false
-                        );
-                        $("#select_subtype option[name='all']").prop(
-                            "selected",
-                            true
-                        );
-                    }
-                });
-            $("#select_subtype").on("change",function(event){
-                    if(this.value !== "all"){
-                        $("#select_analysis_diff_subtype").prop('checked', false);
-                    }
-                });
-
-            check_input_autocomplete();
-            addAnnotationInputKeyupHandler();
+            check_input_autocomplete('trna');
+            addAnnotationInputKeyupHandler('trna');
             toggleDataTableRow();
-
+            // submit
+            clickSubmit('trna');
         },
         onReadyCodon: function(){
 
-            $("#select_analysis_diff_subtype").on("click",function(event){
-                    if($("#select_analysis_diff_subtype").is(":checked")){
-                        $("#select_subtype option:selected").prop(
-                            "selected", false
-                        );
-                        $("#select_subtype option[name='all']").prop(
-                            "selected",
-                            true
-                        );
-                    }
-                });
-            $("#select_subtype").on("change",function(event){
-                    if(this.value !== "all"){
-                        $("#select_analysis_diff_subtype").prop('checked', false);
-                    }
-                });
+            check_input_autocomplete('codon');
+            addAnnotationInputKeyupHandler('codon');
+            toggleDataTableRow();
 
-            check_input_autocomplete();
-            addAnnotationInputKeyupHandler();
-            toggleDataTableRow();
+            // submit
+            clickSubmit('codon');
         },
-        onReadyAnalysis: function(){
+        onReadyAA: function(){
+
+            check_input_autocomplete('aa');
+            addAnnotationInputKeyupHandler('aa');
             toggleDataTableRow();
-            analysis_gene_symbol_input_keyup_handler();
-            inputQueryAutoComplete('#gene-input');
+
+            // submit
+            clickSubmit('aa');
         },
         onReadyDatasets: function(){
             load_dataset();
@@ -979,6 +987,9 @@ $(function(){
             break;
         case "/tRic/codon/":
             tric.onReadyCodon();
+            break;
+        case "/tRic/aa/":
+            tric.onReadyAA();
             break;
     }
 });

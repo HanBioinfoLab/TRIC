@@ -114,6 +114,13 @@ def codon(request):
     return render(request=request, template_name='codon/codon.html', context=context, status=200)
 
 
+def aa(request):
+    title = "Amino Acid"
+    context = {"title": title}
+
+    return render(request=request, template_name='aa/aa.html', context=context, status=200)
+
+
 # apis
 def api_summary(request):
     title = "API | Summary"
@@ -136,38 +143,50 @@ def api_subtype(request, dataset_id):
     data = json.load(open(json_file, "r"))
     return JsonResponse(data, safe=False)
 
-def api_trna_list(request, search):
-    title = "API | tRNA list"
+def api_trna_list(request, module, search):
+    name = module + "_list"
+    filename = name + ".pickle"
+
+    title = "API | " + name
     context = {"title": title}
-    snorna_file = os.path.join(resource_data, "snorna_list.pickle")
-    snorna_list = pickle.load(open(snorna_file, "rb"))
+
+    module_file = os.path.join(resource_data, filename)
+    modle_list = pickle.load(open(module_file, "rb"))
     regex = re.compile(search, re.IGNORECASE)
-    data = filter(regex.search, snorna_list)[0:10]
+
+    data = filter(regex.search, modle_list)[0:10]
     return JsonResponse(data, safe=False)
 
-def api_trna(request, search):
-    title = "API | tRNA"
+def api_trna(request, module, search):
+    name = module + "_list"
+    filename = name + ".pickle"
+
+    title = "API | " + name
     context = {"title": title}
-    snorna_file = os.path.join(resource_data, "snorna_list.pickle")
-    snorna_list = pickle.load(open(snorna_file, "rb"))
+
+    module_file = os.path.join(resource_data, filename)
+    module_list = pickle.load(open(module_file, "rb"))
     regex = re.compile(search)
-    data = filter(regex.match, snorna_list)[0:10]
+
+    data = filter(regex.match, module_list)[0:10]
     return JsonResponse(data, safe=False)
 
 # trna expression
 def api_trna_expr(request):
-    title  = "API | tRNA expression"
+    title = "API | tRNA expression"
     context = {"title": title}
 
     # request get
     dsid = request.GET["dataset_ids"]
     stid = request.GET["subtype_id"]
     q = request.GET["genes"]
+    module = request.GET["module"]
 
     # for r running
     rscript = os.path.join(rscript_dir, "api_trna_expr.R")
-    cmd = [rcommand, rscript, root_path, dsid, stid, q]
-    json_file = os.path.join(resource_jons, ".".join(["api_trna_expr", dsid, stid, q, "json"]))
+    cmd = [rcommand, rscript, root_path, dsid, stid, q, module]
+    json_file = os.path.join(resource_jons, ".".join(["api_trna_expr", dsid, stid, q, module, "json"]))
+
     if not os.path.exists(json_file):
         subprocess.check_output(cmd, universal_newlines=True)
 
@@ -183,8 +202,10 @@ def api_tm_comparison(request):
     dsid = request.GET["dataset_ids"]
     stid = request.GET["subtype_id"]
     q = request.GET["genes"]
+    module = request.GET["module"]
 
-    png_name = ".".join(["tm_comparison", dsid, stid, q, "png"])
+    png_name = ".".join(["tm_comparison", dsid, stid, q, module, "png"])
+    print png_name
 
     data = {"png_name": png_name}
     return JsonResponse(data, safe=False)
@@ -198,11 +219,12 @@ def api_diff_subtype(request):
     dsid = request.GET["dataset_ids"]
     stid = request.GET["subtype_id"]
     q = request.GET["genes"]
+    module = request.GET["module"]
 
     # for r running
     rscript = os.path.join(rscript_dir, "api_diff_subtype.R")
-    cmd = [rcommand, rscript, root_path, dsid, stid, q]
-    json_file = os.path.join(resource_jons, ".".join(["api_diff_subtype", dsid, stid, q, "json"]))
+    cmd = [rcommand, rscript, root_path, dsid, stid, q, module]
+    json_file = os.path.join(resource_jons, ".".join(["api_diff_subtype", dsid, stid, q, module, "json"]))
     if not os.path.exists(json_file):
         subprocess.check_output(cmd, universal_newlines=True)
 
@@ -217,11 +239,12 @@ def api_survival(request):
     dsid = request.GET["dataset_ids"]
     stid = request.GET["subtype_id"]
     q = request.GET["genes"]
+    module = request.GET["module"]
 
     # for r running
     rscript = os.path.join(rscript_dir, "api_survival.R")
-    cmd = [rcommand, rscript, root_path, dsid, stid, q]
-    json_file = os.path.join(resource_jons, ".".join(["api_survival", dsid, stid, q, "json"]))
+    cmd = [rcommand, rscript, root_path, dsid, stid, q, module]
+    json_file = os.path.join(resource_jons, ".".join(["api_survival", dsid, stid, q, module, "json"]))
     if not os.path.exists(json_file):
         subprocess.check_output(cmd, universal_newlines=True)
 

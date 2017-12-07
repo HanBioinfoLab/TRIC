@@ -26,7 +26,9 @@ codon <- readr::read_rds(path = file.path(data_path, "codon.rds.gz"))
 codon %>% purrr::pwalk(.f = split_data, name = "codon_expr")
 
 aa <- readr::read_rds(path = file.path(data_path, "aa.rds.gz"))
-aa %>% purrr::pwalk(.f = split_data, name = "aa_expr")
+aa %>%
+  dplyr::mutate(expr = purrr::map(.x = expr, .f = function(.x){.x %>% dplyr::rename(aa = codon)})) %>% 
+  purrr::pwalk(.f = split_data, name = "aa_expr")
 
 file.remove(file.path(data_path, list.files(data_path, pattern = ".rds.gz.rds.gz", recursive = T)))
 
@@ -83,3 +85,14 @@ clinical_all %>%
   dplyr::mutate(cancer_types = glue::glue("TCGA-{cancer_types}")) -> cst
 
 cst %>% readr::write_rds(path = file.path(data_path, "clinical_subtype.rds.gz"), compress = "gz")
+
+
+# Codon pickle ------------------------------------------------------------
+
+write(x = codon$expr[[1]]$codon, file = file.path(data_path, "codon.txt"))
+
+
+
+# AA pickle ---------------------------------------------------------------
+
+write(x = aa$expr[[1]]$codon, file = file.path(data_path, "aa.txt"))
