@@ -833,7 +833,6 @@ var tric=(function(){
             autoFocus: true,
             source: function(request, response){
                 var url = '/tRic/api/list/' + module  + "/" + request.term.trim();
-                console.log(url);
                 $.getJSON(
                     url,
                     function(data){
@@ -847,10 +846,9 @@ var tric=(function(){
         });
     }
 
-
     // check input in backend
     function checkAnnotationInput(annotation, obj, url) {
-        url=  url || '/tRic/api/trna/';
+        console.log(url);
         $.getJSON(url+annotation, function(data){
             if(data.length > 0){
                 showSuccess(obj,'');
@@ -861,13 +859,14 @@ var tric=(function(){
     }
 
     // keyup to check input
-    function addAnnotationInputKeyupHandler(){
+    function addAnnotationInputKeyupHandler(module){
         var $snorna = $("#snorna");
         $snorna.keyup(function () {
             clearValidationStyles(this);
             var snorna = this.value.trim();
             if (snorna !== '') {
-                checkAnnotationInput(snorna.toLowerCase(), this);
+                var url = '/tRic/api/check/' + module + "/";
+                checkAnnotationInput(snorna.toLowerCase(), this, url);
             }
         });
     }
@@ -930,20 +929,21 @@ var tric=(function(){
         onReadyTrna: function(){
 
             check_input_autocomplete('trna');
-            addAnnotationInputKeyupHandler();
+            addAnnotationInputKeyupHandler('trna');
             toggleDataTableRow();
 
         },
         onReadyCodon: function(){
 
             check_input_autocomplete('codon');
-            addAnnotationInputKeyupHandler();
+            addAnnotationInputKeyupHandler('codon');
             toggleDataTableRow();
         },
-        onReadyAnalysis: function(){
+        onReadyAA: function(){
+
+            check_input_autocomplete('aa');
+            addAnnotationInputKeyupHandler('aa');
             toggleDataTableRow();
-            analysis_gene_symbol_input_keyup_handler();
-            inputQueryAutoComplete('#gene-input');
         },
         onReadyDatasets: function(){
             load_dataset();
@@ -962,6 +962,9 @@ $(function(){
             break;
         case "/tRic/codon/":
             tric.onReadyCodon();
+            break;
+        case "/tRic/aa/":
+            tric.onReadyAA();
             break;
     }
 });

@@ -114,6 +114,13 @@ def codon(request):
     return render(request=request, template_name='codon/codon.html', context=context, status=200)
 
 
+def aa(request):
+    title = "Amino Acid"
+    context = {"title": title}
+
+    return render(request=request, template_name='aa/aa.html', context=context, status=200)
+
+
 # apis
 def api_summary(request):
     title = "API | Summary"
@@ -138,11 +145,11 @@ def api_subtype(request, dataset_id):
 
 def api_trna_list(request, module, search):
     name = module + "_list"
+    filename = name + ".pickle"
 
     title = "API | " + name
     context = {"title": title}
 
-    filename = name + ".pickle"
     module_file = os.path.join(resource_data, filename)
     modle_list = pickle.load(open(module_file, "rb"))
     regex = re.compile(search, re.IGNORECASE)
@@ -150,13 +157,18 @@ def api_trna_list(request, module, search):
     data = filter(regex.search, modle_list)[0:10]
     return JsonResponse(data, safe=False)
 
-def api_trna(request, search):
-    title = "API | tRNA"
+def api_trna(request, module, search):
+    name = module + "_list"
+    filename = name + ".pickle"
+
+    title = "API | " + name
     context = {"title": title}
-    snorna_file = os.path.join(resource_data, "trna_list.pickle")
-    snorna_list = pickle.load(open(snorna_file, "rb"))
+
+    module_file = os.path.join(resource_data, filename)
+    module_list = pickle.load(open(module_file, "rb"))
     regex = re.compile(search)
-    data = filter(regex.match, snorna_list)[0:10]
+
+    data = filter(regex.match, module_list)[0:10]
     return JsonResponse(data, safe=False)
 
 # trna expression

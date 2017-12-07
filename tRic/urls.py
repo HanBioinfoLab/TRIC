@@ -36,7 +36,7 @@ urlpatterns = [
 
     # input autocompletion
     url(r'^api/list/(?P<module>trna|codon|aa)/(?P<search>.*)$', views.api_trna_list, name='api_trna_list'),
-    url(r'^api/trna/(?P<search>.*)$', views.api_trna, name='api_trna'),
+    url(r'^api/check/(?P<module>trna|codon|aa)/(?P<search>.*)$', views.api_trna, name='api_trna'),
 
     # trna expression
     url(r'^api/trna_expr/$', views.api_trna_expr, name='api_trna_expr'),
@@ -52,4 +52,5 @@ urlpatterns = [
 
     # codon
     url(r'^codon/$', view=views.codon, name='codon'),
+    url(r'^aa/$', view=views.aa, name='aa'),
 ]
