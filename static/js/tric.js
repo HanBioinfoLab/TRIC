@@ -413,7 +413,7 @@ var tric=(function(){
                 url,
                 function (data) {
                     var optgroup = {};
-                    if (data.length < 1) {
+                    if (! (data instanceof Array)) {
                         $('#select_subtype').append("<option value=0>No subtype data</option>");
                         $("#select_analysis_diff_subtype")
                             .prop('checked', false)

@@ -13,8 +13,8 @@ dsid <- args[2]
 stid <- args[3]
 q <- args[4]
 
-# dsid <- "TCGA-BRCA"
-# stid <- "all"
+# dsid <- "TCGA-SARC"
+# stid <- "0"
 # q <- "tRNA-Ala-AGC-1-1"
 
 # Path --------------------------------------------------------------------
@@ -49,11 +49,15 @@ expr <- readr::read_rds(path = file.path(resource_data, ct, glue::glue("{ct}.trn
 clinical <- readr::read_rds(path = file.path(resource_data, ct, glue::glue("{ct}.clinical_dataset.rds.gz"))) %>% 
   dplyr::mutate(sample_id = glue::glue("{ct}-Tumor-{sample_id}"))
 
-if (!stid %in% c("all", "0")) {clinical <- clinical %>% dplyr::filter(stage == stid)}
+if (!stid %in% c("all", "0")) {
+  clinical <- 
+    clinical %>% 
+    dplyr::filter(stage == stid) %>% 
+    dplyr::select(-subtype, -stage)
+  }
 
 clinical %>% 
   dplyr::filter(!is.na(time), time > 0, !is.na(status)) %>% 
-  dplyr::select(-subtype, -stage) %>% 
   dplyr::distinct() %>% 
   dplyr::mutate(status = as.integer(status))-> clinical
 
