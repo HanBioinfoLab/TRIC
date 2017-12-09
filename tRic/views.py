@@ -127,6 +127,12 @@ def freq(request):
 
     return render(request=request, template_name='freq/freq.html', context=context, status=200)
 
+def freq_table(request):
+    title = "Freq table"
+    context = {"title": title}
+
+    return render(request, 'trna/datatable/freq_table.html', context)
+
 
 # apis
 def api_summary(request):
@@ -259,15 +265,15 @@ def api_survival(request):
     return JsonResponse(data, safe=False)
 
 # api freq
-def api_freq(request, freq):
-    title = "API | " + freq
+def api_freq(request):
+    title = "API | Freq"
 
     # request set
     q = request.GET['q']
 
     rscript = os.path.join(rscript_dir, "api_freq.R")
-    cmd = [rcommand, rscript, root_path, q, freq]
-    json_file = os.path.join(resource_jons, ".".join(["api_freq", q, freq, "json"]))
+    cmd = [rcommand, rscript, root_path, q]
+    json_file = os.path.join(resource_jons, ".".join(["api_freq", q, "json"]))
     if not os.path.exists(json_file):
         subprocess.check_output(cmd, universal_newlines=True)
 

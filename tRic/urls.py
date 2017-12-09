@@ -33,6 +33,9 @@ urlpatterns = [
     url(r'^trna/survival_table/$', views.survival_table, name="survival_table"),
     url(r'^trna/survival_table/png/(?P<png_name>.*)$', views.survival_table_png, name="survival_table_png"),
 
+    # freq
+    url(r'^trna/freq_table/$', views.freq_table, name='freq_table'),
+
 
     # apis
     url(r'^api/summary$', views.api_summary, name='api_summary'),
@@ -57,7 +60,7 @@ urlpatterns = [
     url(r'^api/survival/$', views.api_survival, name="api_survival"),
 
     # freq aa and freq codon
-    url(r'^api/freq/(?P<freq>freq_aa|freq_codon)$', views.api_freq, name="api_freq_aa"),
+    url(r'^api/freq/$', views.api_freq, name="api_freq"),
 
 
 

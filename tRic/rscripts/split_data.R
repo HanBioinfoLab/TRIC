@@ -100,11 +100,11 @@ write(x = aa$expr[[1]]$codon, file = file.path(data_path, "aa.txt"))
 
 
 # freq -------------------------------------------------------------------
-freq <- readr::read_rds(path = file.path(data_path, "codon_aa_freq.rds.gz"))
+freq <- readr::read_rds(path = file.path(data_path, "freq.rds.gz"))
 write(x = freq$symbol, file = file.path(data_path, "freq_list.txt"))
 
 
-freq <- readr::read_rds(file.path(data_path, 'codon_aa_freq.rds.gz'))
+freq <- readr::read_rds(file.path(data_path, 'freq.rds.gz'))
 
 freq %>% dplyr::select(1:TTT) -> freq_codon
 
@@ -112,3 +112,25 @@ freq_codon %>% readr::write_rds(path = file.path(data_path, "freq_codon.rds.gz")
 
 freq %>% dplyr::select(1:2, ala:sec) -> freq_aa
 freq_aa %>% readr::write_rds(path = file.path(data_path, "freq_aa.rds.gz"), compress = "gz")
+
+
+# json pattern ------------------------------------------------------------
+table_out <- readr::read_tsv(file.path(data_path,'table-tRNA-Codon-AA.out'))
+
+table_out %>% 
+  dplyr::select(2:3) %>% 
+  dplyr::distinct() %>%  
+  tidyr::nest(-AA) %>% 
+  dplyr::rename(name = AA, children = data) %>% 
+  dplyr::mutate(
+    children = purrr::map2(.x = children, .y = name, function(.x, .y) {
+      .x %>% 
+        dplyr::rename(name = nodoG) %>% 
+        dplyr::mutate(name = glue::glue("{name}")) %>% 
+        tibble::add_row(name = glue::glue("{.y}")) %>% 
+        dplyr::mutate(size = 0)
+    })
+  ) %>% 
+  dplyr::mutate(name = glue::glue("size_{name}")) -> json_pattern
+
+json_pattern %>% readr::write_rds(path = file.path(data_path, 'freq_json_pattern.rds.gz'), compress = "gz")

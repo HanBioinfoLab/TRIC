@@ -16,49 +16,6 @@ var tric=(function(){
 
 
 
-    // registered analysis number
-    function getNumAnalyses(){
-        var num = 0;
-        for (var analysis in ARGUMENTS.analyses) {
-            if (ARGUMENTS.analyses.hasOwnProperty(analysis)) {
-                if (ARGUMENTS.analyses[analysis] === true) {
-                    num += 1;
-                }
-            }
-        }
-        return num;
-    }
-    // --------------------------------------------------------------
-
-    // for analysis
-    function inputQueryAutoComplete(elem){
-        $(elem).autocomplete({
-            autoFocus: true,
-            source: function(request, response){
-                var url = '/SNORic/api/gene_symbol_list/' + request.term.trim();
-                $.getJSON(
-                    url,
-                    function(data){
-                        response($.map(data, function(item){return item.gene_symbol}))
-                    }
-                );
-            },
-            select: function(envent, ui){
-                showSuccess(this);
-            }
-        })
-    }
-
-    function analysis_gene_symbol_input_keyup_handler(){
-        var $gene_input = $("#gene-input");
-        $gene_input.keyup(function () {
-            clearValidationStyles(this);
-            var gene_symbol = this.value.trim();
-            if (gene_symbol !== '') {
-                checkAnnotationInput(gene_symbol.toLowerCase(), this, '/SNORic/api/gene_symbol/');
-            }
-        });
-    }
 
 
 
@@ -87,7 +44,8 @@ var tric=(function(){
         diff_subtype: 'Diff. subtype',
         trna_expr: 'tRNA expr.',
         tm_comparison: 'Tumor vs. Normal',
-        survival: 'Survival'
+        survival: 'Survival',
+        freq: "Frequency"
     };
     var gAnalysisTabsOrder = {
         trna_expr: 0,
@@ -99,7 +57,8 @@ var tric=(function(){
         trna_expr: 'rnaexpr',
         tm_comparison: 'rnaexpr',
         diff_subtype:  'clinical',
-        survival:      'clinical'
+        survival:      'clinical',
+        freq: "rnaexpr"
     };
     var default_datatable_settings = {
             processing: true,
@@ -322,6 +281,19 @@ var tric=(function(){
         $("#tabs").tabs("disable");
     }
 
+    // registered analysis number
+    function getNumAnalyses(){
+        var num = 0;
+        for (var analysis in ARGUMENTS.analyses) {
+            if (ARGUMENTS.analyses.hasOwnProperty(analysis)) {
+                if (ARGUMENTS.analyses[analysis] === true) {
+                    num += 1;
+                }
+            }
+        }
+        return num;
+    }
+
     // progress percentage
     function updateLoadingProgress(){
         var numAnalyses = getNumAnalyses();
@@ -443,11 +415,7 @@ var tric=(function(){
 
      // get data from mysql
     function getList(analysis, view, options, callback){
-        var url = '/tRic/api/';
-        if (analysis.includes('freq')) {
-            url = url + "freq/"
-        }
-        url = url + analysis;
+        var url = '/tRic/api/' + analysis;
         $.getJSON(url, options)
             .done(function(data){
                 callback(null, data);
@@ -614,10 +582,8 @@ var tric=(function(){
     // validate submit
     function validateQuery(){
         var selected_analysis = [];
-        var gene_based_analysis = ['freq_qq', 'freq_codon'];
-        $('input[type="checkbox"][name="selected_analysis"]:checked').each(function(){
-            selected_analysis.push(this.value);
-        });
+        var gene_based_analysis = ['freq'];
+        selected_analysis.push('freq');
         for(var i = 0, len = selected_analysis.length; i<len; i++){
             if(gene_based_analysis.indexOf(selected_analysis[i])!= -1){
                 if(!$("#gene-input-div").hasClass('has-success')){
@@ -637,11 +603,98 @@ var tric=(function(){
         return true;
     }
 
+    function treemap(data){
+        var w = 1100,
+            h = 800 - 180,
+            x = d3.scale.linear().range([0, w]),
+            y = d3.scale.linear().range([0, h]),
+            color = d3.scale.category20c(),
+            root,
+            node;
+
+        var treemap = d3.layout.treemap()
+            .round(false)
+            .size([w, h])
+            .sticky(true)
+            .value(function(d) { return d.size; });
+
+
+        var svg = d3.select("#body")
+            .append("div")
+            .attr("class", "chart")
+            .style("width", w + "px")
+            .style("height", h + "px")
+            .append("svg:svg")
+            .attr("width", w)
+            .attr("height", h)
+            .append("svg:g")
+            .attr("transform", "translate(.5,.5)");
+        function size(d) {
+          return d.size;
+        }
+
+        function count(d) {
+          return 1;
+        }
+
+        function zoom(d) {
+          var kx = w / d.dx, ky = h / d.dy;
+          x.domain([d.x, d.x + d.dx]);
+          y.domain([d.y, d.y + d.dy]);
+
+          var t = svg.selectAll("g.cell").transition()
+              .duration(d3.event.altKey ? 7500 : 750)
+              .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
+
+          t.select("rect")
+              .attr("width", function(d) { return kx * d.dx - 1; })
+              .attr("height", function(d) { return ky * d.dy - 1; })
+
+          t.select("text")
+              .attr("x", function(d) { return kx * d.dx / 2; })
+              .attr("y", function(d) { return ky * d.dy / 2; })
+              .style("opacity", function(d) { return kx * d.dx > d.w ? 1 : 0; });
+
+          node = d;
+          d3.event.stopPropagation();
+        }
+
+        node = root = data;
+
+        var nodes = treemap.nodes(root).filter(function(d) { return !d.children; });
+
+        var cell = svg.selectAll("g").data(nodes)
+            .enter().append("svg:g")
+            .attr("class", "cell")
+            .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+            .on("click", function(d) { return zoom(node == d.parent ? root : d.parent); });
+
+        cell.append("svg:rect")
+            .attr("width", function(d) { return d.dx - 1; })
+            .attr("height", function(d) { return d.dy - 1; })
+            .style("fill", function(d) { return color(d.parent.name); });
+
+        cell.append("svg:text")
+            .attr("x", function(d) { return d.dx / 2; })
+            .attr("y", function(d) { return d.dy / 2; })
+            .attr("dy", ".35em")
+            .attr("text-anchor", "middle")
+            .text(function(d) { return d.name; })
+            .style("opacity", function(d) { d.w = this.getComputedTextLength(); return d.dx > d.w ? 1 : 0; });
+
+        d3.select(window).on("click", function() { zoom(root); });
+
+        d3.select("select").on("change", function() {
+            treemap.value(this.value == "size" ? size : count).nodes(root);
+            zoom(node);
+        });
+    }
+
     function freqCallback(obj){
 
         return function(error, data){
             var analysis = obj['analysis'];
-            var table_id = obj['table_tmpl_name'] || analysis + '_table';
+            var table_id = analysis + '_table';
             var tmpl_id = 'tab_' + analysis, table_tmpl = '/tRic/trna/' + table_id;
             console.log(data);
             console.log({obj: obj});
@@ -652,15 +705,17 @@ var tric=(function(){
             $("#"+tmpl_id).load(table_tmpl, function(){
                 if(error){
                     alert("Error loading table:\n","\t", error);
-            }
+                }
 
-                // jQuery is abso-fucking-lutely amazing!
-                // add dataset_id and query trna to the data.
+                treemap(data);
+
+                enableAnalysesTab(analysis);
+                gNCompletedAnalyses[analysis] = true;
+
             });
 
         };
     }
-
 
     // analysis table
     function getAnalysisTable(analysis, q){
@@ -673,19 +728,11 @@ var tric=(function(){
         var q = $("#gene-input").val();
         ARGUMENTS = {
             analyses: {
-                freq_qq: false,
-                freq_codon: false
+                freq:true
             },
             q: q,
             module: module
         };
-
-        $("input[name='selected_analysis']:checked").each(
-            function(){
-                var analysis = $(this).val();
-                ARGUMENTS.analyses[analysis] = true;
-            }
-        );
 
         $("#progressbar").show();
         hideAnalysesTabs();
@@ -757,7 +804,9 @@ var tric=(function(){
 
     // search autocomplete
     function check_input_autocomplete(module){
-        $("#snorna").autocomplete({
+        var selector = "#snorna";
+        if (module == "freq") selector = "#gene-input";
+        $(selector).autocomplete({
             autoFocus: true,
             source: function(request, response){
                 var url = '/tRic/api/list/' + module  + "/" + request.term.trim();
@@ -787,8 +836,9 @@ var tric=(function(){
 
     // keyup to check input
     function addAnnotationInputKeyupHandler(module){
-        var $snorna = $("#snorna");
-        $snorna.keyup(function () {
+        var selector = "#snorna";
+        if (module == "freq") selector = "#gene-input";
+        $(selector).keyup(function () {
             clearValidationStyles(this);
             var snorna = this.value.trim();
             if (snorna !== '') {

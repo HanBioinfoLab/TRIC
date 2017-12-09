@@ -119,6 +119,6 @@ biomaRt::getBM(attributes = c("ensembl_gene_id", "hgnc_symbol"), filters = "ense
 
 ensid2symbol %>% 
   dplyr::left_join(codon_aa_freq, by = "ensid") %>% 
-  readr::write_rds(path = file.path(root_path, "codon_aa_freq.rds.gz"), compress = "gz")
+  readr::write_rds(path = file.path(root_path, "freq.rds.gz"), compress = "gz")
 
 
