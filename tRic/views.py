@@ -257,3 +257,19 @@ def api_survival(request):
 
     data = json.load(open(json_file, 'r'))
     return JsonResponse(data, safe=False)
+
+# api freq
+def api_freq(request, freq):
+    title = "API | " + freq
+
+    # request set
+    q = request.GET['q']
+
+    rscript = os.path.join(rscript_dir, "api_freq.R")
+    cmd = [rcommand, rscript, root_path, q, freq]
+    json_file = os.path.join(resource_jons, ".".join(["api_freq", q, freq, "json"]))
+    if not os.path.exists(json_file):
+        subprocess.check_output(cmd, universal_newlines=True)
+
+    data = json.load(open(json_file, 'r'))
+    return JsonResponse(data, safe=False)

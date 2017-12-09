@@ -60,138 +60,7 @@ var tric=(function(){
         });
     }
 
-    function getAnalysisTable(analysis, dataset_id, query_gene){
-        switch (analysis){
-            case 'corr_cnv':
-                getList(
-                    'corr_cnv_bygene',
-                    'corr_cnv_bygene',
-                    {
-                        dataset_ids: dataset_id,
-                        query_gene: query_gene
-                    },
-                    buildLoadDataTableCallback({
-                        'analysis': analysis,
-                        'table_tmpl_name': 'corr_cnv_bygene_table'
-                    })
-                );
-                break;
-            case "snorna_expr":
-                getList(
-                    "snorna_expr_bygene",
-                    "snorna_expr_bygene",
-                    {
-                        dataset_ids: dataset_id,
-                        query_gene: query_gene
-                    },
-                    buildLoadDataTableCallback(
-                        {
-                            "analysis": analysis,
-                            "table_tmpl_name": "snorna_expr_bygene_table"
-                        }
-                    )
-                );
-                break;
-            case "diff_subtype":
-                getList(
-                    "diff_subtype_bygene",
-                    "diff_subtype_bygene",
-                    {
-                        dataset_ids: dataset_id,
-                        query_gene: query_gene
-                    },
-                    buildLoadDataTableCallback({
-                        analysis: analysis,
-                        table_tmpl_name: "diff_subtype_bygene_table"
-                    })
-                );
-                break;
-            case "survival":
-                getList(
-                    "survival_bygene",
-                    "survival_bygene",
-                    {
-                        dataset_ids: dataset_id,
-                        query_gene: query_gene
-                    },
-                    buildLoadDataTableCallback({
-                        analysis: analysis,
-                        table_tmpl_name: "survival_bygene_table"
-                    })
-                );
-                break;
-            case "corr_geneexpr":
-                getList(
-                    "corr_geneexpr_bygene",
-                    "corr_geneexpr_bygene",
-                    {
-                        dataset_ids: dataset_id,
-                        query_gene: query_gene
-                    },
-                    buildLoadDataTableCallback({
-                        analysis: analysis,
-                        table_tmpl_name: "corr_geneexpr_bygene_table"
-                    })
-                );
-                break;
-            case "corr_splicing":
-                getList(
-                    "corr_splicing_bygene",
-                    "corr_splicing_bygene",
-                    {
-                        dataset_ids: dataset_id,
-                        query_gene: query_gene
-                    },
-                    buildLoadDataTableCallback({
-                        analysis: analysis,
-                        table_tmpl_name: "corr_splicing_bygene_table"
-                    })
-                );
-                break;
-            case "corr_rppa":
-                getList(
-                    "corr_rppa_bygene",
-                    "corr_rppa_bygene",
-                    {
-                        dataset_ids: dataset_id,
-                        query_gene: query_gene
-                    },
-                    buildLoadDataTableCallback({
-                        analysis: analysis,
-                        table_tmpl_name: "corr_rppa_bygene_table"
-                    })
-                );
-                break;
-            case "corr_cnv":
-                getList(
-                    "corr_cnv_bygene",
-                    "corr_cnv_bygene",
-                    {
-                        dataset_ids: dataset_id,
-                        query_gene: query_gene
-                    },
-                    buildLoadDataTableCallback({
-                        analysis: analysis,
-                        table_tmpl_name: "corr_cnv_bygene_table"
-                    })
-                );
-                break;
-            case "methylation":
-                getList(
-                    "methylation_bygene",
-                    "methylation_bygene",
-                    {
-                        dataset_ids: dataset_id,
-                        query_gene: query_gene
-                    },
-                    buildLoadDataTableCallback({
-                        analysis: analysis,
-                        table_tmpl_name: "methylation_bygene_table"
-                    })
-                );
-                break;
-        }
-    }
+
 
 
     // --------------------------------------------------------------
@@ -275,7 +144,7 @@ var tric=(function(){
                 {data: "sample_id", width: "30%"},
                 {data: "expr", width: "10%"}
             ]
-        }
+        };
     var analysis_datatable_settings = {
             'trna_expr': rnaexpr_datatable_settings,
             'survival': survival_datatable_settings,
@@ -574,7 +443,11 @@ var tric=(function(){
 
      // get data from mysql
     function getList(analysis, view, options, callback){
-        var url = '/tRic/api/'+ analysis;
+        var url = '/tRic/api/';
+        if (analysis.includes('freq')) {
+            url = url + "freq/"
+        }
+        url = url + analysis;
         $.getJSON(url, options)
             .done(function(data){
                 callback(null, data);
@@ -764,8 +637,38 @@ var tric=(function(){
         return true;
     }
 
+    function freqCallback(obj){
+
+        return function(error, data){
+            var analysis = obj['analysis'];
+            var table_id = obj['table_tmpl_name'] || analysis + '_table';
+            var tmpl_id = 'tab_' + analysis, table_tmpl = '/tRic/trna/' + table_id;
+            console.log(data);
+            console.log({obj: obj});
+            console.log({table_tmpl:table_tmpl});
+            console.log({tmpl_id:tmpl_id});
+            console.log({table_id:table_id});
+
+            $("#"+tmpl_id).load(table_tmpl, function(){
+                if(error){
+                    alert("Error loading table:\n","\t", error);
+            }
+
+                // jQuery is abso-fucking-lutely amazing!
+                // add dataset_id and query trna to the data.
+            });
+
+        };
+    }
+
+
+    // analysis table
+    function getAnalysisTable(analysis, q){
+        getList(analysis, analysis, {q: q}, freqCallback({'analysis': analysis}));
+    }
+
     // query analysis
-    function queryAnalysis(){
+    function queryAnalysis(module){
         gNCompletedAnalyses = {};
         var q = $("#gene-input").val();
         ARGUMENTS = {
@@ -796,7 +699,7 @@ var tric=(function(){
         for(var analysis in ARGUMENTS.analyses){
             if(ARGUMENTS.analyses.hasOwnProperty(analysis)){
                 if(ARGUMENTS.analyses[analysis]){
-                    getAnalysisTable(analysis, dataset_id, query_gene)
+                    getAnalysisTable(analysis, q)
                 }
             }
         }

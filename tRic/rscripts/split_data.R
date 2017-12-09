@@ -103,3 +103,12 @@ write(x = aa$expr[[1]]$codon, file = file.path(data_path, "aa.txt"))
 freq <- readr::read_rds(path = file.path(data_path, "codon_aa_freq.rds.gz"))
 write(x = freq$symbol, file = file.path(data_path, "freq_list.txt"))
 
+
+freq <- readr::read_rds(file.path(data_path, 'codon_aa_freq.rds.gz'))
+
+freq %>% dplyr::select(1:TTT) -> freq_codon
+
+freq_codon %>% readr::write_rds(path = file.path(data_path, "freq_codon.rds.gz"), compress = 'gz')
+
+freq %>% dplyr::select(1:2, ala:sec) -> freq_aa
+freq_aa %>% readr::write_rds(path = file.path(data_path, "freq_aa.rds.gz"), compress = "gz")

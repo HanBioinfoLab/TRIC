@@ -56,6 +56,9 @@ urlpatterns = [
     # survival
     url(r'^api/survival/$', views.api_survival, name="api_survival"),
 
+    # freq aa and freq codon
+    url(r'^api/freq/(?P<freq>freq_aa|freq_codon)$', views.api_freq, name="api_freq_aa"),
+
 
 
 ]
