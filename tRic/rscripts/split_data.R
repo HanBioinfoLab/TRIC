@@ -96,3 +96,10 @@ write(x = codon$expr[[1]]$codon, file = file.path(data_path, "codon.txt"))
 # AA pickle ---------------------------------------------------------------
 
 write(x = aa$expr[[1]]$codon, file = file.path(data_path, "aa.txt"))
+
+
+
+# freq -------------------------------------------------------------------
+freq <- readr::read_rds(path = file.path(data_path, "codon_aa_freq.rds.gz"))
+write(x = freq$symbol, file = file.path(data_path, "freq_list.txt"))
+

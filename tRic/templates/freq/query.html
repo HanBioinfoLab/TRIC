@@ -1,0 +1,64 @@
+{% load staticfiles %}
+<div class="bs-docs-section">
+    <h2 class="page-header">Gene codon and amino acid frequency analysis.</h2>
+    <div class="panel panel-danger">
+        <div class="panel-body">
+            <p>The section is focused on the gene codon and amino acid frequency analysis. Searching gene symbol in the query box.</p>
+        </div>
+    </div>
+    <div class="form-horizontal" role="form">
+        {% csrf_token %}
+        <div class="bs-callout bs-callout-danger">
+            <!--queries-->
+            <div class="form-group">
+                <label for="query by annotation" class="col-sm-1 control-label">
+                    Symbol:
+                </label>
+                <div id="gene-input-div" class="col-sm-4 ui-widget has-feedback inner-addon right-addon has-success">
+                    <input name="snorna" type="text" id="gene-input" class="form-control" placeholder="PTEN" value="PTEN"/>
+                    <span class="glyphicon form-control-feedback"></span>
+                    <label class="control-label" for="annotations"></label>
+                </div>
+                <div class="checkbox col-sm-2">
+                    <label>
+                        <input type="checkbox" name="selected_analysis" value="diff_subtype" id="freq-aa" > Amoni Acid
+                    </label>
+                </div>
+                <div class="checkbox col-sm-1">
+                    <label>
+                        <input  type="checkbox" name="selected_analysis" value="survival" id="freq-codon" > Codon
+                    </label>
+                </div>
+                <div class="col-sm-1">
+                    <button type="reset" class="btn btn-primary btn-lg" value = "reset" id="reset_freq">
+                        Reset
+                    </button>
+                </div>
+                <div class="col-sm-1">
+                    <button id="submit-freq" tpye="submit-button" class="btn btn-primary btn-lg">
+                        Analysis
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--progress-->
+    <div class="row">
+        <div id="progressbar" class="progress">
+            <div class="progress-label progress-bar " role="progressbar"></div>
+        </div>
+        <div id="timeout-alert" title="Alert">
+            <p>
+              <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+              Cannot contact job analysis server. Continue waiting or stop?
+           </p>
+          </div>
+        <div id="job-running-alert" title="Alert">
+            <p>
+              <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+              Current job is running. Submit a new one or continue?
+           </p>
+          </div>
+    </div>
+</div>

@@ -113,12 +113,19 @@ def codon(request):
 
     return render(request=request, template_name='codon/codon.html', context=context, status=200)
 
-
+# amino acid -----------
 def aa(request):
     title = "Amino Acid"
     context = {"title": title}
 
     return render(request=request, template_name='aa/aa.html', context=context, status=200)
+
+# aa codon freq ------------------------------
+def freq(request):
+    title = "Amino Acid Frequency"
+    context = {"title": title}
+
+    return render(request=request, template_name='freq/freq.html', context=context, status=200)
 
 
 # apis
