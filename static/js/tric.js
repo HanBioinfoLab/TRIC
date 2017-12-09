@@ -16,251 +16,8 @@ var tric=(function(){
 
 
 
-    // registered analysis number
-    function getNumAnalyses(){
-        var num = 0;
-        for (var analysis in ARGUMENTS.analyses) {
-            if (ARGUMENTS.analyses.hasOwnProperty(analysis)) {
-                if (ARGUMENTS.analyses[analysis] === true) {
-                    num += 1;
-                }
-            }
-        }
-        return num;
-    }
-    // --------------------------------------------------------------
 
-    // for analysis
-    function inputQueryAutoComplete(elem){
-        $(elem).autocomplete({
-            autoFocus: true,
-            source: function(request, response){
-                var url = '/SNORic/api/gene_symbol_list/' + request.term.trim();
-                $.getJSON(
-                    url,
-                    function(data){
-                        response($.map(data, function(item){return item.gene_symbol}))
-                    }
-                );
-            },
-            select: function(envent, ui){
-                showSuccess(this);
-            }
-        })
-    }
 
-    function analysis_gene_symbol_input_keyup_handler(){
-        var $gene_input = $("#gene-input");
-        $gene_input.keyup(function () {
-            clearValidationStyles(this);
-            var gene_symbol = this.value.trim();
-            if (gene_symbol !== '') {
-                checkAnnotationInput(gene_symbol.toLowerCase(), this, '/SNORic/api/gene_symbol/');
-            }
-        });
-    }
-
-    function validateQuery(){
-        var selected_analysis = [];
-        var gene_based_analysis = ['corr_cnv', 'corr_geneexpr', 'corr_appr', 'methylation'];
-        $('input[type="checkbox"][name="selected_analysis"]:checked').each(function(){
-            selected_analysis.push(this.value);
-        });
-        for(var i = 0, len = selected_analysis.length; i<len; i++){
-            if(gene_based_analysis.indexOf(selected_analysis[i])!= -1){
-                if(!$("#gene-input-div").hasClass('has-success')){
-                    if($("#gene-input").val() === ''){
-                        alert("Please input gene symbol.");
-                    }else{
-                        alert("Invalid gene symbol.");
-                    }
-                    return false
-                }
-            }
-        }
-        if(selected_analysis.length === 0){
-            alert("No analysis has been selected.");
-            return false
-        }
-        return true;
-    }
-
-    function queryAnalysis(){
-        gNCompletedAnalyses = {};
-        var dataset_id = $("#select_dataset").val(),
-            query_gene = $("#gene-input").val();
-        ARGUMENTS = {
-            dataset_ids: [dataset_id],
-            analyses: {
-                snorna_expr: false,
-                survival: false,
-                diff_subtype: false,
-                corr_geneexpr: false,
-                corr_splicing: true,
-                corr_rppa: false,
-                corr_cnv: false,
-                methylation: false
-            },
-            query_gene: query_gene
-        };
-
-        $("input[name='selected_analysis']:checked").each(
-            function(){
-                var analysis = $(this).val();
-                ARGUMENTS.analyses[analysis] = true;
-            }
-        );
-
-        $("#progressbar").show();
-        hideAnalysesTabs();
-        showAllAnalysesTabs();
-        setTimeout(
-            function(){
-                updateLoadingProgress()
-            },
-            1000
-        );
-        for(var analysis in ARGUMENTS.analyses){
-            if(ARGUMENTS.analyses.hasOwnProperty(analysis)){
-                if(ARGUMENTS.analyses[analysis]){
-                    getAnalysisTable(analysis, dataset_id, query_gene)
-                }
-            }
-        }
-    }
-
-    function getAnalysisTable(analysis, dataset_id, query_gene){
-        switch (analysis){
-            case 'corr_cnv':
-                getList(
-                    'corr_cnv_bygene',
-                    'corr_cnv_bygene',
-                    {
-                        dataset_ids: dataset_id,
-                        query_gene: query_gene
-                    },
-                    buildLoadDataTableCallback({
-                        'analysis': analysis,
-                        'table_tmpl_name': 'corr_cnv_bygene_table'
-                    })
-                );
-                break;
-            case "snorna_expr":
-                getList(
-                    "snorna_expr_bygene",
-                    "snorna_expr_bygene",
-                    {
-                        dataset_ids: dataset_id,
-                        query_gene: query_gene
-                    },
-                    buildLoadDataTableCallback(
-                        {
-                            "analysis": analysis,
-                            "table_tmpl_name": "snorna_expr_bygene_table"
-                        }
-                    )
-                );
-                break;
-            case "diff_subtype":
-                getList(
-                    "diff_subtype_bygene",
-                    "diff_subtype_bygene",
-                    {
-                        dataset_ids: dataset_id,
-                        query_gene: query_gene
-                    },
-                    buildLoadDataTableCallback({
-                        analysis: analysis,
-                        table_tmpl_name: "diff_subtype_bygene_table"
-                    })
-                );
-                break;
-            case "survival":
-                getList(
-                    "survival_bygene",
-                    "survival_bygene",
-                    {
-                        dataset_ids: dataset_id,
-                        query_gene: query_gene
-                    },
-                    buildLoadDataTableCallback({
-                        analysis: analysis,
-                        table_tmpl_name: "survival_bygene_table"
-                    })
-                );
-                break;
-            case "corr_geneexpr":
-                getList(
-                    "corr_geneexpr_bygene",
-                    "corr_geneexpr_bygene",
-                    {
-                        dataset_ids: dataset_id,
-                        query_gene: query_gene
-                    },
-                    buildLoadDataTableCallback({
-                        analysis: analysis,
-                        table_tmpl_name: "corr_geneexpr_bygene_table"
-                    })
-                );
-                break;
-            case "corr_splicing":
-                getList(
-                    "corr_splicing_bygene",
-                    "corr_splicing_bygene",
-                    {
-                        dataset_ids: dataset_id,
-                        query_gene: query_gene
-                    },
-                    buildLoadDataTableCallback({
-                        analysis: analysis,
-                        table_tmpl_name: "corr_splicing_bygene_table"
-                    })
-                );
-                break;
-            case "corr_rppa":
-                getList(
-                    "corr_rppa_bygene",
-                    "corr_rppa_bygene",
-                    {
-                        dataset_ids: dataset_id,
-                        query_gene: query_gene
-                    },
-                    buildLoadDataTableCallback({
-                        analysis: analysis,
-                        table_tmpl_name: "corr_rppa_bygene_table"
-                    })
-                );
-                break;
-            case "corr_cnv":
-                getList(
-                    "corr_cnv_bygene",
-                    "corr_cnv_bygene",
-                    {
-                        dataset_ids: dataset_id,
-                        query_gene: query_gene
-                    },
-                    buildLoadDataTableCallback({
-                        analysis: analysis,
-                        table_tmpl_name: "corr_cnv_bygene_table"
-                    })
-                );
-                break;
-            case "methylation":
-                getList(
-                    "methylation_bygene",
-                    "methylation_bygene",
-                    {
-                        dataset_ids: dataset_id,
-                        query_gene: query_gene
-                    },
-                    buildLoadDataTableCallback({
-                        analysis: analysis,
-                        table_tmpl_name: "methylation_bygene_table"
-                    })
-                );
-                break;
-        }
-    }
 
 
     // --------------------------------------------------------------
@@ -287,7 +44,8 @@ var tric=(function(){
         diff_subtype: 'Diff. subtype',
         trna_expr: 'tRNA expr.',
         tm_comparison: 'Tumor vs. Normal',
-        survival: 'Survival'
+        survival: 'Survival',
+        freq: "Frequency"
     };
     var gAnalysisTabsOrder = {
         trna_expr: 0,
@@ -299,7 +57,8 @@ var tric=(function(){
         trna_expr: 'rnaexpr',
         tm_comparison: 'rnaexpr',
         diff_subtype:  'clinical',
-        survival:      'clinical'
+        survival:      'clinical',
+        freq: "rnaexpr"
     };
     var default_datatable_settings = {
             processing: true,
@@ -344,7 +103,7 @@ var tric=(function(){
                 {data: "sample_id", width: "30%"},
                 {data: "expr", width: "10%"}
             ]
-        }
+        };
     var analysis_datatable_settings = {
             'trna_expr': rnaexpr_datatable_settings,
             'survival': survival_datatable_settings,
@@ -375,16 +134,24 @@ var tric=(function(){
     }
 
     // reset query
-    function reset(){
-        $("#reset_basic").on("click", function(event){
+    function reset(module){
+        var selector = "#reset_" + module;
+        var q = 'tRNA-Ala-AGC-1-1';
+        switch (module) {
+            case "codon":
+                q = "ATT";
+                break;
+            case "aa":
+                q = "ala";
+                break;
+            case "freq":
+                q = "PTEN";
+                break;
+        }
+        $(selector).on("click", function(event){
             $("#select_dataset").val("TCGA-ACC").change();
             $("#select_subtype").val("all");
-            $("#snorna").val("tRNA-Ala-AGC-1-1");
-            $("input[name='selected_analysis']").prop("checked", true);
-        });
-        $("#reset_analysis").on("click", function(event){
-            $("#select_dataset").val("TCGA-ACC").change();
-            $("#gene-input").val("PTEN");
+            $("#snorna").val(q);
             $("input[name='selected_analysis']").prop("checked", true);
         });
     }
@@ -514,6 +281,19 @@ var tric=(function(){
         $("#tabs").tabs("disable");
     }
 
+    // registered analysis number
+    function getNumAnalyses(){
+        var num = 0;
+        for (var analysis in ARGUMENTS.analyses) {
+            if (ARGUMENTS.analyses.hasOwnProperty(analysis)) {
+                if (ARGUMENTS.analyses[analysis] === true) {
+                    num += 1;
+                }
+            }
+        }
+        return num;
+    }
+
     // progress percentage
     function updateLoadingProgress(){
         var numAnalyses = getNumAnalyses();
@@ -635,7 +415,7 @@ var tric=(function(){
 
      // get data from mysql
     function getList(analysis, view, options, callback){
-        var url = '/tRic/api/'+ analysis;
+        var url = '/tRic/api/' + analysis;
         $.getJSON(url, options)
             .done(function(data){
                 callback(null, data);
@@ -799,12 +579,186 @@ var tric=(function(){
         progressbar.height(40);
     }
 
+    // validate submit
+    function validateQuery(){
+        var selected_analysis = [];
+        var gene_based_analysis = ['freq'];
+        selected_analysis.push('freq');
+        for(var i = 0, len = selected_analysis.length; i<len; i++){
+            if(gene_based_analysis.indexOf(selected_analysis[i])!= -1){
+                if(!$("#gene-input-div").hasClass('has-success')){
+                    if($("#gene-input").val() === ''){
+                        alert("Please input gene symbol.");
+                    }else{
+                        alert("Invalid gene symbol.");
+                    }
+                    return false
+                }
+            }
+        }
+        if(selected_analysis.length === 0){
+            alert("No analysis has been selected.");
+            return false
+        }
+        return true;
+    }
+
+    function treemap(data){
+        var w = 1100,
+            h = 800 - 180,
+            x = d3.scale.linear().range([0, w]),
+            y = d3.scale.linear().range([0, h]),
+            color = d3.scale.category20c(),
+            root,
+            node;
+
+        var treemap = d3.layout.treemap()
+            .round(false)
+            .size([w, h])
+            .sticky(true)
+            .value(function(d) { return d.size; });
+
+
+        var svg = d3.select("#body")
+            .append("div")
+            .attr("class", "chart")
+            .style("width", w + "px")
+            .style("height", h + "px")
+            .append("svg:svg")
+            .attr("width", w)
+            .attr("height", h)
+            .append("svg:g")
+            .attr("transform", "translate(.5,.5)");
+        function size(d) {
+          return d.size;
+        }
+
+        function count(d) {
+          return 1;
+        }
+
+        function zoom(d) {
+          var kx = w / d.dx, ky = h / d.dy;
+          x.domain([d.x, d.x + d.dx]);
+          y.domain([d.y, d.y + d.dy]);
+
+          var t = svg.selectAll("g.cell").transition()
+              .duration(d3.event.altKey ? 7500 : 750)
+              .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
+
+          t.select("rect")
+              .attr("width", function(d) { return kx * d.dx - 1; })
+              .attr("height", function(d) { return ky * d.dy - 1; })
+
+          t.select("text")
+              .attr("x", function(d) { return kx * d.dx / 2; })
+              .attr("y", function(d) { return ky * d.dy / 2; })
+              .style("opacity", function(d) { return kx * d.dx > d.w ? 1 : 0; });
+
+          node = d;
+          d3.event.stopPropagation();
+        }
+
+        node = root = data;
+
+        var nodes = treemap.nodes(root).filter(function(d) { return !d.children; });
+
+        var cell = svg.selectAll("g").data(nodes)
+            .enter().append("svg:g")
+            .attr("class", "cell")
+            .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+            .on("click", function(d) { return zoom(node == d.parent ? root : d.parent); });
+
+        cell.append("svg:rect")
+            .attr("width", function(d) { return d.dx - 1; })
+            .attr("height", function(d) { return d.dy - 1; })
+            .style("fill", function(d) { return color(d.parent.name); });
+
+        cell.append("svg:text")
+            .attr("x", function(d) { return d.dx / 2; })
+            .attr("y", function(d) { return d.dy / 2; })
+            .attr("dy", ".35em")
+            .attr("text-anchor", "middle")
+            .text(function(d) { return d.name; })
+            .style("opacity", function(d) { d.w = this.getComputedTextLength(); return d.dx > d.w ? 1 : 0; });
+
+        d3.select(window).on("click", function() { zoom(root); });
+
+        d3.select("select").on("change", function() {
+            treemap.value(this.value == "size" ? size : count).nodes(root);
+            zoom(node);
+        });
+    }
+
+    function freqCallback(obj){
+
+        return function(error, data){
+            var analysis = obj['analysis'];
+            var table_id = analysis + '_table';
+            var tmpl_id = 'tab_' + analysis, table_tmpl = '/tRic/trna/' + table_id;
+            console.log(data);
+            console.log({obj: obj});
+            console.log({table_tmpl:table_tmpl});
+            console.log({tmpl_id:tmpl_id});
+            console.log({table_id:table_id});
+
+            $("#"+tmpl_id).load(table_tmpl, function(){
+                if(error){
+                    alert("Error loading table:\n","\t", error);
+                }
+
+                treemap(data);
+
+                enableAnalysesTab(analysis);
+                gNCompletedAnalyses[analysis] = true;
+
+            });
+
+        };
+    }
+
+    // analysis table
+    function getAnalysisTable(analysis, q){
+        getList(analysis, analysis, {q: q}, freqCallback({'analysis': analysis}));
+    }
+
+    // query analysis
+    function queryAnalysis(module){
+        gNCompletedAnalyses = {};
+        var q = $("#gene-input").val();
+        ARGUMENTS = {
+            analyses: {
+                freq:true
+            },
+            q: q,
+            module: module
+        };
+
+        $("#progressbar").show();
+        hideAnalysesTabs();
+        showAllAnalysesTabs();
+        setTimeout(
+            function(){
+                updateLoadingProgress()
+            },
+            1000
+        );
+        for(var analysis in ARGUMENTS.analyses){
+            if(ARGUMENTS.analyses.hasOwnProperty(analysis)){
+                if(ARGUMENTS.analyses[analysis]){
+                    getAnalysisTable(analysis, q)
+                }
+            }
+        }
+    }
+
+
     // submit form
     function clickSubmit(module) {
         // /* for analysis
-        $("#analysis-submit-button").click(function () {
+        $("#submit-freq").click(function () {
             if (validateQuery()) {
-                queryAnalysis();
+                queryAnalysis(module);
             }
         });
 
@@ -850,7 +804,9 @@ var tric=(function(){
 
     // search autocomplete
     function check_input_autocomplete(module){
-        $("#snorna").autocomplete({
+        var selector = "#snorna";
+        if (module == "freq") selector = "#gene-input";
+        $(selector).autocomplete({
             autoFocus: true,
             source: function(request, response){
                 var url = '/tRic/api/list/' + module  + "/" + request.term.trim();
@@ -869,7 +825,6 @@ var tric=(function(){
 
     // check input in backend
     function checkAnnotationInput(annotation, obj, url) {
-        console.log(url);
         $.getJSON(url+annotation, function(data){
             if(data.length > 0){
                 showSuccess(obj,'');
@@ -881,8 +836,9 @@ var tric=(function(){
 
     // keyup to check input
     function addAnnotationInputKeyupHandler(module){
-        var $snorna = $("#snorna");
-        $snorna.keyup(function () {
+        var selector = "#snorna";
+        if (module == "freq") selector = "#gene-input";
+        $(selector).keyup(function () {
             clearValidationStyles(this);
             var snorna = this.value.trim();
             if (snorna !== '') {
@@ -934,7 +890,6 @@ var tric=(function(){
     return {
         init: function(){
             // init
-            reset();
             $("#tabs").tab();
             general_effect();
             load_subtype();
@@ -943,32 +898,41 @@ var tric=(function(){
             initTimeoutDialog();
             initJobCheckDialog();
             proc_progress();
+
+            // toggle pictures
+            toggleDataTableRow();
         },
         onReadyTrna: function(){
-
+            reset('trna');
             check_input_autocomplete('trna');
             addAnnotationInputKeyupHandler('trna');
-            toggleDataTableRow();
+
             // submit
             clickSubmit('trna');
         },
         onReadyCodon: function(){
-
+            reset('codon');
             check_input_autocomplete('codon');
             addAnnotationInputKeyupHandler('codon');
-            toggleDataTableRow();
 
             // submit
             clickSubmit('codon');
         },
         onReadyAA: function(){
-
+            reset('aa');
             check_input_autocomplete('aa');
             addAnnotationInputKeyupHandler('aa');
-            toggleDataTableRow();
 
             // submit
             clickSubmit('aa');
+        },
+        onReadyFreq: function(){
+            reset('freq');
+            check_input_autocomplete('freq');
+            addAnnotationInputKeyupHandler('freq');
+
+            // submit
+            clickSubmit('freq')
         },
         onReadyDatasets: function(){
             load_dataset();
@@ -977,6 +941,7 @@ var tric=(function(){
 })();
 
 $(function(){
+
     tric.init();
     switch (window.location.pathname){
         case "/tRic/statistics/":
@@ -990,6 +955,9 @@ $(function(){
             break;
         case "/tRic/aa/":
             tric.onReadyAA();
+            break;
+        case "/tRic/freq/":
+            tric.onReadyFreq();
             break;
     }
 });

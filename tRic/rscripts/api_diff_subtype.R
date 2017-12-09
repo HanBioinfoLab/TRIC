@@ -102,7 +102,7 @@ diff_subtype_pval$subtype %>%
           axis.text.x = element_text(angle=45, hjust = 1)
         ) +
         labs(
-          y = latex2exp::TeX(glue::glue("{title} expression ($log_2(RPKM)$)")),
+          y = latex2exp::TeX(glue::glue("{title} expression ($log_2(TMM)$)")),
           x = stringr::str_replace_all(.x, "_"," ")
         ) -> p
       

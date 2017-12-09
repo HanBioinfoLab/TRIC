@@ -113,12 +113,25 @@ def codon(request):
 
     return render(request=request, template_name='codon/codon.html', context=context, status=200)
 
-
+# amino acid -----------
 def aa(request):
     title = "Amino Acid"
     context = {"title": title}
 
     return render(request=request, template_name='aa/aa.html', context=context, status=200)
+
+# aa codon freq ------------------------------
+def freq(request):
+    title = "Amino Acid Frequency"
+    context = {"title": title}
+
+    return render(request=request, template_name='freq/freq.html', context=context, status=200)
+
+def freq_table(request):
+    title = "Freq table"
+    context = {"title": title}
+
+    return render(request, 'trna/datatable/freq_table.html', context)
 
 
 # apis
@@ -245,6 +258,22 @@ def api_survival(request):
     rscript = os.path.join(rscript_dir, "api_survival.R")
     cmd = [rcommand, rscript, root_path, dsid, stid, q, module]
     json_file = os.path.join(resource_jons, ".".join(["api_survival", dsid, stid, q, module, "json"]))
+    if not os.path.exists(json_file):
+        subprocess.check_output(cmd, universal_newlines=True)
+
+    data = json.load(open(json_file, 'r'))
+    return JsonResponse(data, safe=False)
+
+# api freq
+def api_freq(request):
+    title = "API | Freq"
+
+    # request set
+    q = request.GET['q']
+
+    rscript = os.path.join(rscript_dir, "api_freq.R")
+    cmd = [rcommand, rscript, root_path, q]
+    json_file = os.path.join(resource_jons, ".".join(["api_freq", q, "json"]))
     if not os.path.exists(json_file):
         subprocess.check_output(cmd, universal_newlines=True)
 

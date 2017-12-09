@@ -7,14 +7,50 @@
 
 {% block content %}
 
-<div class="jumbotron">
-    <div class="container">
-        <h2>Welcome to tRic</h2>
-        <p class="text-justify">The <span class="text-danger">tRic</span> refers to "tRNA in cancer". Transfer RNAs (tRNAs) are a class of regulatory non-coding RNAs, which play a conserved role in ribosome biogenesis. However, in recent years, increasing evidence has demonstrated snoRNAs play important roles in tumorigenesis. Here, we systematically analyzed snoRNA expression profiles in > 10,000 samples across 31 cancer types from The Cancer Genome Atlas, and analyzed their correlation with other TCGA genomic,proteomic, epigenomic and clinical data (e.g. patient tumor stage, subtype, and survival).
-        </p>
+<!--<div class="jumbotron">-->
+    <!--<div class="container">-->
+        <!--<h2>Welcome to tRic</h2>-->
+        <!--<p class="text-justify">The <span class="text-danger">tRic</span> refers to "tRNA in cancer". Transfer RNAs (tRNAs) are a class of regulatory non-coding RNAs, which play a conserved role in ribosome biogenesis. However, in recent years, increasing evidence has demonstrated snoRNAs play important roles in tumorigenesis. Here, we systematically analyzed snoRNA expression profiles in > 10,000 samples across 31 cancer types from The Cancer Genome Atlas, and analyzed their correlation with other TCGA genomic,proteomic, epigenomic and clinical data (e.g. patient tumor stage, subtype, and survival).-->
+        <!--</p>-->
+    <!--</div>-->
+<!--</div>-->
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">TRIC</h3>
+            </div>
+            <div class="panel-body text-justify" style="padding:17px 20px; font-size:17px; height:270px">
+                <P>The <span class="text-danger">TRIC</span> refers to "tRNA in cancers". Transfer RNAs (tRNAs) play essential roles in the protein translational process, and changes in expression of tRNAs play multiple roles in tumorigenesis. The database tRNA in Cancer (tRiC) show the global expression landscape of tRNAs among 31 cancer types and more than 10000 samples from The Cancer Genome Atlas. Here we systematically analyzed tRNA expression profiles at gene codon and amino acid levels and the functional consequence (e.g. patient tumor stage, subtype, and survival). We also try to link the differentially expression of tRNA the translational control in tumor.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">Users Can:</h3>
+            </div>
+            <div class="panel-body" style="padding:15px 10px; font-size:16px; height:270px">
+                <dl class="dl-horizontal">
+                    <dt><span class="glyphicon glyphicon-search" aria-hidden="true" style="color:red"></span></dt>
+                    <dd>Search tRNA expression profile in different cancer types.<dd>
+                    <dt><span class="glyphicon glyphicon-check" aria-hidden="true" style="color:red"></span></dt>
+                    <dd>Analyze the expression alteration of tRNAs between tumor and normal samples. </dd>
+                    <dt><span class="glyphicon glyphicon-check" aria-hidden="true" style="color:red"></span></dt>
+                    <dd>Analyze the tRNA related clinically relevant events.</dd>
+                    <dt><span class="glyphicon glyphicon-check" aria-hidden="true" style="color:red"></span></dt>
+                    <dd>Comparative analyze the expression and expression alteration at tRNA, codon and amino acid levels.
+</dd>
+                    <dt><span class="glyphicon glyphicon-check" aria-hidden="true" style="color:red"></span></dt>
+                    <dd>Analyze codon usage among whole genome.</dd>
+                    <dt><span class="glyphicon glyphicon-download-alt" aria-hidden="true" style="color:red"></span></dt>
+                    <dd>Download all expression data to independently validate a pattern of interest.</dd>
+                </dl>
+            </div>
+        </div>
     </div>
 </div>
-
 
 <div class="row">
     <!--data summary-->
@@ -36,7 +72,7 @@
                 <h3 class="panel-title">tRNA Level</h3>
             </div>
             <div class="panel-body">
-                <a href="{% url 'tric:trna' %}" class="thumbnail"><img src="{% static 'image/dataset_summary.svg' %}" style="height: 240px"></a>
+                <a href="{% url 'tric:trna' %}" class="thumbnail"><img src="{% static 'image/tRNA-module.png' %}" style="height: 240px"></a>
             </div>
         </div>
     </div>
@@ -48,7 +84,7 @@
                 <h3 class="panel-title">Codon Level</h3>
             </div>
             <div class="panel-body">
-                <a href="{% url 'tric:codon' %}" class="thumbnail"><img src="{% static 'image/dataset_summary.svg' %}" style="height: 240px"></a>
+                <a href="{% url 'tric:codon' %}" class="thumbnail"><img src="{% static 'image/codon-module.png' %}" style="height: 240px"></a>
             </div>
         </div>
     </div>
@@ -60,7 +96,19 @@
                 <h3 class="panel-title">Amino Acid Level</h3>
             </div>
             <div class="panel-body">
-                <a href="{% url 'tric:aa' %}" class="thumbnail"><img src="{% static 'image/dataset_summary.svg' %}" style="height: 240px"></a>
+                <a href="{% url 'tric:aa' %}" class="thumbnail"><img src="{% static 'image/aa-module.png' %}" style="height: 240px"></a>
+            </div>
+        </div>
+    </div>
+
+    <!--Frequency-->
+    <div class="col-md-3">
+        <div class="penal panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Code Usage</h3>
+            </div>
+            <div class="panel-body">
+                <a href="{% url 'tric:freq' %}" class="thumbnail"><img src="{% static 'image/codon-AA-frequency.png' %}" style="height: 240px"></a>
             </div>
         </div>
     </div>

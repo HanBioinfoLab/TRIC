@@ -11,6 +11,12 @@ urlpatterns = [
 
     # tRNA
     url(r'^trna/$', view=views.trna, name='trna'),
+    # codon
+    url(r'^codon/$', view=views.codon, name='codon'),
+    # amino acid
+    url(r'^aa/$', view=views.aa, name='aa'),
+    # aa codon freq
+    url(r'^freq/$', view=views.freq, name = 'freq'),
 
     # trna expression
     url(r'^trna/trna_expr_table/$', views.trna_expr_table, name='trna_expr_table'),
@@ -27,6 +33,9 @@ urlpatterns = [
     url(r'^trna/survival_table/$', views.survival_table, name="survival_table"),
     url(r'^trna/survival_table/png/(?P<png_name>.*)$', views.survival_table_png, name="survival_table_png"),
 
+    # freq
+    url(r'^trna/freq_table/$', views.freq_table, name='freq_table'),
+
 
     # apis
     url(r'^api/summary$', views.api_summary, name='api_summary'),
@@ -35,8 +44,8 @@ urlpatterns = [
     url(r'^api/subtype/(?P<dataset_id>TCGA-\w*)$', views.api_subtype, name='api_subtype'),
 
     # input autocompletion
-    url(r'^api/list/(?P<module>trna|codon|aa)/(?P<search>.*)$', views.api_trna_list, name='api_trna_list'),
-    url(r'^api/check/(?P<module>trna|codon|aa)/(?P<search>.*)$', views.api_trna, name='api_trna'),
+    url(r'^api/list/(?P<module>trna|codon|aa|freq)/(?P<search>.*)$', views.api_trna_list, name='api_trna_list'),
+    url(r'^api/check/(?P<module>trna|codon|aa|freq)/(?P<search>.*)$', views.api_trna, name='api_trna'),
 
     # trna expression
     url(r'^api/trna_expr/$', views.api_trna_expr, name='api_trna_expr'),
@@ -50,7 +59,9 @@ urlpatterns = [
     # survival
     url(r'^api/survival/$', views.api_survival, name="api_survival"),
 
-    # codon
-    url(r'^codon/$', view=views.codon, name='codon'),
-    url(r'^aa/$', view=views.aa, name='aa'),
+    # freq aa and freq codon
+    url(r'^api/freq/$', views.api_freq, name="api_freq"),
+
+
+
 ]

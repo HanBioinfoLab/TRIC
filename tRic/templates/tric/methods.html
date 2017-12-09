@@ -4,24 +4,18 @@
 {% block content %}
     <div class="bs-docs-section">
         <h2 class="page-header"><i class="fa fa-file-text" aria-hidden="true"></i>&nbsp;Work Flow</h2>
-        <img src="{% static 'image/work_flow.svg' %}" width="1140px"/>
+        <img src="{% static 'image/document-picture.png' %}" width="1140px"/>
     </div>
     <div class="bs-docs-section">
-        <h3 id="quant_snor" style="color: #ca2015">Quantification of the expression profiles of snoRNAs</h3>
+        <h3 id="quant_snor" style="color: #ca2015">tRNAs Quantification</h3>
         <p style="text-align: justify; font-size: 18px;">
-            We downloaded the gene annotations (hg19) of 403 and 1457 snoRNA genes from UCSC Genome Browser and GENCODE, respectively, and merged them to 1524 unique snoRNA genes. We obtained snoRNA class information from UCSC, Rfam and ensembl. We downloaded 16591 miRNAseq BAM files from the Cancer Genomics Hub (CGHub; https://cghub.ucsc.edu). We kept the high quality samples with ≥ 50% QC-passed reads and ≥80% reads mapped to human genome and the latest bam files if duplicated. We obtained 9,931 patient tumor samples across 31 TCGA cancer types and 663 normal samples for the following analysis. We then mapped the reads to snoRNA genes and quantified the expression of snoRNAs as Reads Per Kilobase per Million (RPKM).
+            tRNA annotation downloaded from UCSC Genome Browser (hg19), and miRNAseq data of 16,591 samples downloaded from TCGA’s data. The duplicated samples and lower-quality samples with fewer than 50% that passed quality control or fewer than 80% of reads that mapped to the human genome were filtered out. We obtained 9,931 patient tumor samples across 31 cancer types and their related 663 non-tumor tissue samples for use in the analyses. We then mapped reads to tRNA genes and quantified them using the trimmed mean of M values (TMM) method. tRNAs with an average TMM ≥ 1 across samples in each cancer type were defined as detectable tRNAs, followed by log2 transformation. We then merged tRNA expression at the codon and amino acid levels based on Watson-Crick match. tRNA profiles were deposited in <a href="https://www.synapse.org" target="_blank">Synapse</a> (syn8367000).
         </p>
     </div>
     <div class="bs-docs-section">
         <h3 id="clinical_analysis" style="color: #ca2015">Clinical analysis</h3>
         <p style="text-align: justify; font-size: 18px;">
-            Clinical information, including tumor subtypes, disease stage, and patient survival, were obtained from the <a href="https://gdc-portal.nci.nih.gov/" target="_blank">TCGA data portal</a> to identify differentially expressed snoRNAs between paired tumor and normal samples, among established tumor subtypes or tumor stages. We used Student’s t-test or analysis of variance (ANOVA) to assess the statistical difference between two or more groups. Groups with fewer than five samples were excluded from the analysis. For cancer types with survival time available, we performed the univariate Cox test to examine whether the snoRNA was significantly correlated with patient 5-year survival. For each significant snoRNA, snoRNAs were dichotomized at the median expression level, and the Kaplan-Meier curves was plotted to represent the average survival time of each groups and log-rank test was used to examine the difference of the survival time of each groups.
-        </p>
-    </div>
-    <div class="bs-docs-section">
-        <h3 id="data_analysis" style="color: #ca2015">Genomic/Proteomic data analysis</h3>
-        <p style="text-align: justify; font-size: 18px;">
-            We downloaded DNA methylation data, CNV data, and protein expression data from <a href="https://gdc-portal.nci.nih.gov/" target="_blank">TGCA data portal</a>. The annotation of RefSeq genes was downloaded from <a href="http://genome.ucsc.edu/cgi-bin/hgTables" target="_blank">UCSC Table Browser</a> (hg19). We mapped snoRNA genes to copy number segments to obtain their copy number. DNA methylation probes were mapped to snoRNA upstream 2kb and snoRNAs, obtained 351 snoRNAs with at least one probe and beta value of each probe was used to calculate the correlation. We calculated Spearman correlation between snoRNA expression with their own copy number variation, and DNA methylation. We also calculated the Spearman correlation between snoRNA and mRNA/proteins, and considered genes at least 1 Mb away from snoRNAs to avoid effects of host genes or nearby genes. In addition, we also calculated the Spearman correlation between snoRNA and splice events. PSI values for splice events on samples were downloaded from TCGA SpliceSeq (http://bioinformatics.mdanderson.org/TCGASpliceSeq). For all above correlations, we considered coefficient |Rs| ≥ 0.3 and FDR < 0.05 as significant correlation, and only provided the significant results online.
+            Clinical information were obtained from the TCGA data portal. We identify expression alteration of tRNA between paired tumor and normal samples, among established tumor subtypes or tumor stages, including tumor subtypes, disease stage, and patient survival. Groups with fewer than five samples were excluded from the analysis. For cancer types with survival time available, we performed the univariate Cox test to examine whether the tRNA was significantly correlated with patient 5-year survival. For each significant tRNA, tRNAs were dichotomized at the median expression level, and the Kaplan-Meier curves was plotted to represent the average survival time of each groups and log-rank test was used to examine the difference of the survival time of each groups.
         </p>
     </div>
 {% endblock %}
