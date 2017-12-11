@@ -3,7 +3,6 @@
 *.json
 tRic_portal/settings.py
 tRic_portal/settings.pyc
-tRic/resource
 *.Rhistory
 *.Rproj.user
 *.DS_Store
