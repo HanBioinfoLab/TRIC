@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^contact/$', views.contact, name='contact'),
     url(r'^methods/$', views.methods, name='methods'),
     url(r'^statistics/$', views.statistics, name='statistics'),
+    url(r'^download/$', views.download, name = 'download'),
 
     # tRNA
     url(r'^trna/$', view=views.trna, name='trna'),
