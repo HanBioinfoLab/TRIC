@@ -122,3 +122,19 @@ ensid2symbol %>%
   readr::write_rds(path = file.path(root_path, "freq.rds.gz"), compress = "gz")
 
 
+
+
+
+# summary json ------------------------------------------------------------
+root_path <- here::here("../")
+data_path <- file.path(root_path, "resource", "data")
+
+ta <- readr::read_tsv(file.path(data_path, "table-tRNA-Codon-AA.out")) %>% 
+  dplyr::rename(
+    tRNA = Trna,
+    Codon = nodoG
+  )
+
+list(data = ta) %>% 
+  jsonlite::write_json(path = file.path(data_path, "summary.json"))
+
