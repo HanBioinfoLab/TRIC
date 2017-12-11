@@ -117,18 +117,15 @@ var tric=(function(){
             "pageLength": 50,
             'processing': true,
             'ajax': '/tRic/api/summary',
-            'order': [[5, 'desc']],
+            'order': [[1, 'desc']],
             stateSave: true,
             "language": {
                 "decimal": ","
             },
             'columns': [
-                {"data": "fields.dataset_description"},
-                {"data": "fields.normal_n"},
-                {"data": "fields.tumor_n"},
-                {"data": "fields.average_mappable_reads"},
-                {"data": "fields.snorna_n"},
-                {"data": "fields.snorna_rpkm_n"}
+                {"data": "tRNA"},
+                {"data": "Codon"},
+                {"data": "AA"}
             ]
         });
     }

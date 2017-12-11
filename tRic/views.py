@@ -46,6 +46,12 @@ def statistics(request):
 
     return render(request=request, template_name="tric/statistics.html", context=context, status=200)
 
+def download(request):
+    title = "Download"
+    context = {"title": title}
+
+    return render(request=request, template_name="tric/download.html", context=context, status=200)
+
 # trna -------------------------------------
 
 def trna(request):

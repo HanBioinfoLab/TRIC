@@ -1,0 +1,30 @@
+{% extends "tric/base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% load staticfiles %}
+{% block content %}
+    <div class="bs-docs-section">
+        <h2 class="page-header"><i class="fa fa-download" aria-hidden="true"></i>&nbsp;Download tRNA expression matrix</h2>
+        <div class="panel panel-primary" style="padding: 20px">
+            <div class="panel-collapse collapse in" id="collapseZero" role="tabpanel" aria-labelledby="headingZero">
+                <div class="panel-body">
+                    <table class="table table-hover table-bordered">
+                        <tbody>
+                            <tr>
+                                <td><a href="{% static 'download/aa.rds.gz' %}">Amino Acid Expression</a></td>
+                            </tr>
+                            <tr>
+                                <td><a href="{% static 'download/codon.rds.gz' %}">Codon Expression</a></td>
+                            </tr>
+                            <tr>
+                                <td><a href="{% static 'download/trna_expr.rds.gz' %}">tRNA Expression</a></td>
+                            </tr>
+                            <tr>
+                                <td><a href="{% static 'download/freq.rds.gz' %}">Amino Acid and Codon Frequency in Genes</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
