@@ -1,6 +1,6 @@
 *.command
-*.rds.gz
-*.json
+
+
 tRic_portal/settings.py
 tRic_portal/settings.pyc
 *.Rhistory
