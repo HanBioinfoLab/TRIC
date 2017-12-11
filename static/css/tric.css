@@ -9,15 +9,15 @@ a.navbar-brand{
     font-size:25px;
 }
 div.panel-danger{
-    background-color: #d9edf7;
-    border: 1px solid #A3CCF5;
+    background-color: #eff3f7;
+    border: 1px solid #eff3f7;
 }
 div.panel-danger .panel-body{
     font-family: "Benton Sans Cond","DIN Alternate","Helvetica Neue",Helvetica,Arial,sans-serif;
     margin-left: 20px;
     margin-top: 10px;
     font-size: 18px;
-    color: #37588A;
+    color: #175d8a;
 }
 div.bs-docs-section p.lead{
     font-size: 16px;
@@ -170,9 +170,9 @@ div.slider img{
 
 /*customize style*/
 .navbar-inverse{
-    background-image: linear-gradient(to bottom,#800000 0,#800000 100%);
-    background-color: #800000;
-    border-color: #800000;
+    background-image: linear-gradient(to bottom,#004b80 0,#004b80 100%);
+    background-color: #004b80;
+    border-color: #004b80;
     color: #ffffff;
 }
 .navbar-inverse .navbar-nav>li>a{
@@ -185,9 +185,13 @@ div.slider img{
     background-color: #008080;
 }
 
+.panel-success {
+    border-color: #00385c;
+}
+
 .panel-success>.panel-heading{
-    background-image: linear-gradient(to bottom,#7B9FCA 0,#98BCE8 100%);
-    border-color: #9ED3EF;
+    background-image: linear-gradient(to bottom,#00385c 0,#00385c 100%);
+    border-color: #00385c;
     color: #ffffff;
 }
 .panel-success>.panel-heading>h3.panel-title{
@@ -196,8 +200,8 @@ div.slider img{
 }
 
 .panel-info>.panel-heading{
-    background-image: linear-gradient(to bottom,#008c81 0,#008c81 100%);
-    border-color: #008c81;
+    background-image: linear-gradient(to bottom,#76a7ce 0,#76a7ce 100%);
+    border-color: #76a7ce;
     color: #ffffff;
 }
 .panel-info>.panel-heading>h3.panel-title{
@@ -211,13 +215,13 @@ div.slider img{
     border:1px solid #800000;
 }
 .btn-primary{
-    background-image: linear-gradient(to bottom,#008080 0,#008080 100%);
-    background-color: #008080;
-    border:1px solid #008080;
+    background-image: linear-gradient(to bottom,#003f7d 0,#003f7d 100%);
+    background-color: #003f7d;
+    border:1px solid #003f7d;
 }
 .btn-primary:focus, .btn-primary:hover, .btn-primary:active .btn-primary:visited{
-    background-color: #16a085;
-    border:1px solid #16a085;
+    background-color: #003f7d;
+    border:1px solid #003f7d;
     background-position: 0;
 }
 .jumbotron{
