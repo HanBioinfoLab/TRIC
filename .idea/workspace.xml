@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fbd7ffd8-0f66-408a-bbf5-4429b369aed6" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/js/tric.js" afterPath="$PROJECT_DIR$/static/js/tric.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tRic/rscripts/api_filter.R" afterPath="$PROJECT_DIR$/tRic/rscripts/api_filter.R" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tRic/templates/freq/query.html" afterPath="$PROJECT_DIR$/tRic/templates/freq/query.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tRic/views.py" afterPath="$PROJECT_DIR$/tRic/views.py" />
-    </list>
+    <list default="true" id="fbd7ffd8-0f66-408a-bbf5-4429b369aed6" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/.idea/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
