@@ -10,26 +10,47 @@
         {% csrf_token %}
         <div class="bs-callout bs-callout-danger">
             <!--queries-->
+            <!--select moduel-->
             <div class="form-group">
-                <label for="query by annotation" class="col-sm-1 control-label">
-                    Symbol:
+                <div class="col-sm-offset-4">
+                    <label class="radio-inline">
+                        <input type="radio" name="inlineRadioOptions" id="radio-freq" value="radio-freq" checked>
+                        Amino acid and codon frequency
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="inlineRadioOptions" id="radio-filter" value="radio-filter">
+                        Filter codon for gene
+                    </label>
+                </div>
+            </div>
+            <!--query codon and aa frequency-->
+            <div class="form-group">
+                <label for="query by annotation" class="col-sm-4 control-label">
+                    Search symbol for anmino acid and codon usage:
                 </label>
                 <div id="gene-input-div" class="col-sm-4 ui-widget has-feedback inner-addon right-addon has-success">
                     <input name="snorna" type="text" id="gene-input" class="form-control" placeholder="PTEN" value="PTEN"/>
                     <span class="glyphicon form-control-feedback"></span>
                     <label class="control-label" for="annotations"></label>
                 </div>
-                <!--<div class="checkbox col-sm-2">-->
-                    <!--<label>-->
-                        <!--<input type="checkbox" name="selected_analysis" value="freq_aa" id="freq-aa" > Amoni Acid-->
-                    <!--</label>-->
-                <!--</div>-->
-                <!--<div class="checkbox col-sm-1">-->
-                    <!--<label>-->
-                        <!--<input  type="checkbox" name="selected_analysis" value="freq_codon" id="freq-codon" > Codon-->
-                    <!--</label>-->
-                <!--</div>-->
-                <div class="col-sm-offset-2 col-sm-1">
+            </div>
+            <!--select codon-->
+            <div class="form-group">
+                <label for="cancer type" class="col-sm-4 control-label">
+                    Select codon:
+                </label>
+                <div class="col-sm-4">
+                    <select id="select-codon" name="select_codon" class="form-control selectpicker show-menu-arrow" data-live-search="true" data-size="7">
+                        <option value="CTT" data-tokens="CTT">CTT</option><option value="ATG" data-tokens="ATG">ATG</option><option value="AAG" data-tokens="AAG">AAG</option><option value="ACG" data-tokens="ACG">ACG</option><option value="ATC" data-tokens="ATC">ATC</option><option value="AAC" data-tokens="AAC">AAC</option><option value="ATA" data-tokens="ATA">ATA</option><option value="AGG" data-tokens="AGG">AGG</option><option value="CCT" data-tokens="CCT">CCT</option><option value="AGC" data-tokens="AGC">AGC</option><option value="ACA" data-tokens="ACA">ACA</option><option value="AGA" data-tokens="AGA">AGA</option><option value="AAT" data-tokens="AAT">AAT</option><option value="ATT" data-tokens="ATT">ATT</option><option value="CTG" data-tokens="CTG">CTG</option><option value="CTA" data-tokens="CTA">CTA</option><option value="ACT" data-tokens="ACT">ACT</option><option value="CAC" data-tokens="CAC">CAC</option><option value="AAA" data-tokens="AAA">AAA</option><option value="CAA" data-tokens="CAA">CAA</option><option value="AGT" data-tokens="AGT">AGT</option><option value="CCA" data-tokens="CCA">CCA</option><option value="CCG" data-tokens="CCG">CCG</option><option value="TGT" data-tokens="TGT">TGT</option><option value="CGA" data-tokens="CGA">CGA</option><option value="CAG" data-tokens="CAG">CAG</option><option value="TCT" data-tokens="TCT">TCT</option><option value="GAT" data-tokens="GAT">GAT</option><option value="iATG" data-tokens="iATG">iATG</option><option value="CGG" data-tokens="CGG">CGG</option><option value="TGC" data-tokens="TGC">TGC</option><option value="GGG" data-tokens="GGG">GGG</option><option value="TGA" data-tokens="TGA">TGA</option><option value="GGA" data-tokens="GGA">GGA</option><option value="TGG" data-tokens="TGG">TGG</option><option value="GGC" data-tokens="GGC">GGC</option><option value="TAC" data-tokens="TAC">TAC</option><option value="GAG" data-tokens="GAG">GAG</option><option value="TCG" data-tokens="TCG">TCG</option><option value="TTA" data-tokens="TTA">TTA</option><option value="GAC" data-tokens="GAC">GAC</option><option value="CGT" data-tokens="CGT">CGT</option><option value="GAA" data-tokens="GAA">GAA</option><option value="TCA" data-tokens="TCA">TCA</option><option value="GCA" data-tokens="GCA">GCA</option><option value="GTA" data-tokens="GTA">GTA</option><option value="GCG" data-tokens="GCG">GCG</option><option value="GTG" data-tokens="GTG">GTG</option><option value="TTC" data-tokens="TTC">TTC</option><option value="GTT" data-tokens="GTT">GTT</option><option value="GCT" data-tokens="GCT">GCT</option><option value="TTG" data-tokens="TTG">TTG</option>
+                    </select>
+                </div>
+                <div class="col-sm-2 has-success">
+                    <input name="filter_value" type="number" id="filter-val" class="form-control" placeholder="0.1" value="0.1" step="0.1" pattern="^0\.[0-9]+$"/>
+                </div>
+            </div>
+            <!--submit-->
+            <div class="form-group">
+                <div class="col-sm-offset-9 col-sm-1">
                     <button type="reset" class="btn btn-primary btn-lg" value = "reset" id="reset_freq">
                         Reset
                     </button>

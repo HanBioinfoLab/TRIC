@@ -47,13 +47,18 @@ var tric=(function(){
         survival: 'Survival',
         freq: "Frequency",
         freq_aa: "Amino Acid Frequency",
-        freq_codon: "Codon Frequency"
+        freq_codon: "Codon Frequency",
+        filter: "Filter by Frequency"
     };
     var gAnalysisTabsOrder = {
         trna_expr: 0,
         tm_comparison: 1,
         diff_subtype: 2,
-        survival: 3
+        survival: 3,
+        freq:0,
+        freq_aa: 1,
+        freq_codon: 2,
+        filter:3
     };
     var gAnalysisTabsClass = {
         trna_expr: 'rnaexpr',
@@ -62,7 +67,8 @@ var tric=(function(){
         survival:      'clinical',
         freq: "rnaexpr",
         freq_aa: "rnaexpr",
-        freq_codon: "rnaexpr"
+        freq_codon: "rnaexpr",
+        filter: "clinical"
     };
     var default_datatable_settings = {
             processing: true,
@@ -231,6 +237,19 @@ var tric=(function(){
         });
     }
 
+    function load_codon(){
+        var url="/tRic/api/codon";
+            $.getJSON(
+                url,
+                function (data){
+                    data.forEach(function(ele){
+                        var opt = "<option value='" + ele + "' data-tokens='" + ele + "'>" + ele + "</option>";
+                        $("select#select-codon").append(opt);
+                    })
+                }
+            )
+    }
+
     // --------------------------------------------------------------
 
     // tabs toggle
@@ -256,6 +275,7 @@ var tric=(function(){
                         + '">'
                         + gAnalysisLabel[analysis]
                         + '</a></li>';
+
                     var current_tab_order_idx = gAnalysisTabsOrder[analysis];
                     var is_tab_added = false;
                     $("#tabs .analysis_tab").each(function (idx) {
@@ -388,7 +408,6 @@ var tric=(function(){
                 // for tumor normal comparison
                 if(analysis == "tm_comparison"){
                     var img_path = '/tRic/trna/tm_comparison_table/png/' + data.png_name;
-                    console.log(img_path);
                     var img = '<img src="' + img_path + '" style="width:80%;height:80%" onerror="this.src=\'/tRic/static/image/error.svg\'">';
                     setTimeout(function(){
                         $("#tm_comparison_table_png").empty().append(img);
@@ -582,24 +601,26 @@ var tric=(function(){
 
     // validate submit
     function validateQuery(){
-        var selected_analysis = [];
-        var gene_based_analysis = ['freq'];
-        selected_analysis.push('freq');
-        for(var i = 0, len = selected_analysis.length; i<len; i++){
-            if(gene_based_analysis.indexOf(selected_analysis[i])!= -1){
-                if(!$("#gene-input-div").hasClass('has-success')){
-                    if($("#gene-input").val() === ''){
-                        alert("Please input gene symbol.");
-                    }else{
-                        alert("Invalid gene symbol.");
-                    }
-                    return false
+        if($("#radio-freq").prop("checked")){
+            if(!$("#gene-input-div").hasClass('has-success')) {
+                if ($("#gene-input").val() === '') {
+                    alert("Please input gene symbol.");
+                } else {
+                    alert("Invalid gene symbol.");
                 }
+                return false;
             }
         }
-        if(selected_analysis.length === 0){
-            alert("No analysis has been selected.");
-            return false
+        if ($("#radio-filter").prop("checked")){
+                var val = $("#filter-val").val();
+                if (!$.isNumeric(val)) {
+                    alert("Please input filter number!");
+                    return false
+                }
+                if (val < 0 || val > 1 ) {
+                    alert("Input number must between 0 to 1!");
+                    return false;
+                }
         }
         return true;
     }
@@ -709,7 +730,11 @@ var tric=(function(){
                     alert("Error loading table:\n","\t", error);
                 }
 
-                treemap(analysis, data);
+                if (analysis == "filter") {
+                    console.log("filter");
+                } else {
+                    treemap(analysis, data);
+                }
 
                 enableAnalysesTab(analysis);
                 gNCompletedAnalyses[analysis] = true;
@@ -720,37 +745,51 @@ var tric=(function(){
     }
 
     // analysis table
-    function getAnalysisTable(analysis, q){
-        getList(analysis, analysis, {q: q}, freqCallback({'analysis': analysis}));
+    function getAnalysisTable(analysis, q, val){
+        getList(analysis, analysis, {q: q, val: val}, freqCallback({'analysis': analysis}));
     }
 
     // query analysis
     function queryAnalysis(module){
         gNCompletedAnalyses = {};
         var q = $("#gene-input").val();
+        var val = $("#filter-val").val();
+
         ARGUMENTS = {
             analyses: {
                 freq:false,
-                freq_aa: true,
-                freq_codon: true
+                freq_aa: false,
+                freq_codon: false,
+                filter:false
             },
             q: q,
-            module: module
+            module: module,
+            val: val
         };
+        if($("#radio-freq").prop("checked")){
 
+            ARGUMENTS.analyses.freq_aa = true;
+            ARGUMENTS.analyses.freq_codon = true;
+        }
+        if($("#radio-filter").prop("checked")) {
+            ARGUMENTS.analyses.filter = true;
+            ARGUMENTS.q = $("#select-codon").val();
+        }
         $("#progressbar").show();
         hideAnalysesTabs();
         showAllAnalysesTabs();
+
         setTimeout(
             function(){
                 updateLoadingProgress()
             },
             1000
         );
+
         for(var analysis in ARGUMENTS.analyses){
             if(ARGUMENTS.analyses.hasOwnProperty(analysis)){
                 if(ARGUMENTS.analyses[analysis]){
-                    getAnalysisTable(analysis, q)
+                    getAnalysisTable(analysis, ARGUMENTS.q, val)
                 }
             }
         }
@@ -761,7 +800,9 @@ var tric=(function(){
     function clickSubmit(module) {
         // /* for analysis
         $("#submit-freq").click(function () {
+
             if (validateQuery()) {
+
                 queryAnalysis(module);
             }
         });
@@ -891,12 +932,29 @@ var tric=(function(){
         });
     }
 
+    function radioSelect(){
+        $("#select-codon").on("change", function(){
+            $("input#radio-freq").prop("checked", false);
+            $("input#radio-filter").prop("checked", true);
+        });
+        $("#filter-val").focus(function(){
+            $("input#radio-freq").prop("checked", false);
+            $("input#radio-filter").prop("checked", true);
+        });
+        $("#gene-input").focus(function(){
+            $("input#radio-freq").prop("checked", true);
+            $("input#radio-filter").prop("checked", false);
+        });
+    }
+
     return {
         init: function(){
             // init
+
             $("#tabs").tab();
             general_effect();
             load_subtype();
+            radioSelect();
 
             // progress bar
             initTimeoutDialog();
@@ -931,6 +989,7 @@ var tric=(function(){
             clickSubmit('aa');
         },
         onReadyFreq: function(){
+
             reset('freq');
             check_input_autocomplete('freq');
             addAnnotationInputKeyupHandler('freq');

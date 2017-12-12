@@ -25,6 +25,10 @@ trna_expr %>% purrr::pwalk(.f = split_data, name = "trna_expr")
 codon <- readr::read_rds(path = file.path(data_path, "codon.rds.gz"))
 codon %>% purrr::pwalk(.f = split_data, name = "codon_expr")
 
+codon$expr[[1]]$codon -> codons
+codons[-length(codons)]->codons
+
+
 aa <- readr::read_rds(path = file.path(data_path, "aa.rds.gz"))
 aa %>%
   dplyr::mutate(expr = purrr::map(.x = expr, .f = function(.x){.x %>% dplyr::rename(aa = codon)})) %>% 

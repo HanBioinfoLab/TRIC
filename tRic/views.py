@@ -151,6 +151,12 @@ def freq_codon_table(request):
 
     return render(request, 'trna/datatable/freq_codon_table.html', context)
 
+def filter_table(request):
+    title = "Filter by Frequency"
+    context = {"title": title}
+
+    return render(request, 'trna/datatable/filter_table.html', context=context)
+
 # apis
 def api_summary(request):
     title = "API | Summary"
@@ -171,6 +177,14 @@ def api_subtype(request, dataset_id):
         subprocess.check_output(cmd, universal_newlines=True)
 
     data = json.load(open(json_file, "r"))
+    return JsonResponse(data, safe=False)
+
+def api_codon(request):
+    title="API | Codon"
+    context = {"title": title}
+    filename = os.path.join(resource_data, "codon_list.pickle")
+
+    data = pickle.load(open(filename, "rb"))
     return JsonResponse(data, safe=False)
 
 def api_trna_list(request, module, search):
@@ -297,4 +311,12 @@ def api_freq(request):
     data = json.load(open(json_file, 'r'))
     return JsonResponse(data, safe=False)
 
+def api_filter(request):
+    title = "APT | Filter"
+
+    q = request.GET['q']
+    val = request.GET['val']
+
+    data = {"q": q, "val":val}
+    return JsonResponse(data, safe=False)
 
