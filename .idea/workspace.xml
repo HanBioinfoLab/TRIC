@@ -3,11 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="fbd7ffd8-0f66-408a-bbf5-4429b369aed6" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/js/tric.js" afterPath="$PROJECT_DIR$/static/js/tric.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tRic/rscripts/split_data.R" afterPath="$PROJECT_DIR$/tRic/rscripts/split_data.R" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tRic/templates/freq/content.html" afterPath="$PROJECT_DIR$/tRic/templates/freq/content.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tRic/templates/freq/query.html" afterPath="$PROJECT_DIR$/tRic/templates/freq/query.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tRic/urls.py" afterPath="$PROJECT_DIR$/tRic/urls.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tRic/views.py" afterPath="$PROJECT_DIR$/tRic/views.py" />
     </list>
     <ignored path="$PROJECT_DIR$/.idea/" />
@@ -48,11 +43,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tRic/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="560">
-              <caret line="157" column="79" lean-forward="false" selection-start-line="157" selection-start-column="79" selection-end-line="157" selection-end-column="79" />
+            <state relative-caret-position="496">
+              <caret line="319" column="12" lean-forward="false" selection-start-line="319" selection-start-column="12" selection-end-line="319" selection-end-column="12" />
               <folding>
                 <element signature="e#545#570#0" expanded="false" />
                 <element signature="e#613#726#0" expanded="false" />
@@ -89,7 +84,7 @@
         <entry file="file://$PROJECT_DIR$/tRic/templates/trna/datatable/filter_table.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="192">
-              <caret line="12" column="0" lean-forward="true" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+              <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -99,17 +94,17 @@
         <entry file="file://$PROJECT_DIR$/tRic/templates/trna/datatable/survival_table.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="192">
-              <caret line="12" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+              <caret line="12" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tric.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="tric.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/js/tric.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="276">
-              <caret line="740" column="0" lean-forward="true" selection-start-line="740" selection-start-column="0" selection-end-line="740" selection-end-column="0" />
+            <state relative-caret-position="-1004">
+              <caret line="746" column="21" lean-forward="false" selection-start-line="746" selection-start-column="21" selection-end-line="746" selection-end-column="21" />
               <folding>
                 <element signature="e#345#410#0" expanded="false" />
                 <element signature="e#1880#2014#0" expanded="false" />
@@ -339,9 +334,9 @@
         <option value="$PROJECT_DIR$/tRic/templates/freq/query.html" />
         <option value="$PROJECT_DIR$/tRic/templates/freq/content.html" />
         <option value="$PROJECT_DIR$/tRic/urls.py" />
-        <option value="$PROJECT_DIR$/tRic/views.py" />
         <option value="$PROJECT_DIR$/static/js/tric.js" />
         <option value="$PROJECT_DIR$/tRic/templates/trna/datatable/filter_table.html" />
+        <option value="$PROJECT_DIR$/tRic/views.py" />
       </list>
     </option>
   </component>
@@ -1287,61 +1282,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tRic/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="560">
-          <caret line="157" column="79" lean-forward="false" selection-start-line="157" selection-start-column="79" selection-end-line="157" selection-end-column="79" />
-          <folding>
-            <element signature="e#545#570#0" expanded="false" />
-            <element signature="e#613#726#0" expanded="false" />
-            <element signature="e#754#902#0" expanded="false" />
-            <element signature="e#930#1078#0" expanded="false" />
-            <element signature="e#1109#1263#0" expanded="false" />
-            <element signature="e#1292#1442#0" expanded="false" />
-            <element signature="e#1513#1655#0" expanded="false" />
-            <element signature="e#1709#1878#0" expanded="false" />
-            <element signature="e#1937#2108#0" expanded="false" />
-            <element signature="e#2162#2436#0" expanded="false" />
-            <element signature="e#2252#2345#0" expanded="false" />
-            <element signature="e#2483#2622#0" expanded="false" />
-            <element signature="e#2675#2949#0" expanded="false" />
-            <element signature="e#2765#2858#0" expanded="false" />
-            <element signature="e#2993#3123#0" expanded="false" />
-            <element signature="e#3172#3447#0" expanded="false" />
-            <element signature="e#3262#3355#0" expanded="false" />
-            <element signature="e#3517#3662#0" expanded="false" />
-            <element signature="e#3710#3854#0" expanded="false" />
-            <element signature="e#3926#4084#0" expanded="false" />
-            <element signature="e#4783#4983#0" expanded="false" />
-            <element signature="e#6153#6504#0" expanded="false" />
-            <element signature="e#6556#7211#0" expanded="false" />
-            <element signature="e#7268#7659#0" expanded="false" />
-            <element signature="e#7706#8363#0" expanded="false" />
-            <element signature="e#8407#9026#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tRic/templates/trna/datatable/survival_table.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="12" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tRic/templates/trna/datatable/filter_table.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="12" column="0" lean-forward="true" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/static/js/tric.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
-          <caret line="740" column="0" lean-forward="true" selection-start-line="740" selection-start-column="0" selection-end-line="740" selection-end-column="0" />
+        <state relative-caret-position="-1004">
+          <caret line="746" column="21" lean-forward="false" selection-start-line="746" selection-start-column="21" selection-end-line="746" selection-end-column="21" />
           <folding>
             <element signature="e#345#410#0" expanded="false" />
             <element signature="e#1880#2014#0" expanded="false" />
@@ -1468,6 +1412,57 @@
             <element signature="e#33404#33873#0" expanded="false" />
             <marker date="1513071474712" expanded="false" signature="13968:13988" ph="..." />
             <marker date="1513071474712" expanded="false" signature="30695:30715" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tRic/templates/trna/datatable/survival_table.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="12" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tRic/templates/trna/datatable/filter_table.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tRic/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="496">
+          <caret line="319" column="12" lean-forward="false" selection-start-line="319" selection-start-column="12" selection-end-line="319" selection-end-column="12" />
+          <folding>
+            <element signature="e#545#570#0" expanded="false" />
+            <element signature="e#613#726#0" expanded="false" />
+            <element signature="e#754#902#0" expanded="false" />
+            <element signature="e#930#1078#0" expanded="false" />
+            <element signature="e#1109#1263#0" expanded="false" />
+            <element signature="e#1292#1442#0" expanded="false" />
+            <element signature="e#1513#1655#0" expanded="false" />
+            <element signature="e#1709#1878#0" expanded="false" />
+            <element signature="e#1937#2108#0" expanded="false" />
+            <element signature="e#2162#2436#0" expanded="false" />
+            <element signature="e#2252#2345#0" expanded="false" />
+            <element signature="e#2483#2622#0" expanded="false" />
+            <element signature="e#2675#2949#0" expanded="false" />
+            <element signature="e#2765#2858#0" expanded="false" />
+            <element signature="e#2993#3123#0" expanded="false" />
+            <element signature="e#3172#3447#0" expanded="false" />
+            <element signature="e#3262#3355#0" expanded="false" />
+            <element signature="e#3517#3662#0" expanded="false" />
+            <element signature="e#3710#3854#0" expanded="false" />
+            <element signature="e#3926#4084#0" expanded="false" />
+            <element signature="e#4783#4983#0" expanded="false" />
+            <element signature="e#6153#6504#0" expanded="false" />
+            <element signature="e#6556#7211#0" expanded="false" />
+            <element signature="e#7268#7659#0" expanded="false" />
+            <element signature="e#7706#8363#0" expanded="false" />
+            <element signature="e#8407#9026#0" expanded="false" />
           </folding>
         </state>
       </provider>

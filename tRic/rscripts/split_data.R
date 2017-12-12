@@ -117,6 +117,9 @@ freq_codon %>% readr::write_rds(path = file.path(data_path, "freq_codon.rds.gz")
 freq %>% dplyr::select(1:2, ala:sec) -> freq_aa
 freq_aa %>% readr::write_rds(path = file.path(data_path, "freq_aa.rds.gz"), compress = "gz")
 
+freq %>% 
+  dplyr::select(1,2, codons) %>% 
+  readr::write_rds(path = file.path(data_path, "codon_filter.rds.gz"), compress = "gz")
 
 # json pattern ------------------------------------------------------------
 table_out <- readr::read_tsv(file.path(data_path,'table-tRNA-Codon-AA.out'))
