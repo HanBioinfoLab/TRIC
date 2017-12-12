@@ -15,7 +15,7 @@ q <- args[4]
 module <- args[5]
 
 # dsid <- "TCGA-BRCA"
-# stid <- "all"
+# stid <- "Negative"
 # q <- "ala"
 # module <- "aa"
 
@@ -44,6 +44,10 @@ expr <- readr::read_rds(path = filename) %>%
   dplyr::mutate(sample_id = glue::glue("{ct}-{type}-{sample_id}")) %>% 
   dplyr::select(-barcode)
 
+expr_normal <- 
+  expr %>% 
+  dplyr::filter(type == "Normal")
+
 if (!stid %in% c("all", "0")) {
   subtype <- readr::read_rds(path = file.path(resource_data, ct, glue::glue("{ct}.clinical_dataset.rds.gz"))) %>% 
     dplyr::filter(stage == stid) %>% 
@@ -64,6 +68,9 @@ if (nrow(expr) < 1) {
 }
 
 # Tumor vs. Normal --------------------------------------------------------
+if (!stid %in% c("all", "0")) {
+  expr <- dplyr::bind_rows(expr, expr_normal)
+}
 
 expr %>% 
   dplyr::group_by(type) %>% 

@@ -36,6 +36,9 @@ urlpatterns = [
 
     # freq
     url(r'^trna/freq_table/$', views.freq_table, name='freq_table'),
+    url(r'^trna/freq_aa_table/$', views.freq_aa_table, name='freq_aa_table'),
+    url(r'^trna/freq_codon_table/$', views.freq_codon_table, name='freq_codon_table'),
+    url(r'^trna/filter_table/$', views.filter_table, name='filter_table'),
 
 
     # apis
@@ -62,7 +65,10 @@ urlpatterns = [
 
     # freq aa and freq codon
     url(r'^api/freq/$', views.api_freq, name="api_freq"),
+    url(r'^api/freq_aa/$', views.api_freq, name="api_freq"),
+    url(r'^api/freq_codon/$', views.api_freq, name="api_freq"),
 
-
-
+    # load codon
+    url(r'^api/codon/$', views.api_codon, name="api_codon"),
+    url(r'^api/filter/$', views.api_filter, name="api_filter"),
 ]

@@ -45,20 +45,30 @@ var tric=(function(){
         trna_expr: 'tRNA expr.',
         tm_comparison: 'Tumor vs. Normal',
         survival: 'Survival',
-        freq: "Frequency"
+        freq: "Frequency",
+        freq_aa: "Amino Acid Frequency",
+        freq_codon: "Codon Frequency",
+        filter: "Filter by Frequency"
     };
     var gAnalysisTabsOrder = {
         trna_expr: 0,
         tm_comparison: 1,
         diff_subtype: 2,
-        survival: 3
+        survival: 3,
+        freq:0,
+        freq_aa: 1,
+        freq_codon: 2,
+        filter:3
     };
     var gAnalysisTabsClass = {
         trna_expr: 'rnaexpr',
         tm_comparison: 'rnaexpr',
         diff_subtype:  'clinical',
         survival:      'clinical',
-        freq: "rnaexpr"
+        freq: "rnaexpr",
+        freq_aa: "rnaexpr",
+        freq_codon: "rnaexpr",
+        filter: "clinical"
     };
     var default_datatable_settings = {
             processing: true,
@@ -104,10 +114,20 @@ var tric=(function(){
                 {data: "expr", width: "10%"}
             ]
         };
+    var filter_datatable_settings = {
+        order: [[3, 'desc']],
+        columns:[
+            {data: "q"},
+            {data: "val"},
+            {data: "symbol"},
+            {data: "codon"}
+        ]
+    };
     var analysis_datatable_settings = {
             'trna_expr': rnaexpr_datatable_settings,
             'survival': survival_datatable_settings,
-            'diff_subtype': diff_subtype_datatable_settings
+            'diff_subtype': diff_subtype_datatable_settings,
+            'filter': filter_datatable_settings
         };
 
     // Basic init
@@ -227,6 +247,19 @@ var tric=(function(){
         });
     }
 
+    function load_codon(){
+        var url="/tRic/api/codon";
+            $.getJSON(
+                url,
+                function (data){
+                    data.forEach(function(ele){
+                        var opt = "<option value='" + ele + "' data-tokens='" + ele + "'>" + ele + "</option>";
+                        $("select#select-codon").append(opt);
+                    })
+                }
+            )
+    }
+
     // --------------------------------------------------------------
 
     // tabs toggle
@@ -252,6 +285,7 @@ var tric=(function(){
                         + '">'
                         + gAnalysisLabel[analysis]
                         + '</a></li>';
+
                     var current_tab_order_idx = gAnalysisTabsOrder[analysis];
                     var is_tab_added = false;
                     $("#tabs .analysis_tab").each(function (idx) {
@@ -384,7 +418,6 @@ var tric=(function(){
                 // for tumor normal comparison
                 if(analysis == "tm_comparison"){
                     var img_path = '/tRic/trna/tm_comparison_table/png/' + data.png_name;
-                    console.log(img_path);
                     var img = '<img src="' + img_path + '" style="width:80%;height:80%" onerror="this.src=\'/tRic/static/image/error.svg\'">';
                     setTimeout(function(){
                         $("#tm_comparison_table_png").empty().append(img);
@@ -578,29 +611,32 @@ var tric=(function(){
 
     // validate submit
     function validateQuery(){
-        var selected_analysis = [];
-        var gene_based_analysis = ['freq'];
-        selected_analysis.push('freq');
-        for(var i = 0, len = selected_analysis.length; i<len; i++){
-            if(gene_based_analysis.indexOf(selected_analysis[i])!= -1){
-                if(!$("#gene-input-div").hasClass('has-success')){
-                    if($("#gene-input").val() === ''){
-                        alert("Please input gene symbol.");
-                    }else{
-                        alert("Invalid gene symbol.");
-                    }
-                    return false
+        if($("#radio-freq").prop("checked")){
+            if(!$("#gene-input-div").hasClass('has-success')) {
+                if ($("#gene-input").val() === '') {
+                    alert("Please input gene symbol.");
+                } else {
+                    alert("Invalid gene symbol.");
                 }
+                return false;
             }
         }
-        if(selected_analysis.length === 0){
-            alert("No analysis has been selected.");
-            return false
+        if ($("#radio-filter").prop("checked")){
+                var val = $("#filter-val").val();
+                if (!$.isNumeric(val)) {
+                    alert("Please input filter number!");
+                    return false
+                }
+                if (val < 0 || val > 1 ) {
+                    alert("Input number must between 0 to 1!");
+                    return false;
+                }
         }
         return true;
     }
 
-    function treemap(data){
+    function treemap(analysis, json){
+        var data = json[analysis];
         var w = 1100,
             h = 800 - 180,
             x = d3.scale.linear().range([0, w]),
@@ -615,8 +651,8 @@ var tric=(function(){
             .sticky(true)
             .value(function(d) { return d.size; });
 
-
-        var svg = d3.select("#body")
+        var selector = "#" + analysis + "_" + "body";
+        var svg = d3.select(selector)
             .append("div")
             .attr("class", "chart")
             .style("width", w + "px")
@@ -676,7 +712,7 @@ var tric=(function(){
             .attr("y", function(d) { return d.dy / 2; })
             .attr("dy", ".35em")
             .attr("text-anchor", "middle")
-            .text(function(d) { return d.name; })
+            .text(function(d) { return d.name + ": " + (d.size * 100).toString().substr(0,4); })
             .style("opacity", function(d) { d.w = this.getComputedTextLength(); return d.dx > d.w ? 1 : 0; });
 
         d3.select(window).on("click", function() { zoom(root); });
@@ -704,7 +740,28 @@ var tric=(function(){
                     alert("Error loading table:\n","\t", error);
                 }
 
-                treemap(data);
+                if (analysis == "filter") {
+                    if(data instanceof Array){
+                       jQuery.each(data, function(){
+                        this.q = obj['q'];
+                        this.val = obj['val'];
+                       });
+                    } else{
+                        data.q = obj['q'];
+                        data.val = obj['val'];
+                    }
+                    TABLEDATA[table_id] = data;
+                    var analysis_datatable_setting = {};
+                    analysis_datatable_setting = analysis_datatable_settings[analysis];
+                    var dataTableSettings = $.extend(
+                        {'data': data},
+                        default_datatable_settings,
+                        analysis_datatable_setting);
+
+                    OTABLES[table_id] = $('#'+table_id).DataTable(dataTableSettings);
+                } else {
+                    treemap(analysis, data);
+                }
 
                 enableAnalysesTab(analysis);
                 gNCompletedAnalyses[analysis] = true;
@@ -715,35 +772,51 @@ var tric=(function(){
     }
 
     // analysis table
-    function getAnalysisTable(analysis, q){
-        getList(analysis, analysis, {q: q}, freqCallback({'analysis': analysis}));
+    function getAnalysisTable(analysis, q, val){
+        getList(analysis, analysis, {q: q, val: val}, freqCallback({'analysis': analysis, q: q, val: val}));
     }
 
     // query analysis
     function queryAnalysis(module){
         gNCompletedAnalyses = {};
         var q = $("#gene-input").val();
+        var val = $("#filter-val").val();
+
         ARGUMENTS = {
             analyses: {
-                freq:true
+                freq:false,
+                freq_aa: false,
+                freq_codon: false,
+                filter:false
             },
             q: q,
-            module: module
+            module: module,
+            val: val
         };
+        if($("#radio-freq").prop("checked")){
 
+            ARGUMENTS.analyses.freq_aa = true;
+            ARGUMENTS.analyses.freq_codon = true;
+        }
+        if($("#radio-filter").prop("checked")) {
+            ARGUMENTS.analyses.filter = true;
+            ARGUMENTS.q = $("#select-codon").val();
+        }
         $("#progressbar").show();
         hideAnalysesTabs();
         showAllAnalysesTabs();
+
         setTimeout(
             function(){
                 updateLoadingProgress()
             },
             1000
         );
+
         for(var analysis in ARGUMENTS.analyses){
             if(ARGUMENTS.analyses.hasOwnProperty(analysis)){
                 if(ARGUMENTS.analyses[analysis]){
-                    getAnalysisTable(analysis, q)
+                    getAnalysisTable(analysis, ARGUMENTS.q, val)
                 }
             }
         }
@@ -754,7 +827,9 @@ var tric=(function(){
     function clickSubmit(module) {
         // /* for analysis
         $("#submit-freq").click(function () {
+
             if (validateQuery()) {
+
                 queryAnalysis(module);
             }
         });
@@ -884,12 +959,29 @@ var tric=(function(){
         });
     }
 
+    function radioSelect(){
+        $("#select-codon").on("change", function(){
+            $("input#radio-freq").prop("checked", false);
+            $("input#radio-filter").prop("checked", true);
+        });
+        $("#filter-val").focus(function(){
+            $("input#radio-freq").prop("checked", false);
+            $("input#radio-filter").prop("checked", true);
+        });
+        $("#gene-input").focus(function(){
+            $("input#radio-freq").prop("checked", true);
+            $("input#radio-filter").prop("checked", false);
+        });
+    }
+
     return {
         init: function(){
             // init
+
             $("#tabs").tab();
             general_effect();
             load_subtype();
+            radioSelect();
 
             // progress bar
             initTimeoutDialog();
@@ -924,6 +1016,7 @@ var tric=(function(){
             clickSubmit('aa');
         },
         onReadyFreq: function(){
+
             reset('freq');
             check_input_autocomplete('freq');
             addAnnotationInputKeyupHandler('freq');
