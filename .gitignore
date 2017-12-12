@@ -6,3 +6,5 @@ tRic_portal/settings.pyc
 *.DS_Store
 .Rproj.user
 *.bak
+
+*TMM.txt
