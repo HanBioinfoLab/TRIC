@@ -681,7 +681,7 @@ var tric=(function(){
             .attr("y", function(d) { return d.dy / 2; })
             .attr("dy", ".35em")
             .attr("text-anchor", "middle")
-            .text(function(d) { return d.name; })
+            .text(function(d) { return d.name + ": " + (d.size * 100).toString().substr(0,4); })
             .style("opacity", function(d) { d.w = this.getComputedTextLength(); return d.dx > d.w ? 1 : 0; });
 
         d3.select(window).on("click", function() { zoom(root); });

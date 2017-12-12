@@ -66,7 +66,4 @@ urlpatterns = [
     url(r'^api/freq/$', views.api_freq, name="api_freq"),
     url(r'^api/freq_aa/$', views.api_freq, name="api_freq"),
     url(r'^api/freq_codon/$', views.api_freq, name="api_freq"),
-
-
-
 ]

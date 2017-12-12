@@ -42,15 +42,41 @@ json_pattern %>%
       .x = children,
       .f = function(.x){
         freq_data[dplyr::pull(.x, name) %>% stringr::str_to_lower()] -> .size
-        dplyr::mutate(.x, size = .size)
+        dplyr::mutate(.x, size = .size) %>% 
+          dplyr::filter(size != 0)
       }
     )
-  ) ->json_data
+  ) %>% 
+  dplyr::filter(name != "iMet") ->json_data
 
-json <- list(name = "flare", children = json_data)
+
+json_data %>% 
+  dplyr::mutate(children = purrr::map(
+    .x = children,
+    .f = function(.x){
+      .x %>% 
+        dplyr::filter(stringr::str_detect(name, pattern = "[AGCT]{3}")) 
+    }
+  )) -> json_codon
+
+json_data %>% 
+  dplyr::mutate(children = purrr::map(
+    .x = children,
+    .f = function(.x){
+      .x %>% 
+        dplyr::filter(!stringr::str_detect(name, pattern = "[AGCT]{3}"))
+    }
+  )) -> json_aa
+
+freq <- list(name = "flare", children = json_data)
+freq_codon <- list(name = "flare", children = json_codon)
+freq_aa <- list(name = "flare", children = json_aa)
+
+jsons <- list(freq = freq, freq_aa = freq_aa, freq_codon = freq_codon)
+
 # Save to json ------------------------------------------------------------
 json_file <- file.path(resource_jsons, glue::glue("api_freq.{q}.json"))
 
-json %>% jsonlite::write_json(json_file)
+jsons %>% jsonlite::write_json(json_file)
 
 
