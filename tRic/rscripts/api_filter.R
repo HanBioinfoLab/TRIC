@@ -27,8 +27,8 @@ resource_data <- file.path(resource, "data")
 codon_filter <- readr::read_rds(path = file.path(resource_data, "codon_filter.rds.gz"))
 
 codon_filter %>% 
-  dplyr::select(1, 2, q) %>% 
-  dplyr::filter(rlang::UQ(rlang::sym(q)) > val) ->
+  dplyr::select(1, 2, codon = rlang::UQ(rlang::sym(q))) %>% 
+  dplyr::filter(codon > val) ->
   filter_data
 
 # Save to json ------------------------------------------------------------

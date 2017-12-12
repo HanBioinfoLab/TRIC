@@ -114,10 +114,20 @@ var tric=(function(){
                 {data: "expr", width: "10%"}
             ]
         };
+    var filter_datatable_settings = {
+        order: [[3, 'desc']],
+        columns:[
+            {data: "q"},
+            {data: "val"},
+            {data: "symbol"},
+            {data: "codon"}
+        ]
+    };
     var analysis_datatable_settings = {
             'trna_expr': rnaexpr_datatable_settings,
             'survival': survival_datatable_settings,
-            'diff_subtype': diff_subtype_datatable_settings
+            'diff_subtype': diff_subtype_datatable_settings,
+            'filter': filter_datatable_settings
         };
 
     // Basic init
@@ -731,7 +741,24 @@ var tric=(function(){
                 }
 
                 if (analysis == "filter") {
-                    console.log("filter");
+                    if(data instanceof Array){
+                       jQuery.each(data, function(){
+                        this.q = obj['q'];
+                        this.val = obj['val'];
+                       });
+                    } else{
+                        data.q = obj['q'];
+                        data.val = obj['val'];
+                    }
+                    TABLEDATA[table_id] = data;
+                    var analysis_datatable_setting = {};
+                    analysis_datatable_setting = analysis_datatable_settings[analysis];
+                    var dataTableSettings = $.extend(
+                        {'data': data},
+                        default_datatable_settings,
+                        analysis_datatable_setting);
+
+                    OTABLES[table_id] = $('#'+table_id).DataTable(dataTableSettings);
                 } else {
                     treemap(analysis, data);
                 }
@@ -746,7 +773,7 @@ var tric=(function(){
 
     // analysis table
     function getAnalysisTable(analysis, q, val){
-        getList(analysis, analysis, {q: q, val: val}, freqCallback({'analysis': analysis}));
+        getList(analysis, analysis, {q: q, val: val}, freqCallback({'analysis': analysis, q: q, val: val}));
     }
 
     // query analysis

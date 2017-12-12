@@ -318,7 +318,7 @@ def api_filter(request):
     val = request.GET['val']
 
     rscript = os.path.join(rscript_dir, "api_filter.R")
-    cmd = [rcommand, rscript, root_path, q]
+    cmd = [rcommand, rscript, root_path, q, val]
     json_file = os.path.join(resource_jons, ".".join(["api_filter", q, val, "json"]))
     if not os.path.exists(json_file):
         subprocess.check_output(cmd, universal_newlines=True)
