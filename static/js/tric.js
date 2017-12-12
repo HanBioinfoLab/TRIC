@@ -45,7 +45,9 @@ var tric=(function(){
         trna_expr: 'tRNA expr.',
         tm_comparison: 'Tumor vs. Normal',
         survival: 'Survival',
-        freq: "Frequency"
+        freq: "Frequency",
+        freq_aa: "Amino Acid Frequency",
+        freq_codon: "Codon Frequency"
     };
     var gAnalysisTabsOrder = {
         trna_expr: 0,
@@ -58,7 +60,9 @@ var tric=(function(){
         tm_comparison: 'rnaexpr',
         diff_subtype:  'clinical',
         survival:      'clinical',
-        freq: "rnaexpr"
+        freq: "rnaexpr",
+        freq_aa: "rnaexpr",
+        freq_codon: "rnaexpr"
     };
     var default_datatable_settings = {
             processing: true,
@@ -600,7 +604,8 @@ var tric=(function(){
         return true;
     }
 
-    function treemap(data){
+    function treemap(analysis, json){
+        var data = json[analysis];
         var w = 1100,
             h = 800 - 180,
             x = d3.scale.linear().range([0, w]),
@@ -615,8 +620,8 @@ var tric=(function(){
             .sticky(true)
             .value(function(d) { return d.size; });
 
-
-        var svg = d3.select("#body")
+        var selector = "#" + analysis + "_" + "body";
+        var svg = d3.select(selector)
             .append("div")
             .attr("class", "chart")
             .style("width", w + "px")
@@ -704,7 +709,7 @@ var tric=(function(){
                     alert("Error loading table:\n","\t", error);
                 }
 
-                treemap(data);
+                treemap(analysis, data);
 
                 enableAnalysesTab(analysis);
                 gNCompletedAnalyses[analysis] = true;
@@ -725,7 +730,9 @@ var tric=(function(){
         var q = $("#gene-input").val();
         ARGUMENTS = {
             analyses: {
-                freq:true
+                freq:false,
+                freq_aa: true,
+                freq_codon: true
             },
             q: q,
             module: module

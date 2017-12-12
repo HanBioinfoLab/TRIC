@@ -139,6 +139,17 @@ def freq_table(request):
 
     return render(request, 'trna/datatable/freq_table.html', context)
 
+def freq_aa_table(request):
+    title = "Freq aa table"
+    context = {"title": title}
+
+    return render(request, 'trna/datatable/freq_aa_table.html', context)
+
+def freq_codon_table(request):
+    title = "Freq codon table"
+    context = {"title": title}
+
+    return render(request, 'trna/datatable/freq_codon_table.html', context)
 
 # apis
 def api_summary(request):
@@ -285,3 +296,5 @@ def api_freq(request):
 
     data = json.load(open(json_file, 'r'))
     return JsonResponse(data, safe=False)
+
+
