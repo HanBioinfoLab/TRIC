@@ -24,7 +24,7 @@ resource_pngs <- file.path(resource, "pngs")
 resource_data <- file.path(resource, "data")
 
 # Load data ---------------------------------------------------------------
-codon_filter <- readr::read_rds(path = file.path(resource_data, "codon_filter.rds.gz"))
+codon_filter <- readr::read_rds(path = file.path(resource_data, "freq.rds.gz"))
 
 codon_filter %>% 
   dplyr::select(1, 2, codon = rlang::UQ(rlang::sym(q))) %>% 

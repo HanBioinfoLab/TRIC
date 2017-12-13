@@ -182,7 +182,7 @@ def api_subtype(request, dataset_id):
 def api_codon(request):
     title="API | Codon"
     context = {"title": title}
-    filename = os.path.join(resource_data, "codon_list.pickle")
+    filename = os.path.join(resource_data, "aa_list.pickle")
 
     data = pickle.load(open(filename, "rb"))
     return JsonResponse(data, safe=False)

@@ -1009,6 +1009,7 @@ var tric=(function(){
             general_effect();
             load_subtype();
             radioSelect();
+            load_codon();
 
             // progress bar
             initTimeoutDialog();
