@@ -122,12 +122,28 @@ var tric=(function(){
             {data: "symbol"},
             {data: "codon"}
         ]
-    };
+    },
+        freq_aa_datatable_settings = {
+            columns: [
+                {data: "symbol"},
+                {data: "name"},
+                {data: "frequency"}
+            ]
+        },
+        freq_codon_datatable_settings = {
+            columns: [
+                {data: "symbol"},
+                {data: "name"},
+                {data: "frequency"}
+            ]
+        };
     var analysis_datatable_settings = {
             'trna_expr': rnaexpr_datatable_settings,
             'survival': survival_datatable_settings,
             'diff_subtype': diff_subtype_datatable_settings,
-            'filter': filter_datatable_settings
+            'filter': filter_datatable_settings,
+            'freq_aa': freq_aa_datatable_settings,
+            'freq_codon': freq_codon_datatable_settings
         };
 
     // Basic init
@@ -378,7 +394,7 @@ var tric=(function(){
             var table_id = obj['table_tmpl_name'] || analysis + '_table';
             var tmpl_id = 'tab_' + analysis, table_tmpl = '/tRic/trna/' + table_id;
             var module = obj.module;
-
+            console.log(data);
             console.log({obj: obj});
             console.log({table_tmpl:table_tmpl});
             console.log({tmpl_id:tmpl_id});
@@ -739,7 +755,7 @@ var tric=(function(){
                 if(error){
                     alert("Error loading table:\n","\t", error);
                 }
-
+                var ds = [];
                 if (analysis == "filter") {
                     if(data instanceof Array){
                        jQuery.each(data, function(){
@@ -750,18 +766,29 @@ var tric=(function(){
                         data.q = obj['q'];
                         data.val = obj['val'];
                     }
-                    TABLEDATA[table_id] = data;
-                    var analysis_datatable_setting = {};
+                    ds = data;
+                } else {
+                    treemap(analysis, data);
+                    // make data
+                    data[analysis].children.forEach(function (ele) {
+                        if (ele.children.length == 0) {return}
+                        ele.children.forEach(function (e) {
+                            ds.push({
+                                symbol: obj['q'],
+                                frequency: e.size,
+                                name: e.name});
+                        });
+                    });
+                }
+                TABLEDATA[table_id] = ds;
+                var analysis_datatable_setting = {};
                     analysis_datatable_setting = analysis_datatable_settings[analysis];
-                    var dataTableSettings = $.extend(
-                        {'data': data},
+                var dataTableSettings = $.extend(
+                        {'data': ds},
                         default_datatable_settings,
                         analysis_datatable_setting);
 
-                    OTABLES[table_id] = $('#'+table_id).DataTable(dataTableSettings);
-                } else {
-                    treemap(analysis, data);
-                }
+                OTABLES[table_id] = $('#'+table_id).DataTable(dataTableSettings);
 
                 enableAnalysesTab(analysis);
                 gNCompletedAnalyses[analysis] = true;
@@ -982,6 +1009,7 @@ var tric=(function(){
             general_effect();
             load_subtype();
             radioSelect();
+            load_codon();
 
             // progress bar
             initTimeoutDialog();
