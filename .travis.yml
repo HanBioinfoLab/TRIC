@@ -11,4 +11,4 @@ notifications:
     on_success: change
     on_failure: change
 script:
-  - python manage.py runserver
+  - python manage.py runserver &
