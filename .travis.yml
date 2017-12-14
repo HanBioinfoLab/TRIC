@@ -6,6 +6,9 @@ env:
 install:
   - pip install -q Django==$DJANGO
   - pip install pep8
-
+notifications:
+  email:
+    on_success: change
+    on_failure: change
 script:
-  - python setup.py test
+  - python manage.py runserver
