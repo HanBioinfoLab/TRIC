@@ -6,6 +6,9 @@ env:
 install:
   - pip install -q Django==$DJANGO
   - pip install pep8
+  - pip install --user codecov
+after_success:
+  - codecov
 notifications:
   email:
     on_success: change
