@@ -3,11 +3,9 @@ python:
   - "2.7.12"
 env:
   - DJANGO=1.9.7
-  - PIP_USE_MIRRORS=true
 install:
   - pip install -q Django==$DJANGO
   - pip install pep8
-before_script:
-  - "pep8 --exclude=migrations --ignore=E501,E225 src"
+
 script:
   - python setup.py test
