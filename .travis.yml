@@ -7,7 +7,6 @@ env:
 install:
   - pip install -q Django==$DJANGO
   - pip install pep8
-  - pip install -q -e .
 before_script:
   - "pep8 --exclude=migrations --ignore=E501,E225 src"
 script:
