@@ -1,46 +1,54 @@
 {% load staticfiles %}
 <div class="bs-docs-section">
     <h2 class="page-header">Gene codon and amino acid frequency analysis.</h2>
-    <div class="panel panel-danger">
+    <!-- <div class="panel panel-danger">
         <div class="panel-body">
             <p>The section is focused on the gene codon and amino acid frequency analysis. Searching gene symbol in the query box.</p>
         </div>
-    </div>
+    </div> -->
     <div class="form-horizontal" role="form">
         {% csrf_token %}
         <div class="bs-callout bs-callout-danger">
             <!--queries-->
             <!--select moduel-->
-            <div class="form-group">
+            <div class="form-group invisible">
                 <div class="col-sm-offset-4">
                     <label class="radio-inline">
                         <input type="radio" name="inlineRadioOptions" id="radio-freq" value="radio-freq" checked>
-                        Amino acid and codon frequency
                     </label>
                     <label class="radio-inline">
                         <input type="radio" name="inlineRadioOptions" id="radio-filter" value="radio-filter">
-                        Filter codon for gene
                     </label>
                 </div>
             </div>
             <!--query codon and aa frequency-->
+            <p><center><strong>Analyze codon frequency and amino acid frequency for a selected gene.</strong></center></p>
             <div class="form-group">
                 <label for="query by annotation" class="col-sm-4 control-label">
-                    Search symbol for anmino acid and codon usage:
+                    Gene symbol:
                 </label>
                 <div id="gene-input-div" class="col-sm-4 ui-widget has-feedback inner-addon right-addon has-success">
-                    <input name="snorna" type="text" id="gene-input" class="form-control" placeholder="PTEN" value="PTEN"/>
+                    <input name="snorna" type="text" id="gene-input" class="form-control" placeholder="PTEN" value="PTEN" />
                     <span class="glyphicon form-control-feedback"></span>
                     <label class="control-label" for="annotations"></label>
                 </div>
+                <div class="col-sm-1">
+                    <button id="submit-freq-a" tpye="submit-button" class="btn btn-primary">
+                        Analysis
+                    </button>
+                </div>
             </div>
             <!--select codon-->
+            <center><strong>OR</strong></center>
+            <br>
+            <p><center><strong>Search for genes which have higher frequency than cutoff for selected codon or amino acid.</center></strong></p>
             <div class="form-group">
-                <label for="cancer type" class="col-sm-4 control-label">
-                    Select codon ro amino acid:
+                <label for="cancer type" class="col-sm-2 control-label">
+                    Codon or amino acid:
                 </label>
                 <div class="col-sm-4">
                     <select id="select-codon" name="select_codon" class="form-control selectpicker show-menu-arrow" data-live-search="true" data-size="7">
+                        <!-- <option value="" disabled selected hidden>Please Choose...</option> -->
                         <option value="AAA" data-tokens="AAA">AAA</option>
                         <option value="ATA" data-tokens="ATA">ATA</option>
                         <option value="CTT" data-tokens="CTT">CTT</option>
@@ -48,22 +56,28 @@
                     <option value="ser" data-tokens="ser">ser</option><option value="lys" data-tokens="lys">lys</option><option value="pro" data-tokens="pro">pro</option><option value="ala" data-tokens="ala">ala</option><option value="asp" data-tokens="asp">asp</option><option value="sec" data-tokens="sec">sec</option><option value="arg" data-tokens="arg">arg</option><option value="val" data-tokens="val">val</option><option value="cys" data-tokens="cys">cys</option><option value="his" data-tokens="his">his</option><option value="phe" data-tokens="phe">phe</option><option value="met" data-tokens="met">met</option><option value="leu" data-tokens="leu">leu</option><option value="asn" data-tokens="asn">asn</option><option value="tyr" data-tokens="tyr">tyr</option><option value="ile" data-tokens="ile">ile</option><option value="gln" data-tokens="gln">gln</option><option value="thr" data-tokens="thr">thr</option><option value="gly" data-tokens="gly">gly</option><option value="trp" data-tokens="trp">trp</option><option value="glu" data-tokens="glu">glu</option>
                     </select>
                 </div>
+                <label for="number" class="col-sm-2 control-label">Cutoff:</label>
                 <div class="col-sm-2 has-success">
-                    <input name="filter_value" type="number" id="filter-val" class="form-control" placeholder="0.1" value="0.1" step="0.1" pattern="^0\.[0-9]+$"/>
+                    <input name="filter_value" type="number" id="filter-val" class="form-control" placeholder="0.1"  step="0.1" value="0.1" pattern="^0\.[0-9]+$"/>
+                </div>
+                <div class="col-sm-1">
+                    <button id="submit-freq-s" tpye="submit-button" class="btn btn-primary">
+                        Analysis
+                    </button>
                 </div>
             </div>
             <!--submit-->
             <div class="form-group">
-                <div class="col-sm-offset-9 col-sm-1">
+                <!-- <div class="col-sm-offset-9 col-sm-1">
                     <button type="reset" class="btn btn-primary btn-lg" value = "reset" id="reset_freq">
                         Reset
                     </button>
-                </div>
-                <div class="col-sm-1">
+                </div> -->
+                <!-- <div class="col-sm-offset-9 col-sm-1">
                     <button id="submit-freq" tpye="submit-button" class="btn btn-primary btn-lg">
                         Analysis
                     </button>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

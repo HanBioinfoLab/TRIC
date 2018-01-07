@@ -853,8 +853,18 @@ var tric=(function(){
     // submit form
     function clickSubmit(module) {
         // /* for analysis
-        $("#submit-freq").click(function () {
+        $("#submit-freq-a").click(function () {
+            $("#radio-freq").prop("checked", true)
+            $("#radio-filter").prop("checked", false)
+            if (validateQuery()) {
 
+                queryAnalysis(module);
+            }
+        });
+
+        $("#submit-freq-s").click(function () {
+            $("#radio-freq").prop("checked", false)
+            $("#radio-filter").prop("checked", true)
             if (validateQuery()) {
 
                 queryAnalysis(module);

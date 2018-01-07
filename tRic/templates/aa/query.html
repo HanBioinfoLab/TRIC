@@ -1,11 +1,11 @@
 {% load staticfiles %}
 <div class="bs-docs-section">
     <h2 class="page-header">Amino acid analysis</h2>
-    <div class="panel panel-danger">
+    <!-- <div class="panel panel-danger">
         <div class="panel-body">
             <p>The section is focused on the amino acid analysis. Searching codon in the query box by different cancers and subtypes.</p>
         </div>
-    </div>
+    </div> -->
     <div class="form-horizontal" role="form">
         {% csrf_token %}
         <div class="bs-callout bs-callout-danger">
@@ -16,6 +16,7 @@
                 </label>
                 <div class="col-sm-7">
                     <select id="select_dataset" name="select_dataset" class="form-control selectpicker show-menu-arrow" data-live-search="true" data-size="7">
+                        <!-- <option value="" disabled selected hidden>Please Choose...</option> -->
                         <option value="TCGA-ACC" data-tokens="Adrenocortical carcinoma (ACC)">
                             TCGA Adrenocortical carcinoma (ACC)
                         </option>
@@ -113,7 +114,7 @@
             <!--select subtype and stage-->
             <div class="form-group">
                 <label for="select a subtype" class="col-sm-3 control-label">
-                    Select a subtype:
+                    Select a subgroup:
                 </label>
                 <div class="col-sm-7">
                     <select name="select_subtype" id="select_subtype" class="form-control" >
@@ -131,7 +132,7 @@
             <!--queries-->
             <div class="form-group">
                 <label for="query by annotation" class="col-sm-3 control-label">
-                    Query by annotation:
+                    Select a amino acid:
                 </label>
                 <div id="snorna-div" class="col-sm-7 ui-widget has-feedback inner-addon right-addon has-success">
                     <input name="snorna" type="text" id="snorna" class="form-control" placeholder="ala" value="ala"/>
